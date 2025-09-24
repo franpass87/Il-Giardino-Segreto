@@ -113,9 +113,27 @@ function parse_tour_date( string $raw_date ): ?\DateTime {
         return null;
     }
 
-    $date = \DateTime::createFromFormat( 'd/m/Y', $raw_date );
+    $timezone = null;
+
+    if ( function_exists( 'wp_timezone' ) ) {
+        $wp_timezone = wp_timezone();
+
+        if ( $wp_timezone instanceof \DateTimeZone ) {
+            $timezone = $wp_timezone;
+        }
+    }
+
+    $date = $timezone instanceof \DateTimeZone
+        ? \DateTime::createFromFormat( '!d/m/Y', $raw_date, $timezone )
+        : \DateTime::createFromFormat( '!d/m/Y', $raw_date );
 
     if ( ! $date instanceof \DateTime ) {
+        return null;
+    }
+
+    $errors = \DateTime::getLastErrors();
+
+    if ( is_array( $errors ) && ( (int) ( $errors['warning_count'] ?? 0 ) > 0 || (int) ( $errors['error_count'] ?? 0 ) > 0 ) ) {
         return null;
     }
 
@@ -125,17 +143,20 @@ function parse_tour_date( string $raw_date ): ?\DateTime {
 /**
  * Normalize the date ranges payload for storage.
  *
+ * Ensures ranges are valid, deduplicated and sorted chronologically so that the
+ * earliest interval is stored first.
+ *
  * @param array<int,string>|null $starts Start dates.
  * @param array<int,string>|null $ends   End dates.
  *
  * @return array<int,array<string,string>>
  */
 function sanitize_date_ranges( ?array $starts, ?array $ends ): array {
-    $ranges = [];
-
     if ( empty( $starts ) ) {
-        return $ranges;
+        return [];
     }
+
+    $normalised = [];
 
     foreach ( $starts as $index => $start_raw ) {
         $start_raw = is_string( $start_raw ) ? trim( $start_raw ) : '';
@@ -148,13 +169,48 @@ function sanitize_date_ranges( ?array $starts, ?array $ends ): array {
             continue;
         }
 
-        $ranges[] = [
-            'start' => $start_date->format( 'd/m/Y' ),
-            'end'   => $end_date->format( 'd/m/Y' ),
+        $start_formatted = $start_date->format( 'd/m/Y' );
+        $end_formatted   = $end_date->format( 'd/m/Y' );
+        $key             = $start_formatted . '|' . $end_formatted;
+
+        if ( isset( $normalised[ $key ] ) ) {
+            continue;
+        }
+
+        $normalised[ $key ] = [
+            'start'   => $start_formatted,
+            'end'     => $end_formatted,
+            'startTs' => $start_date->getTimestamp(),
+            'endTs'   => $end_date->getTimestamp(),
         ];
     }
 
-    return $ranges;
+    if ( empty( $normalised ) ) {
+        return [];
+    }
+
+    $sorted = array_values( $normalised );
+
+    usort(
+        $sorted,
+        static function ( array $a, array $b ): int {
+            if ( $a['startTs'] === $b['startTs'] ) {
+                return $a['endTs'] <=> $b['endTs'];
+            }
+
+            return $a['startTs'] <=> $b['startTs'];
+        }
+    );
+
+    return array_map(
+        static function ( array $range ): array {
+            return [
+                'start' => $range['start'],
+                'end'   => $range['end'],
+            ];
+        },
+        $sorted
+    );
 }
 
 /**
