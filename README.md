@@ -43,6 +43,7 @@ Questo repository contiene il plugin WordPress **IGS Ecommerce Customizations**,
 - Per modificare i comportamenti del modal di prenotazione puoi agganciare i filtri:
   - `igs_booking_should_empty_cart` per forzare lo svuotamento del carrello prima dell’aggiunta.
   - `igs_portfolio_partner_logo` per impostare un logo partner personalizzato nelle schede portfolio.
+  - `igs_tour_map_tile_layer` per definire URL, attributi e opzioni del tile provider utilizzato dalla mappa Leaflet.
 - Se aggiungi o aggiorni stringhe localizzate esegui `xgettext` o un equivalente (`wp i18n make-pot`) per rigenerare `languages/igs-ecommerce.pot`, quindi aggiorna `languages/igs-ecommerce-it_IT.po`. Il plugin carica direttamente i file `.po`, ma puoi comunque compilare `.mo` se distribuisci il pacchetto tramite altri canali.
 
 Per contributi o segnalazioni apri una issue o una pull request descrivendo in modo chiaro le modifiche proposte.

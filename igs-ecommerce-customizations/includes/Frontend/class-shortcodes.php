@@ -58,6 +58,58 @@ class Shortcodes {
 
         wp_register_style( 'igs-tour-map', Helpers\url( 'assets/css/map.css' ), [ 'igs-leaflet' ], IGS_ECOMMERCE_VERSION );
         wp_register_script( 'igs-tour-map', Helpers\url( 'assets/js/map.js' ), [ 'igs-leaflet' ], IGS_ECOMMERCE_VERSION, true );
+
+        $default_tile_layer = [
+            'url'         => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'attribution' => '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+            'options'     => [],
+        ];
+
+        $tile_layer = apply_filters( 'igs_tour_map_tile_layer', $default_tile_layer );
+
+        if ( ! is_array( $tile_layer ) ) {
+            $tile_layer = $default_tile_layer;
+        }
+
+        $tile_url = isset( $tile_layer['url'] ) && is_string( $tile_layer['url'] ) ? trim( $tile_layer['url'] ) : '';
+
+        if ( '' === $tile_url || ! preg_match( '#^https?://#i', $tile_url ) || false !== strpos( $tile_url, '"' ) || false !== strpos( $tile_url, "'" ) ) {
+            $tile_url = $default_tile_layer['url'];
+        }
+
+        $tile_attribution = isset( $tile_layer['attribution'] ) && is_string( $tile_layer['attribution'] ) ? wp_kses_post( $tile_layer['attribution'] ) : $default_tile_layer['attribution'];
+
+        $tile_options = [];
+
+        if ( isset( $tile_layer['options'] ) && is_array( $tile_layer['options'] ) ) {
+            foreach ( $tile_layer['options'] as $option_key => $option_value ) {
+                if ( ! is_string( $option_key ) ) {
+                    continue;
+                }
+
+                $sanitized_key = preg_replace( '/[^a-zA-Z0-9_\-]/', '', $option_key );
+
+                if ( '' === $sanitized_key ) {
+                    continue;
+                }
+
+                if ( is_bool( $option_value ) || is_numeric( $option_value ) ) {
+                    $tile_options[ $sanitized_key ] = $option_value;
+                } elseif ( is_string( $option_value ) ) {
+                    $tile_options[ $sanitized_key ] = sanitize_text_field( $option_value );
+                }
+            }
+        }
+
+        wp_localize_script(
+            'igs-tour-map',
+            'igsTourMapConfig',
+            [
+                'tileUrl'         => $tile_url,
+                'tileAttribution' => $tile_attribution,
+                'tileOptions'     => $tile_options,
+            ]
+        );
     }
 
     /**

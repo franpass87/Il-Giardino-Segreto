@@ -5,10 +5,24 @@
             return;
         }
 
+        var config = window.igsTourMapConfig || {};
+        var tileUrl = typeof config.tileUrl === 'string' && config.tileUrl ? config.tileUrl : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var tileOptions = {};
+
+        if (config.tileOptions && typeof config.tileOptions === 'object') {
+            Object.keys(config.tileOptions).forEach(function (key) {
+                tileOptions[key] = config.tileOptions[key];
+            });
+        }
+
+        if (typeof config.tileAttribution === 'string' && config.tileAttribution) {
+            tileOptions.attribution = config.tileAttribution;
+        } else if (typeof tileOptions.attribution === 'undefined') {
+            tileOptions.attribution = '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors';
+        }
+
         var map = L.map(element, { scrollWheelZoom: false, tap: true });
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        L.tileLayer(tileUrl, tileOptions).addTo(map);
 
         var points = [];
 
