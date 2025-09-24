@@ -49,6 +49,8 @@ jQuery(function ($) {
         const variations = getVariations();
 
         optionsWrapper.empty();
+        selectedVariation = null;
+        unitPrice = 0;
 
         variations.forEach(function (variation, index) {
             const optionId = 'igs-variation-' + variation.id;
@@ -67,7 +69,7 @@ jQuery(function ($) {
 
             if (0 === index) {
                 input.prop('checked', true);
-                selectedVariation = variation.id;
+                selectedVariation = String(variation.id);
                 unitPrice = parseFloat(variation.price) || 0;
             }
 
@@ -89,7 +91,7 @@ jQuery(function ($) {
 
     function updateTotal() {
         const quantity = parseInt(quantityInput.val(), 10) || 1;
-        const total = Math.max(0, unitPrice) * quantity;
+        const total = Math.max(0, parseFloat(unitPrice) || 0) * quantity;
         totalEl.text(formatPrice(total));
     }
 
@@ -136,7 +138,7 @@ jQuery(function ($) {
     });
 
     optionsWrapper.on('change', 'input[name="variation_id"]', function () {
-        selectedVariation = $(this).val();
+        selectedVariation = String($(this).val());
         unitPrice = parseFloat($(this).data('price')) || 0;
         updateTotal();
     });
@@ -165,7 +167,7 @@ jQuery(function ($) {
 
         const variations = getVariations();
 
-        if (!selectedVariation && variations.length) {
+        if (variations.length && (null === selectedVariation || '' === selectedVariation)) {
             window.alert(settings.i18n.selectOption || '');
             return;
         }
@@ -176,7 +178,7 @@ jQuery(function ($) {
             action: 'igs_add_to_cart',
             nonce: settings.addToCartNonce,
             tour_id: settings.productId,
-            variation_id: selectedVariation,
+            variation_id: variations.length ? selectedVariation : '',
             quantity: quantityInput.val(),
         })
             .done(function (response) {
