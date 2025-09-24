@@ -18,6 +18,12 @@ Questo repository contiene il plugin WordPress **IGS Ecommerce Customizations**,
 2. Carica l’archivio dal pannello **Plugin → Aggiungi nuovo** di WordPress e attivalo.
 3. Dopo l’attivazione il plugin non richiede configurazioni aggiuntive: le funzionalità vengono applicate automaticamente ai prodotti tour.
 
+## Requisiti minimi
+
+- PHP **7.4**
+- WordPress **6.0**
+- WooCommerce **7.0**
+
 ## Disinstallazione
 
 - La rimozione del plugin da **Plugin → Plugin installati** elimina automaticamente le opzioni di configurazione (`gw_string_replacements_global`) e svuota i transient utilizzati dalla funzione di geocoding, così da non lasciare dati orfani nel database.

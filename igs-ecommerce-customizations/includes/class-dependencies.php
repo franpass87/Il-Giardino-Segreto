@@ -15,12 +15,23 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Handle dependency validation and related notices.
  */
 class Dependencies {
+    private const MIN_PHP_VERSION = '7.4';
+    private const MIN_WP_VERSION  = '6.0';
+    private const MIN_WC_VERSION  = '7.0';
+
     /**
      * Cache the validation result to avoid repeating the logic.
      *
      * @var bool|null
      */
     private static ?bool $validated = null;
+
+    /**
+     * Collected validation error messages.
+     *
+     * @var array<int,string>
+     */
+    private static array $errors = [];
 
     /**
      * Ensure all runtime requirements are satisfied.
@@ -30,7 +41,7 @@ class Dependencies {
             return self::$validated;
         }
 
-        if ( self::has_woocommerce() ) {
+        if ( self::validate_environment() ) {
             self::$validated = true;
 
             return true;
@@ -75,14 +86,108 @@ class Dependencies {
             return;
         }
 
-        echo '<div class="notice notice-error"><p>';
-        echo wp_kses_post(
-            sprintf(
-                /* translators: %s: WooCommerce */
-                __( 'IGS Ecommerce Customizations richiede %s per funzionare correttamente. Installa e attiva il plugin prima di utilizzarlo.', 'igs-ecommerce' ),
-                '<strong>WooCommerce</strong>'
-            )
-        );
-        echo '</p></div>';
+        if ( empty( self::$errors ) ) {
+            return;
+        }
+
+        echo '<div class="notice notice-error">';
+        echo '<p>' . esc_html__( 'IGS Ecommerce Customizations non può avviarsi perché alcuni requisiti non sono soddisfatti.', 'igs-ecommerce' ) . '</p>';
+        echo '<p>' . esc_html__( 'Per favore, risolvi i seguenti problemi e riprova ad attivare il plugin.', 'igs-ecommerce' ) . '</p>';
+        echo '<ul>';
+
+        foreach ( self::$errors as $message ) {
+            echo '<li>' . esc_html( $message ) . '</li>';
+        }
+
+        echo '</ul>';
+        echo '</div>';
+    }
+
+    /**
+     * Validate the runtime environment and collect errors if present.
+     */
+    private static function validate_environment(): bool {
+        self::$errors = [];
+
+        if ( version_compare( PHP_VERSION, self::MIN_PHP_VERSION, '<' ) ) {
+            self::$errors[] = sprintf(
+                /* translators: 1: Minimum PHP version, 2: Current PHP version */
+                __( 'IGS Ecommerce Customizations richiede PHP %1$s o superiore. Versione corrente: %2$s.', 'igs-ecommerce' ),
+                self::MIN_PHP_VERSION,
+                PHP_VERSION
+            );
+        }
+
+        $wp_version = self::get_wordpress_version();
+
+        if ( version_compare( $wp_version, self::MIN_WP_VERSION, '<' ) ) {
+            self::$errors[] = sprintf(
+                /* translators: 1: Minimum WordPress version, 2: Current WordPress version */
+                __( 'IGS Ecommerce Customizations richiede WordPress %1$s o superiore. Versione corrente: %2$s.', 'igs-ecommerce' ),
+                self::MIN_WP_VERSION,
+                $wp_version
+            );
+        }
+
+        if ( ! self::has_woocommerce() ) {
+            self::$errors[] = __( 'WooCommerce non è installato o attivo.', 'igs-ecommerce' );
+        } else {
+            $woocommerce_version = self::get_woocommerce_version();
+
+            if ( null === $woocommerce_version ) {
+                self::$errors[] = __( 'Impossibile determinare la versione di WooCommerce installata.', 'igs-ecommerce' );
+            } elseif ( version_compare( $woocommerce_version, self::MIN_WC_VERSION, '<' ) ) {
+                self::$errors[] = sprintf(
+                    /* translators: 1: Minimum WooCommerce version, 2: Current WooCommerce version */
+                    __( 'IGS Ecommerce Customizations richiede WooCommerce %1$s o superiore. Versione corrente: %2$s.', 'igs-ecommerce' ),
+                    self::MIN_WC_VERSION,
+                    $woocommerce_version
+                );
+            }
+        }
+
+        return empty( self::$errors );
+    }
+
+    /**
+     * Retrieve the current WordPress version string.
+     */
+    private static function get_wordpress_version(): string {
+        $version = get_bloginfo( 'version' );
+
+        if ( is_string( $version ) && '' !== $version ) {
+            return $version;
+        }
+
+        global $wp_version;
+
+        if ( isset( $wp_version ) && is_string( $wp_version ) ) {
+            return $wp_version;
+        }
+
+        return '0';
+    }
+
+    /**
+     * Retrieve the active WooCommerce version if available.
+     */
+    private static function get_woocommerce_version(): ?string {
+        if ( defined( 'WC_VERSION' ) ) {
+            return WC_VERSION;
+        }
+
+        if ( defined( 'WOOCOMMERCE_VERSION' ) ) {
+            return WOOCOMMERCE_VERSION;
+        }
+
+        if ( class_exists( '\\WooCommerce', false ) ) {
+            $instance = \WooCommerce::instance();
+
+            if ( $instance && isset( $instance->version ) && is_string( $instance->version ) ) {
+                return $instance->version;
+            }
+        }
+
+        return null;
     }
 }
