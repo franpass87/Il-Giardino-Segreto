@@ -49,6 +49,9 @@ class Booking_Modal {
         $variations = self::get_pricing_options( $product );
         $currency   = get_woocommerce_currency_symbol();
 
+        $decimals = function_exists( 'wc_get_price_decimals' ) ? wc_get_price_decimals() : 2;
+        $locale   = function_exists( 'determine_locale' ) ? determine_locale() : get_locale();
+
         wp_localize_script(
             'igs-booking-modal',
             'igsBookingModal',
@@ -59,8 +62,9 @@ class Booking_Modal {
                 'checkoutUrl'     => wc_get_checkout_url(),
                 'productId'       => $product ? $product->get_id() : 0,
                 'currency'        => $currency,
+                'decimals'        => $decimals,
                 'variations'      => $variations,
-                'locale'          => get_locale(),
+                'locale'          => $locale,
                 'i18n'            => [
                     'open'           => __( 'Scopri e Prenota', 'igs-ecommerce' ),
                     'close'          => __( 'Chiudi finestra', 'igs-ecommerce' ),
@@ -158,7 +162,7 @@ class Booking_Modal {
         echo '</div>';
         echo '</fieldset>';
 
-        echo '<div class="igs-booking-total" id="igs-booking-total">' . wp_kses_post( wc_price( 0, [ 'decimals' => 2 ] ) ) . '</div>';
+        echo '<div class="igs-booking-total" id="igs-booking-total">' . wp_kses_post( wc_price( 0 ) ) . '</div>';
         echo '</form>';
 
         echo '<div class="igs-booking-modal__footer">';
@@ -211,9 +215,9 @@ class Booking_Modal {
                     continue;
                 }
 
-                $price_value = (float) $variation->get_price();
+                $display_price = (float) wc_get_price_to_display( $variation );
 
-                if ( $price_value <= 0 ) {
+                if ( $display_price <= 0 ) {
                     continue;
                 }
 
@@ -223,20 +227,36 @@ class Booking_Modal {
                     $label = $variation->get_name();
                 }
 
+                $attributes = [];
+
+                foreach ( $variation->get_attributes() as $key => $value ) {
+                    $sanitized_key = sanitize_key( $key );
+
+                    if ( '' === $sanitized_key ) {
+                        continue;
+                    }
+
+                    $attributes[ wc_variation_attribute_name( $sanitized_key ) ] = is_scalar( $value ) ? wc_clean( (string) $value ) : '';
+                }
+
                 $options[] = [
                     'id'    => $variation->get_id(),
                     'label' => $label,
-                    'price' => $price_value,
+                    'price' => $display_price,
+                    'price_text' => wp_strip_all_tags( wc_price( $display_price ) ),
+                    'attributes' => $attributes,
                 ];
             }
         } elseif ( $product instanceof WC_Product_Simple ) {
-            $price_value = (float) $product->get_price();
+            $display_price = (float) wc_get_price_to_display( $product );
 
-            if ( $price_value > 0 ) {
+            if ( $display_price > 0 ) {
                 $options[] = [
                     'id'    => 0,
                     'label' => __( 'Opzione unica', 'igs-ecommerce' ),
-                    'price' => $price_value,
+                    'price' => $display_price,
+                    'price_text' => wp_strip_all_tags( wc_price( $display_price ) ),
+                    'attributes' => [],
                 ];
             }
         }

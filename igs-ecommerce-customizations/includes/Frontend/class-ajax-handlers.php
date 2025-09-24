@@ -40,6 +40,23 @@ class Ajax_Handlers {
         $product_id   = isset( $_POST['tour_id'] ) ? absint( wp_unslash( $_POST['tour_id'] ) ) : 0;
         $quantity     = isset( $_POST['quantity'] ) ? max( 1, absint( wp_unslash( $_POST['quantity'] ) ) ) : 1;
         $variation_id = isset( $_POST['variation_id'] ) ? absint( wp_unslash( $_POST['variation_id'] ) ) : 0;
+        $variation_atts = [];
+
+        if ( isset( $_POST['variation'] ) && is_array( $_POST['variation'] ) ) {
+            foreach ( wp_unslash( $_POST['variation'] ) as $key => $value ) {
+                $sanitized_key = wc_variation_attribute_name( sanitize_key( (string) $key ) );
+
+                if ( '' === $sanitized_key ) {
+                    continue;
+                }
+
+                if ( is_array( $value ) ) {
+                    $value = reset( $value );
+                }
+
+                $variation_atts[ $sanitized_key ] = is_scalar( $value ) ? wc_clean( (string) $value ) : '';
+            }
+        }
 
         if ( ! $product_id ) {
             wp_send_json_error( [ 'message' => __( 'Prodotto non valido.', 'igs-ecommerce' ) ], 400 );
@@ -72,7 +89,24 @@ class Ajax_Handlers {
                 wp_send_json_error( [ 'message' => __( 'La combinazione selezionata non è disponibile.', 'igs-ecommerce' ) ], 400 );
             }
 
-            $added = WC()->cart->add_to_cart( $product_id, $quantity, $variation_id );
+            $expected_attributes = wc_get_product_variation_attributes( $variation_id );
+
+            if ( ! empty( $expected_attributes ) ) {
+                // Ensure we only send allowed keys and fill any missing values from the variation definition.
+                $variation_atts = array_intersect_key( $variation_atts, $expected_attributes );
+
+                foreach ( $expected_attributes as $attribute_key => $attribute_value ) {
+                    if ( '' === $attribute_value ) {
+                        continue;
+                    }
+
+                    if ( ! isset( $variation_atts[ $attribute_key ] ) || '' === $variation_atts[ $attribute_key ] ) {
+                        $variation_atts[ $attribute_key ] = $attribute_value;
+                    }
+                }
+            }
+
+            $added = WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation_atts );
         } else {
             if ( ! $product->is_in_stock() ) {
                 wp_send_json_error( [ 'message' => __( 'Il tour non è attualmente disponibile.', 'igs-ecommerce' ) ], 400 );

@@ -161,10 +161,10 @@ class Product_Display {
             return '<span class="igs-tour-price--placeholder">' . esc_html__( 'info in arrivo', 'igs-ecommerce' ) . '</span>';
         }
 
-        $raw_price = $product->get_price();
+        $display_price = wc_get_price_to_display( $product );
 
-        if ( is_numeric( $raw_price ) && $raw_price > 0 ) {
-            return wc_price( (float) $raw_price, [ 'decimals' => 0 ] );
+        if ( $display_price > 0 ) {
+            return wc_price( (float) $display_price, [ 'decimals' => 0 ] );
         }
 
         return '<span class="igs-tour-price--placeholder">' . esc_html__( 'info in arrivo', 'igs-ecommerce' ) . '</span>';
