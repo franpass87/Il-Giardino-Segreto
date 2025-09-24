@@ -423,35 +423,39 @@ msgstr "Impossibile aggiungere il prodotto al carrello."
 msgid "Per favore, compila correttamente nome ed email."
 msgstr "Per favore, compila correttamente nome ed email."
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:108
-msgid "Tour non specificato"
-msgstr "Tour non specificato"
-
 #: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:111
+msgid "Tour non disponibile."
+msgstr "Tour non disponibile."
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:114
 #, php-format
 msgid "Richiesta informazioni per il tour: %s"
 msgstr "Richiesta informazioni per il tour: %s"
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:113
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:116
 msgid "Nuova Richiesta Informazioni"
 msgstr "Nuova Richiesta Informazioni"
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:114
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:117
 #, php-format
 msgid "Hai ricevuto una nuova richiesta per il tour: %s"
 msgstr "Hai ricevuto una nuova richiesta per il tour: %s"
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:121
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:124
 msgid "Messaggio"
 msgstr "Messaggio"
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:134
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:137
 msgid "Email inviata con successo."
 msgstr "Email inviata con successo."
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:137
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:140
 msgid "Impossibile inviare l'email. Riprova più tardi."
 msgstr "Impossibile inviare l'email. Riprova più tardi."
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:164
+msgid "Hai raggiunto il limite di richieste. Riprova più tardi."
+msgstr "Hai raggiunto il limite di richieste. Riprova più tardi."
 
 #: igs-ecommerce-customizations/includes/Frontend/class-shortcodes.php:33
 msgid "Cultura"
