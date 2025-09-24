@@ -164,12 +164,16 @@ class Translations {
      * }
      */
     private static function load_translations( string $locale ): array {
-        $file      = Helpers\path( 'languages/igs-ecommerce-' . $locale . '.po' );
-        $cache_key = self::build_cache_key( $locale, $file );
+        [ 'file' => $file, 'slug' => $cache_locale ] = self::locate_translation_source( $locale );
+        $cache_key = self::build_cache_key( $cache_locale, $file );
 
         $cached = wp_cache_get( $cache_key, self::CACHE_GROUP );
 
         if ( false !== $cached ) {
+            if ( $cache_locale !== $locale ) {
+                self::mirror_cache_entry( $locale, $file, $cached );
+            }
+
             if ( is_array( $cached ) ) {
                 return $cached;
             }
@@ -181,6 +185,10 @@ class Translations {
 
         if ( false !== $transient ) {
             wp_cache_set( $cache_key, $transient, self::CACHE_GROUP );
+
+            if ( $cache_locale !== $locale ) {
+                self::mirror_cache_entry( $locale, $file, $transient );
+            }
 
             if ( is_array( $transient ) ) {
                 return $transient;
@@ -194,6 +202,10 @@ class Translations {
             wp_cache_set( $cache_key, $catalogue, self::CACHE_GROUP );
             set_transient( $cache_key, $catalogue, DAY_IN_SECONDS );
 
+            if ( $cache_locale !== $locale ) {
+                self::mirror_cache_entry( $locale, $file, $catalogue );
+            }
+
             return $catalogue;
         }
 
@@ -203,6 +215,10 @@ class Translations {
             $catalogue = self::empty_catalogue();
             wp_cache_set( $cache_key, $catalogue, self::CACHE_GROUP );
             set_transient( $cache_key, $catalogue, DAY_IN_SECONDS );
+
+            if ( $cache_locale !== $locale ) {
+                self::mirror_cache_entry( $locale, $file, $catalogue );
+            }
 
             return $catalogue;
         }
@@ -302,6 +318,10 @@ class Translations {
         wp_cache_set( $cache_key, $entries, self::CACHE_GROUP );
         set_transient( $cache_key, $entries, DAY_IN_SECONDS );
 
+        if ( $cache_locale !== $locale ) {
+            self::mirror_cache_entry( $locale, $file, $entries );
+        }
+
         return $entries;
     }
 
@@ -350,6 +370,112 @@ class Translations {
         }
 
         return 'igs_translation_' . md5( implode( '|', $parts ) );
+    }
+
+    /**
+     * Mirror a cached catalogue for locale aliases.
+     *
+     * @param array<string,mixed> $catalogue Parsed catalogue.
+     */
+    private static function mirror_cache_entry( string $locale, string $file, $catalogue ): void {
+        if ( ! is_array( $catalogue ) ) {
+            $catalogue = self::empty_catalogue();
+        }
+
+        $alias_key = self::build_cache_key( $locale, $file );
+
+        wp_cache_set( $alias_key, $catalogue, self::CACHE_GROUP );
+        set_transient( $alias_key, $catalogue, DAY_IN_SECONDS );
+    }
+
+    /**
+     * Locate the most appropriate translation file for the provided locale.
+     *
+     * @return array{file:string,slug:string}
+     */
+    private static function locate_translation_source( string $locale ): array {
+        $candidates = self::generate_locale_variants( $locale );
+
+        foreach ( $candidates as $candidate ) {
+            $file = Helpers\path( 'languages/igs-ecommerce-' . $candidate . '.po' );
+
+            if ( is_readable( $file ) ) {
+                return [
+                    'file' => $file,
+                    'slug' => $candidate,
+                ];
+            }
+        }
+
+        $fallback = $candidates[0] ?? 'en_US';
+
+        return [
+            'file' => Helpers\path( 'languages/igs-ecommerce-' . $fallback . '.po' ),
+            'slug' => $fallback,
+        ];
+    }
+
+    /**
+     * Generate locale variants to attempt when searching for translations.
+     *
+     * @return array<int,string>
+     */
+    private static function generate_locale_variants( string $locale ): array {
+        $variants   = [];
+        $normalized = self::normalize_locale_slug( $locale );
+
+        if ( '' !== $normalized ) {
+            $variants[] = $normalized;
+
+            $parts = explode( '_', $normalized );
+
+            while ( count( $parts ) > 1 ) {
+                array_pop( $parts );
+                $candidate = implode( '_', $parts );
+
+                if ( '' !== $candidate ) {
+                    $variants[] = $candidate;
+                }
+            }
+        }
+
+        $variants[] = 'en_US';
+        $variants[] = 'en';
+
+        return array_values( array_unique( $variants ) );
+    }
+
+    /**
+     * Normalise the provided locale string to a safe slug.
+     */
+    private static function normalize_locale_slug( string $locale ): string {
+        $locale = str_replace( '-', '_', trim( $locale ) );
+        $locale = preg_replace( '/[^A-Za-z0-9_]/', '', $locale );
+
+        if ( ! is_string( $locale ) || '' === $locale ) {
+            return '';
+        }
+
+        $parts       = explode( '_', $locale );
+        $normalised  = [];
+
+        foreach ( $parts as $index => $part ) {
+            if ( '' === $part ) {
+                continue;
+            }
+
+            if ( 0 === $index ) {
+                $normalised[] = strtolower( $part );
+            } else {
+                $normalised[] = strtoupper( $part );
+            }
+        }
+
+        if ( empty( $normalised ) ) {
+            return '';
+        }
+
+        return implode( '_', $normalised );
     }
 
     /**
