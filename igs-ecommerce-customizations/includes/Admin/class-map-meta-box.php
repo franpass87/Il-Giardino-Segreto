@@ -166,8 +166,8 @@ class Map_Meta_Box {
         if ( isset( $_POST['mappa_tappe'] ) && is_array( $_POST['mappa_tappe'] ) ) {
             foreach ( wp_unslash( $_POST['mappa_tappe'] ) as $stop ) {
                 $name = isset( $stop['nome'] ) ? sanitize_text_field( $stop['nome'] ) : '';
-                $lat  = isset( $stop['lat'] ) ? sanitize_text_field( $stop['lat'] ) : '';
-                $lon  = isset( $stop['lon'] ) ? sanitize_text_field( $stop['lon'] ) : '';
+                $lat  = isset( $stop['lat'] ) ? Helpers\normalize_latitude( $stop['lat'] ) : null;
+                $lon  = isset( $stop['lon'] ) ? Helpers\normalize_longitude( $stop['lon'] ) : null;
                 $desc = isset( $stop['descrizione'] ) ? sanitize_textarea_field( $stop['descrizione'] ) : '';
 
                 if ( '' === $name ) {
@@ -176,8 +176,8 @@ class Map_Meta_Box {
 
                 $stops[] = [
                     'nome'        => $name,
-                    'lat'         => $lat,
-                    'lon'         => $lon,
+                    'lat'         => $lat ?? '',
+                    'lon'         => $lon ?? '',
                     'descrizione' => $desc,
                 ];
             }
@@ -261,10 +261,27 @@ class Map_Meta_Box {
             wp_send_json_error( [ 'message' => __( 'Località non trovata.', 'igs-ecommerce' ) ], 404 );
         }
 
+        $first = $data[0];
+
+        if ( ! is_array( $first ) ) {
+            delete_transient( 'igs_geocode_rate_limit' );
+            wp_send_json_error( [ 'message' => __( 'Località non trovata.', 'igs-ecommerce' ) ], 404 );
+        }
+
+        $lat = Helpers\normalize_latitude( $first['lat'] ?? '' );
+        $lon = Helpers\normalize_longitude( $first['lon'] ?? '' );
+
+        if ( null === $lat || null === $lon ) {
+            delete_transient( 'igs_geocode_rate_limit' );
+            wp_send_json_error( [ 'message' => __( 'Coordinate non valide restituite dal servizio.', 'igs-ecommerce' ) ], 502 );
+        }
+
+        $label = isset( $first['display_name'] ) ? sanitize_text_field( wp_strip_all_tags( (string) $first['display_name'] ) ) : '';
+
         $result = [
-            'lat'   => $data[0]['lat'],
-            'lon'   => $data[0]['lon'],
-            'label' => $data[0]['display_name'] ?? '',
+            'lat'   => $lat,
+            'lon'   => $lon,
+            'label' => $label,
         ];
 
         set_transient( $cache_key, $result, DAY_IN_SECONDS );
