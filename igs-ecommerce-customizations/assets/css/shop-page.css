@@ -1,0 +1,9 @@
+.woocommerce .woocommerce-products-header h1.page-title,
+.woocommerce-page h1.page-title {
+    text-align: center;
+    margin-top: 35px;
+}
+
+.woocommerce nav.woocommerce-breadcrumb {
+    display: none !important;
+}

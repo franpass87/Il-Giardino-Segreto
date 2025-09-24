@@ -1,0 +1,22 @@
+.igs-portfolio-date {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.igs-portfolio-date--single {
+    display: block;
+    margin-top: 6px;
+}
+
+.igs-portfolio-partner {
+    display: inline-block;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.igs-portfolio-partner img {
+    max-width: 120px;
+    height: auto;
+}

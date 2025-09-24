@@ -1,0 +1,25 @@
+.woocommerce ul.products li.product {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.woocommerce ul.products li.product a {
+    display: block;
+    border-radius: 10px;
+}
+
+.igs-loop-meta__dates,
+.igs-loop-meta__duration,
+.igs-loop-meta__country {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 0.25em;
+}
+
+.igs-loop-card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    text-indent: -9999px;
+}
