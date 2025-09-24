@@ -56,6 +56,58 @@ class Dependencies {
     }
 
     /**
+     * Validate dependencies during activation and stop the process when requirements are not met.
+     */
+    public static function on_activation(): void {
+        self::$validated = null;
+        self::$errors    = [];
+
+        if ( self::validate_environment() ) {
+            self::$validated = true;
+
+            return;
+        }
+
+        self::$validated = false;
+
+        if ( ! function_exists( 'deactivate_plugins' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        $plugin       = plugin_basename( IGS_ECOMMERCE_FILE );
+        $network_wide = false;
+
+        if ( is_multisite() ) {
+            $network_param = filter_input( INPUT_GET, 'networkwide', FILTER_VALIDATE_BOOLEAN );
+
+            if ( null !== $network_param ) {
+                $network_wide = (bool) $network_param;
+            } elseif ( function_exists( 'is_network_admin' ) ) {
+                $network_wide = is_network_admin();
+            }
+        }
+
+        deactivate_plugins( $plugin, false, $network_wide );
+
+        $message  = '<p>' . esc_html__( 'IGS Ecommerce Customizations non può essere attivato perché alcuni requisiti non sono soddisfatti.', 'igs-ecommerce' ) . '</p>';
+        $message .= '<p>' . esc_html__( 'Correggi i problemi riportati di seguito e riprova ad attivare il plugin.', 'igs-ecommerce' ) . '</p>';
+        $message .= self::build_errors_list_markup();
+
+        if ( defined( 'WP_CLI' ) && WP_CLI && class_exists( '\\WP_CLI' ) ) {
+            \WP_CLI::error( wp_strip_all_tags( $message ) );
+        }
+
+        wp_die(
+            wp_kses_post( $message ),
+            esc_html__( 'Attivazione plugin fallita', 'igs-ecommerce' ),
+            [
+                'response'  => 500,
+                'back_link' => true,
+            ]
+        );
+    }
+
+    /**
      * Determine whether WooCommerce is available.
      */
     private static function has_woocommerce(): bool {
@@ -93,13 +145,7 @@ class Dependencies {
         echo '<div class="notice notice-error">';
         echo '<p>' . esc_html__( 'IGS Ecommerce Customizations non può avviarsi perché alcuni requisiti non sono soddisfatti.', 'igs-ecommerce' ) . '</p>';
         echo '<p>' . esc_html__( 'Per favore, risolvi i seguenti problemi e riprova ad attivare il plugin.', 'igs-ecommerce' ) . '</p>';
-        echo '<ul>';
-
-        foreach ( self::$errors as $message ) {
-            echo '<li>' . esc_html( $message ) . '</li>';
-        }
-
-        echo '</ul>';
+        echo self::build_errors_list_markup();
         echo '</div>';
     }
 
@@ -189,5 +235,22 @@ class Dependencies {
         }
 
         return null;
+    }
+
+    /**
+     * Generate an HTML list for the collected validation errors.
+     */
+    private static function build_errors_list_markup(): string {
+        if ( empty( self::$errors ) ) {
+            return '';
+        }
+
+        $items = '';
+
+        foreach ( self::$errors as $message ) {
+            $items .= '<li>' . esc_html( $message ) . '</li>';
+        }
+
+        return '<ul>' . $items . '</ul>';
     }
 }
