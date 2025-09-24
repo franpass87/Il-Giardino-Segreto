@@ -29,7 +29,7 @@ class Global_Strings {
         add_action( 'admin_menu', [ __CLASS__, 'add_menu_page' ] );
         add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
         add_filter( 'gettext', [ __CLASS__, 'filter_strings' ], 20, 3 );
-        add_filter( 'ngettext', [ __CLASS__, 'filter_strings' ], 20, 3 );
+        add_filter( 'ngettext', [ __CLASS__, 'filter_plural_strings' ], 20, 5 );
     }
 
     /**
@@ -123,6 +123,20 @@ class Global_Strings {
      * Apply replacements to translated strings.
      */
     public static function filter_strings( string $translated, string $text, string $domain ): string {
+        return self::replace_with_rules( $translated );
+    }
+
+    /**
+     * Apply replacements to pluralised strings.
+     */
+    public static function filter_plural_strings( string $translation, string $single, string $plural, int $number, string $domain ): string {
+        return self::replace_with_rules( $translation );
+    }
+
+    /**
+     * Replace the provided string using cached rules if available.
+     */
+    private static function replace_with_rules( string $value ): string {
         if ( null === self::$rules_cache ) {
             self::$rules_cache = [];
             $raw_rules         = get_option( 'gw_string_replacements_global', '' );
@@ -140,10 +154,10 @@ class Global_Strings {
             }
         }
 
-        if ( isset( self::$rules_cache[ $translated ] ) ) {
-            return self::$rules_cache[ $translated ];
+        if ( isset( self::$rules_cache[ $value ] ) ) {
+            return self::$rules_cache[ $value ];
         }
 
-        return $translated;
+        return $value;
     }
 }
