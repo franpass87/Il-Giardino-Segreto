@@ -13,6 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+const TOUR_PRODUCT_CACHE_GROUP = 'igs_tour_product_flags';
+const TOUR_PRODUCT_CACHE_TTL   = 3600;
+const TOUR_META_KEYS           = [ '_date_ranges', '_paese_tour' ];
+
 /**
  * Retrieve the absolute path for a file relative to the plugin root.
  */
@@ -43,8 +47,33 @@ function is_tour_product( $product = null ): bool {
         return false;
     }
 
+    global $igs_ecommerce_tour_cache;
+
+    if ( ! is_array( $igs_ecommerce_tour_cache ) ) {
+        $igs_ecommerce_tour_cache = [];
+    }
+
     $product_id = $product->get_id();
-    $is_tour    = false;
+
+    if ( $product_id > 0 && array_key_exists( $product_id, $igs_ecommerce_tour_cache ) ) {
+        $is_tour = (bool) $igs_ecommerce_tour_cache[ $product_id ];
+
+        return (bool) apply_filters( 'igs_is_tour_product', $is_tour, $product );
+    }
+
+    if ( $product_id > 0 ) {
+        $found  = false;
+        $cached = wp_cache_get( $product_id, TOUR_PRODUCT_CACHE_GROUP, false, $found );
+
+        if ( $found ) {
+            $is_tour = (bool) $cached;
+            $igs_ecommerce_tour_cache[ $product_id ] = $is_tour;
+
+            return (bool) apply_filters( 'igs_is_tour_product', $is_tour, $product );
+        }
+    }
+
+    $is_tour = false;
 
     if ( taxonomy_exists( 'product_cat' ) ) {
         $tour_terms = [ 'tour', 'tours', 'garden-tour', 'viaggi', 'travel' ];
@@ -61,6 +90,11 @@ function is_tour_product( $product = null ): bool {
         $date_ranges = get_post_meta( $product_id, '_date_ranges', true );
         $country     = get_post_meta( $product_id, '_paese_tour', true );
         $is_tour     = ( is_array( $date_ranges ) && ! empty( $date_ranges ) ) || ! empty( $country );
+    }
+
+    if ( $product_id > 0 ) {
+        $igs_ecommerce_tour_cache[ $product_id ] = $is_tour;
+        wp_cache_set( $product_id, $is_tour, TOUR_PRODUCT_CACHE_GROUP, TOUR_PRODUCT_CACHE_TTL );
     }
 
     /**
@@ -182,4 +216,99 @@ function normalize_coordinate_value( $value, float $min, float $max ): ?string {
     $formatted = sprintf( '%.6F', $float );
 
     return rtrim( rtrim( $formatted, '0' ), '.' );
+}
+
+/**
+ * Remove cached tour classification for a product.
+ */
+function clear_tour_product_cache( int $product_id ): void {
+    if ( $product_id <= 0 ) {
+        return;
+    }
+
+    global $igs_ecommerce_tour_cache;
+
+    if ( is_array( $igs_ecommerce_tour_cache ) && array_key_exists( $product_id, $igs_ecommerce_tour_cache ) ) {
+        unset( $igs_ecommerce_tour_cache[ $product_id ] );
+    }
+
+    wp_cache_delete( $product_id, TOUR_PRODUCT_CACHE_GROUP );
+}
+
+/**
+ * Register hooks that keep the tour cache in sync with product changes.
+ */
+function register_tour_product_cache_invalidation(): void {
+    add_action( 'clean_post_cache', __NAMESPACE__ . '\\handle_clean_post_cache', 10, 2 );
+    add_action( 'set_object_terms', __NAMESPACE__ . '\\handle_term_assignment', 10, 6 );
+    add_action( 'added_post_meta', __NAMESPACE__ . '\\handle_tour_meta_update', 10, 4 );
+    add_action( 'updated_post_meta', __NAMESPACE__ . '\\handle_tour_meta_update', 10, 4 );
+    add_action( 'deleted_post_meta', __NAMESPACE__ . '\\handle_tour_meta_delete', 10, 4 );
+}
+
+/**
+ * Invalidate cache when a product post cache is cleared.
+ *
+ * @internal
+ */
+function handle_clean_post_cache( int $post_id, $post ): void {
+    if ( 'product' !== get_post_type( $post_id ) ) {
+        return;
+    }
+
+    clear_tour_product_cache( $post_id );
+}
+
+/**
+ * Invalidate cache when product categories change.
+ *
+ * @internal
+ */
+function handle_term_assignment( int $object_id, $terms, $tt_ids, string $taxonomy, $append, $old_tt_ids ): void {
+    if ( 'product_cat' !== $taxonomy ) {
+        return;
+    }
+
+    clear_tour_product_cache( $object_id );
+}
+
+/**
+ * Check whether a meta key affects tour detection.
+ */
+function is_tour_meta_key( string $meta_key ): bool {
+    return in_array( $meta_key, TOUR_META_KEYS, true );
+}
+
+/**
+ * Invalidate cache when tour-related metadata changes.
+ *
+ * @internal
+ */
+function handle_tour_meta_update( int $meta_id, int $object_id, string $meta_key, $meta_value ): void {
+    if ( ! is_tour_meta_key( $meta_key ) ) {
+        return;
+    }
+
+    if ( 'product' !== get_post_type( $object_id ) ) {
+        return;
+    }
+
+    clear_tour_product_cache( $object_id );
+}
+
+/**
+ * Invalidate cache when tour-related metadata is deleted.
+ *
+ * @internal
+ */
+function handle_tour_meta_delete( $meta_ids, int $object_id, string $meta_key, $meta_value ): void {
+    if ( ! is_tour_meta_key( $meta_key ) ) {
+        return;
+    }
+
+    if ( 'product' !== get_post_type( $object_id ) ) {
+        return;
+    }
+
+    clear_tour_product_cache( $object_id );
 }
