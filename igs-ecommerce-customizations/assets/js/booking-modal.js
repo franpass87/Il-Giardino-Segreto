@@ -12,14 +12,41 @@ jQuery(function ($) {
     const html = $('html');
 
     let selectedVariation = null;
+    let selectedAttributes = {};
     let unitPrice = 0;
+
+    function normaliseAttributes(attributes) {
+        if (!attributes || typeof attributes !== 'object') {
+            return {};
+        }
+
+        const result = {};
+
+        Object.keys(attributes).forEach(function (key) {
+            if (typeof key !== 'string') {
+                return;
+            }
+
+            const value = attributes[key];
+
+            if (value === null || typeof value === 'undefined') {
+                return;
+            }
+
+            result[key] = String(value);
+        });
+
+        return result;
+    }
 
     function formatPrice(value) {
         const locale = settings.locale || 'it-IT';
+        const decimals = typeof settings.decimals === 'number' ? settings.decimals : 2;
         const formatter = new Intl.NumberFormat(locale, {
             style: 'currency',
             currency: settings.currency || 'EUR',
-            minimumFractionDigits: 2,
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals,
         });
 
         return formatter.format(value);
@@ -50,6 +77,7 @@ jQuery(function ($) {
 
         optionsWrapper.empty();
         selectedVariation = null;
+        selectedAttributes = {};
         unitPrice = 0;
 
         variations.forEach(function (variation, index) {
@@ -59,6 +87,8 @@ jQuery(function ($) {
                 for: optionId,
             });
 
+            const attributes = normaliseAttributes(variation.attributes);
+
             const input = $('<input />', {
                 type: 'radio',
                 id: optionId,
@@ -67,9 +97,12 @@ jQuery(function ($) {
                 'data-price': variation.price,
             });
 
+            input.data('attributes', attributes);
+
             if (0 === index) {
                 input.prop('checked', true);
                 selectedVariation = String(variation.id);
+                selectedAttributes = attributes;
                 unitPrice = parseFloat(variation.price) || 0;
             }
 
@@ -79,7 +112,9 @@ jQuery(function ($) {
 
             const price = $('<span />', {
                 class: 'igs-booking-option__price',
-                text: formatPrice(parseFloat(variation.price) || 0),
+                text: typeof variation.price_text === 'string' && variation.price_text.length
+                    ? variation.price_text
+                    : formatPrice(parseFloat(variation.price) || 0),
             });
 
             wrapper.append(input, label, price);
@@ -140,6 +175,7 @@ jQuery(function ($) {
     optionsWrapper.on('change', 'input[name="variation_id"]', function () {
         selectedVariation = String($(this).val());
         unitPrice = parseFloat($(this).data('price')) || 0;
+        selectedAttributes = normaliseAttributes($(this).data('attributes'));
         updateTotal();
     });
 
@@ -180,6 +216,7 @@ jQuery(function ($) {
             tour_id: settings.productId,
             variation_id: variations.length ? selectedVariation : '',
             quantity: quantityInput.val(),
+            variation: selectedAttributes,
         })
             .done(function (response) {
                 if (response.success) {
