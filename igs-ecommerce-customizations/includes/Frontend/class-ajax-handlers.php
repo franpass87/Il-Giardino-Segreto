@@ -7,6 +7,7 @@
 
 namespace IGS\Ecommerce\Frontend;
 
+use IGS\Ecommerce\Helpers;
 use WC_Product;
 use WC_Product_Variation;
 
@@ -104,8 +105,15 @@ class Ajax_Handlers {
             wp_send_json_error( [ 'message' => __( 'Per favore, compila correttamente nome ed email.', 'igs-ecommerce' ) ], 400 );
         }
 
-        $product    = wc_get_product( $tour_id );
-        $tour_title = $product ? $product->get_title() : __( 'Tour non specificato', 'igs-ecommerce' );
+        $product = wc_get_product( $tour_id );
+
+        if ( ! $product instanceof WC_Product || ! Helpers\is_tour_product( $product ) ) {
+            wp_send_json_error( [ 'message' => __( 'Tour non disponibile.', 'igs-ecommerce' ) ], 404 );
+        }
+
+        self::enforce_info_rate_limit();
+
+        $tour_title = $product->get_title();
         $admin_mail = get_option( 'admin_email' );
 
         $subject = sprintf( __( 'Richiesta informazioni per il tour: %s', 'igs-ecommerce' ), $tour_title );
@@ -122,18 +130,120 @@ class Ajax_Handlers {
             $body .= '<p>' . nl2br( esc_html( $comment ) ) . '</p>';
         }
 
-        $headers = [
-            'Content-Type: text/html; charset=UTF-8',
-            'From: ' . get_bloginfo( 'name' ) . ' <' . $admin_mail . '>',
-            'Reply-To: ' . $name . ' <' . $email . '>',
-        ];
+        $recipients = self::determine_info_recipients( $admin_mail, $tour_id, $name, $email, $comment );
 
-        $sent = wp_mail( $admin_mail, $subject, '<html><body>' . $body . '</body></html>', $headers );
+        if ( empty( $recipients ) ) {
+            wp_send_json_error( [ 'message' => __( "Impossibile inviare l'email. Riprova più tardi.", 'igs-ecommerce' ) ], 500 );
+        }
+
+        $headers   = [ 'Content-Type: text/html; charset=UTF-8' ];
+        $from_name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+        $from_mail = sanitize_email( $admin_mail );
+
+        if ( $from_mail && is_email( $from_mail ) ) {
+            $headers[] = 'From: ' . $from_name . ' <' . $from_mail . '>';
+        }
+
+        if ( is_email( $email ) ) {
+            $headers[] = 'Reply-To: ' . $name . ' <' . $email . '>';
+        }
+
+        $sent = wp_mail( $recipients, $subject, '<html><body>' . $body . '</body></html>', $headers );
 
         if ( $sent ) {
             wp_send_json_success( [ 'message' => __( 'Email inviata con successo.', 'igs-ecommerce' ) ] );
         }
 
         wp_send_json_error( [ 'message' => __( "Impossibile inviare l'email. Riprova più tardi.", 'igs-ecommerce' ) ], 500 );
+    }
+
+    /**
+     * Enforce a configurable rate limit for information requests.
+     */
+    private static function enforce_info_rate_limit(): void {
+        $defaults = [
+            'window'       => defined( 'MINUTE_IN_SECONDS' ) ? 10 * MINUTE_IN_SECONDS : 600,
+            'max_requests' => 5,
+        ];
+        $settings = apply_filters( 'igs_tour_info_rate_limit', $defaults );
+
+        $window       = isset( $settings['window'] ) ? max( 1, (int) $settings['window'] ) : $defaults['window'];
+        $max_requests = isset( $settings['max_requests'] ) ? (int) $settings['max_requests'] : $defaults['max_requests'];
+
+        if ( $max_requests <= 0 ) {
+            return;
+        }
+
+        $key = self::resolve_rate_limit_key();
+
+        if ( null === $key ) {
+            return;
+        }
+
+        $transient_key = 'igs_info_rl_' . md5( $key );
+        $attempts      = (int) get_transient( $transient_key );
+
+        if ( $attempts >= $max_requests ) {
+            wp_send_json_error( [ 'message' => __( 'Hai raggiunto il limite di richieste. Riprova più tardi.', 'igs-ecommerce' ) ], 429 );
+        }
+
+        set_transient( $transient_key, $attempts + 1, $window );
+    }
+
+    /**
+     * Build the rate limit key using either the current user or the client IP.
+     */
+    private static function resolve_rate_limit_key(): ?string {
+        if ( is_user_logged_in() ) {
+            return 'user_' . get_current_user_id();
+        }
+
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+
+        if ( '' === $ip ) {
+            return null;
+        }
+
+        $ip = filter_var( wp_unslash( $ip ), FILTER_VALIDATE_IP );
+
+        if ( false === $ip ) {
+            return null;
+        }
+
+        return 'ip_' . $ip;
+    }
+
+    /**
+     * Determine the recipient list for the tour info email.
+     *
+     * @param string $default Default admin email.
+     * @param int    $tour_id Tour identifier.
+     * @param string $name    Requester name.
+     * @param string $email   Requester email.
+     * @param string $comment Optional message.
+     *
+     * @return array<int,string>
+     */
+    private static function determine_info_recipients( string $default, int $tour_id, string $name, string $email, string $comment ): array {
+        $recipient = apply_filters( 'igs_tour_info_recipient', $default, $tour_id, $name, $email, $comment );
+        $candidate = [];
+
+        foreach ( (array) $recipient as $item ) {
+            $sanitized = sanitize_email( $item );
+
+            if ( $sanitized && is_email( $sanitized ) ) {
+                $candidate[] = $sanitized;
+            }
+        }
+
+        if ( empty( $candidate ) ) {
+            $fallback = sanitize_email( $default );
+
+            if ( $fallback && is_email( $fallback ) ) {
+                $candidate[] = $fallback;
+            }
+        }
+
+        return array_values( array_unique( $candidate ) );
     }
 }

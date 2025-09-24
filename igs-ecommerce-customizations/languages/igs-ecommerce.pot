@@ -420,34 +420,38 @@ msgstr ""
 msgid "Per favore, compila correttamente nome ed email."
 msgstr ""
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:108
-msgid "Tour non specificato"
-msgstr ""
-
 #: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:111
-#, php-format
-msgid "Richiesta informazioni per il tour: %s"
-msgstr ""
-
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:113
-msgid "Nuova Richiesta Informazioni"
+msgid "Tour non disponibile."
 msgstr ""
 
 #: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:114
 #, php-format
+msgid "Richiesta informazioni per il tour: %s"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:116
+msgid "Nuova Richiesta Informazioni"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:117
+#, php-format
 msgid "Hai ricevuto una nuova richiesta per il tour: %s"
 msgstr ""
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:121
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:124
 msgid "Messaggio"
 msgstr ""
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:134
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:137
 msgid "Email inviata con successo."
 msgstr ""
 
-#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:137
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:140
 msgid "Impossibile inviare l'email. Riprova più tardi."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:164
+msgid "Hai raggiunto il limite di richieste. Riprova più tardi."
 msgstr ""
 
 #: igs-ecommerce-customizations/includes/Frontend/class-shortcodes.php:33
