@@ -1,0 +1,116 @@
+.igs-tour-hero {
+    position: relative;
+    left: 50%;
+    right: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    height: 60vh;
+    background-image: var(--igs-tour-hero-image);
+    background-size: cover;
+    background-position: center center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.igs-tour-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.igs-tour-hero__content {
+    position: relative;
+    text-align: center;
+    color: #fff;
+    padding: 0 20px;
+}
+
+.igs-tour-hero__title {
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    margin-bottom: 0.35em;
+}
+
+.igs-tour-hero__country,
+.igs-tour-hero__dates {
+    font-size: 1.2rem;
+    margin-bottom: 0.2em;
+}
+
+.igs-tour-layout {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    gap: 40px;
+    grid-template-columns: 2fr 1fr;
+}
+
+.igs-tour-layout__content {
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+.igs-tour-layout__sidebar {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+}
+
+.igs-tour-layout__price {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.igs-tour-price--placeholder {
+    color: #6d6d6d;
+}
+
+.igs-tour-layout__installment {
+    font-size: 0.95rem;
+    color: #666;
+    text-align: center;
+}
+
+.igs-tour-layout__duration {
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.igs-tour-layout__services {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 6px;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.igs-tour-layout__country-band {
+    margin: 0 -24px -24px;
+    padding: 14px 24px;
+    background: #eef2f2;
+    border-radius: 0 0 12px 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .igs-tour-hero {
+        height: 45vh;
+    }
+
+    .igs-tour-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}

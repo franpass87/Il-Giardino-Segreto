@@ -1,0 +1,36 @@
+.igs-garden-feature {
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.igs-garden-feature__label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-family: 'the-seasons-regular', serif;
+}
+
+.igs-garden-feature__value {
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.igs-garden-bars {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    min-height: 32px;
+    align-items: center;
+}
+
+.igs-garden-bars__item {
+    width: 14px;
+    height: 8px;
+    border-radius: 4px;
+    background: #ccc;
+}
+
+.igs-garden-bars__item--active {
+    background: #00665e;
+}

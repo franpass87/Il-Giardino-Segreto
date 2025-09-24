@@ -1,0 +1,48 @@
+.igs-map-stop {
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 12px;
+    background: #fff;
+}
+
+.igs-map-stop__header {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.igs-map-stop__header label {
+    flex: 1 1 auto;
+}
+
+.igs-map-stop__actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.igs-map-stop__coords {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.igs-map-stop__coords label {
+    flex: 1 1 50%;
+}
+
+.igs-map-stop textarea {
+    margin-top: 6px;
+}
+
+.igs-map-stop .button-link-delete {
+    color: #b32d2e;
+}
+
+.igs-map-stop .button-link-delete:hover {
+    color: #8a1f21;
+}

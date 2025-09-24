@@ -1,0 +1,22 @@
+.igs-tour-product-options .igs-date-ranges {
+    margin: 0 0 12px;
+}
+
+.igs-tour-product-options .igs-date-range-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.igs-tour-product-options .igs-date-field {
+    width: 140px;
+}
+
+.igs-tour-product-options .igs-remove-date-range {
+    color: #b32d2e;
+}
+
+.igs-tour-product-options .igs-remove-date-range:hover {
+    color: #8a1f21;
+}
