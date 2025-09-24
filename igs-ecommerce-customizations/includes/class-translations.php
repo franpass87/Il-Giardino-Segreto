@@ -354,6 +354,10 @@ class Translations {
     private static function build_cache_key( string $locale, string $file ): string {
         $parts = [ $locale ];
 
+        if ( defined( 'IGS_ECOMMERCE_VERSION' ) ) {
+            $parts[] = IGS_ECOMMERCE_VERSION;
+        }
+
         if ( is_readable( $file ) ) {
             $mtime = @filemtime( $file );
             $size  = @filesize( $file );
