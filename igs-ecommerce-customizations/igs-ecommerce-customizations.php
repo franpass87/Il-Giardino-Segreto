@@ -21,6 +21,8 @@ define( 'IGS_ECOMMERCE_URL', plugin_dir_url( __FILE__ ) );
 
 require_once IGS_ECOMMERCE_PATH . 'includes/class-dependencies.php';
 
+register_activation_hook( IGS_ECOMMERCE_FILE, [ 'IGS\\Ecommerce\\Dependencies', 'on_activation' ] );
+
 if ( ! IGS\Ecommerce\Dependencies::bootstrap() ) {
     return;
 }
