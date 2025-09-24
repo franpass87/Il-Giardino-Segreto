@@ -29,7 +29,9 @@ class Global_Strings {
         add_action( 'admin_menu', [ __CLASS__, 'add_menu_page' ] );
         add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
         add_filter( 'gettext', [ __CLASS__, 'filter_strings' ], 20, 3 );
+        add_filter( 'gettext_with_context', [ __CLASS__, 'filter_strings' ], 20, 4 );
         add_filter( 'ngettext', [ __CLASS__, 'filter_plural_strings' ], 20, 5 );
+        add_filter( 'ngettext_with_context', [ __CLASS__, 'filter_plural_strings' ], 20, 6 );
     }
 
     /**
@@ -120,16 +122,16 @@ class Global_Strings {
     }
 
     /**
-     * Apply replacements to translated strings.
+     * Apply replacements to translated strings, including contextual variants.
      */
-    public static function filter_strings( string $translated, string $text, string $domain ): string {
+    public static function filter_strings( string $translated, string $text, string $domain, string $context = '' ): string {
         return self::replace_with_rules( $translated );
     }
 
     /**
-     * Apply replacements to pluralised strings.
+     * Apply replacements to pluralised strings, including contextual variants.
      */
-    public static function filter_plural_strings( string $translation, string $single, string $plural, int $number, string $domain ): string {
+    public static function filter_plural_strings( string $translation, string $single, string $plural, int $number, string $domain, string $context = '' ): string {
         return self::replace_with_rules( $translation );
     }
 
