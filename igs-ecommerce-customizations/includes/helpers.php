@@ -136,3 +136,50 @@ function calculate_duration( string $start, string $end ): ?int {
 
     return $start_date->diff( $end_date )->days + 1;
 }
+
+/**
+ * Normalise a latitude string into a safe decimal representation.
+ */
+function normalize_latitude( $value ): ?string {
+    return normalize_coordinate_value( $value, -90.0, 90.0 );
+}
+
+/**
+ * Normalise a longitude string into a safe decimal representation.
+ */
+function normalize_longitude( $value ): ?string {
+    return normalize_coordinate_value( $value, -180.0, 180.0 );
+}
+
+/**
+ * Internal helper that validates and formats coordinate values.
+ *
+ * @param mixed $value Raw coordinate value.
+ */
+function normalize_coordinate_value( $value, float $min, float $max ): ?string {
+    if ( ! is_scalar( $value ) ) {
+        return null;
+    }
+
+    $normalized = trim( (string) $value );
+
+    if ( '' === $normalized ) {
+        return null;
+    }
+
+    $normalized = str_replace( ',', '.', $normalized );
+
+    if ( ! is_numeric( $normalized ) ) {
+        return null;
+    }
+
+    $float = (float) $normalized;
+
+    if ( $float < $min || $float > $max ) {
+        return null;
+    }
+
+    $formatted = sprintf( '%.6F', $float );
+
+    return rtrim( rtrim( $formatted, '0' ), '.' );
+}

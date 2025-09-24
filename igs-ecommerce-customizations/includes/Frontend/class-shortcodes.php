@@ -134,11 +134,11 @@ class Shortcodes {
 
         foreach ( $stops as $stop ) {
             $name = isset( $stop['nome'] ) ? sanitize_text_field( $stop['nome'] ) : '';
-            $lat  = isset( $stop['lat'] ) ? sanitize_text_field( $stop['lat'] ) : '';
-            $lon  = isset( $stop['lon'] ) ? sanitize_text_field( $stop['lon'] ) : '';
+            $lat  = isset( $stop['lat'] ) ? Helpers\normalize_latitude( $stop['lat'] ) : null;
+            $lon  = isset( $stop['lon'] ) ? Helpers\normalize_longitude( $stop['lon'] ) : null;
             $desc = isset( $stop['descrizione'] ) ? sanitize_textarea_field( $stop['descrizione'] ) : '';
 
-            if ( '' === $lat || '' === $lon ) {
+            if ( null === $lat || null === $lon ) {
                 continue;
             }
 
@@ -154,8 +154,9 @@ class Shortcodes {
             return '';
         }
 
-        $map_id  = 'igs-tour-map-' . $post_id . '-' . wp_rand( 1000, 9999 );
-        $country = get_post_meta( $post_id, '_mappa_paese', true );
+        $map_id      = 'igs-tour-map-' . $post_id . '-' . wp_rand( 1000, 9999 );
+        $country_raw = get_post_meta( $post_id, '_mappa_paese', true );
+        $country     = is_string( $country_raw ) ? sanitize_text_field( $country_raw ) : '';
 
         wp_enqueue_style( 'igs-leaflet' );
         wp_enqueue_style( 'igs-tour-map' );
@@ -175,8 +176,14 @@ class Shortcodes {
             'country' => $country,
         ];
 
+        $encoded = wp_json_encode( $data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+
+        if ( false === $encoded ) {
+            return '';
+        }
+
         return '<div class="igs-tour-map-wrapper">'
-            . '<div id="' . esc_attr( $map_id ) . '" class="igs-tour-map" data-map="' . esc_attr( wp_json_encode( $data ) ) . '"></div>'
+            . '<div id="' . esc_attr( $map_id ) . '" class="igs-tour-map" data-map="' . esc_attr( $encoded ) . '"></div>'
             . '<noscript>' . esc_html__( 'Abilita JavaScript per visualizzare la mappa del tour.', 'igs-ecommerce' ) . '</noscript>'
             . '</div>';
     }
