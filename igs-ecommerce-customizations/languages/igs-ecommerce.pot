@@ -1,0 +1,488 @@
+# Translation template for IGS Ecommerce Customizations plugin.
+# Copyright (C) 2025 Il Giardino Segreto
+# This file is distributed under the same license as the plugin package.
+# Il Giardino Segreto <translations@example.com>
+
+msgid ""
+msgstr ""
+"Project-Id-Version: IGS Ecommerce Customizations 1.2.0\n"
+"Report-Msgid-Bugs-To: https://ilgiardinosegreto.it/\n"
+"POT-Creation-Date: 2025-09-24 11:10+0000\n"
+"PO-Revision-Date: 2025-09-24 11:10+0000\n"
+"Last-Translator: Il Giardino Segreto <translations@example.com>\n"
+"Language-Team: Il Giardino Segreto <translations@example.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: xgettext & polib\n"
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:53
+msgid "Aggiungi"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:54
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:96
+msgid "Rimuovi"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:55
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:94
+msgid "Partenza"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:56
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:95
+msgid "Ritorno"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:57
+msgid "Eliminare questo intervallo di date?"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:83
+#: igs-ecommerce-customizations/includes/Admin/class-portfolio-meta.php:32
+msgid "Date del tour"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:84
+msgid "Aggiungi intervallo"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:105
+msgid "Paese del tour"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:106
+msgid "Es. Italia"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:108
+msgid "Inserisci il paese del tour"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:36
+msgid "Mappa del viaggio"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:67
+msgid "Eliminare questa tappa?"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:68
+msgid "Località non trovata. Riprova con un nome più specifico."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:69
+msgid "Inserisci il nome della località prima di cercare."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:70
+msgid "Impossibile recuperare le coordinate al momento. Riprovare più tardi."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:71
+msgid "Ricerca in corso…"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:72
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:126
+msgid "Trova coordinate"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:90
+msgid "Paese"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:101
+msgid "Aggiungi tappa"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:102
+#, php-format
+msgid "Shortcode: %s"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:124
+msgid "Nome località"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:127
+msgid "Rimuovi tappa"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:132
+msgid "Latitudine"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:133
+msgid "Longitudine"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:136
+msgid "Descrizione"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:198
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:36
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:95
+msgid "Verifica di sicurezza fallita."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:202
+msgid "Permessi insufficienti."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:208
+msgid "Specifica una località."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:221
+msgid "Attendi qualche istante prima di effettuare una nuova ricerca."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:248
+msgid "Servizio non disponibile."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:255
+msgid "Risposta non valida dal servizio."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-map-meta-box.php:261
+msgid "Località non trovata."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-admin-columns.php:41
+msgid "Date tour"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-garden-meta-box.php:32
+msgid "Dettagli Garden Tour"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-garden-meta-box.php:45
+#: igs-ecommerce-customizations/includes/Frontend/class-shortcodes.php:68
+msgid "Pianta"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-garden-meta-box.php:46
+msgid "Cultura (1–5)"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-garden-meta-box.php:47
+msgid "Passeggiata (1–5)"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-garden-meta-box.php:48
+msgid "Comfort (1–5)"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-garden-meta-box.php:49
+msgid "Esclusività (1–5)"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:40
+msgid "Gestione testo globale"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:41
+msgid "Gestione testo"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:62
+msgid "Regole di sostituzione testo"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:69
+msgid "Regole"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:92
+msgid ""
+"Inserisci una regola per riga. Separa il testo originale dal nuovo testo con"
+" il carattere \"|\"."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:93
+msgid "Esempio:"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:117
+msgid "Salva modifiche"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-portfolio-meta.php:49
+msgid "Data partenza"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-portfolio-meta.php:52
+msgid "Data arrivo"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:65
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:115
+msgid "Scopri e Prenota"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:66
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:122
+msgid "Chiudi finestra"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:67
+msgid "Per favore, seleziona un'opzione prima di procedere."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:68
+msgid "Attendi..."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:69
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:159
+msgid "Procedi al Checkout"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:70
+msgid "Si è verificato un errore. Riprova."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:71
+msgid "Errore di comunicazione. Riprova."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:72
+msgid "Richiedi informazioni"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:73
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:160
+msgid "Richiedi Informazioni"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:74
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:186
+msgid "Torna alla Prenotazione"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:75
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:170
+msgid ""
+"Grazie! La tua richiesta è stata inviata. Ti risponderemo al più presto."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:76
+msgid "Errore. Assicurati di aver compilato tutti i campi."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:77
+msgid "Si è verificato un errore di comunicazione con il server."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:78
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:147
+msgid "Numero persone"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:79
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:151
+msgid "Aumenta quantità"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:80
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:149
+msgid "Diminuisci quantità"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:81
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:185
+msgid "Invia Richiesta"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:82
+msgid "Invio in corso..."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:83
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:174
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:116
+msgid "Nome"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:84
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:177
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:117
+msgid "Email"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:85
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:180
+msgid "La tua richiesta (opzionale)"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:86
+msgid "Per favore, compila nome ed email."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:142
+msgid "Scegli la tua opzione"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-booking-modal.php:232
+msgid "Opzione unica"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:100
+#: igs-ecommerce-customizations/includes/Frontend/class-loop-display.php:81
+msgid "Date non disponibili"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:114
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:137
+msgid "Paese non specificato"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:123
+msgid "Pagamento a rate disponibile"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:126
+#: igs-ecommerce-customizations/includes/Frontend/class-loop-display.php:76
+msgid "giorni"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:130
+msgid "Ingressi ai siti e giardini"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:131
+msgid "Pernottamento incluso"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:132
+msgid "Trasferimenti in loco"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:133
+msgid "Pasti da itinerario"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:134
+msgid "Guida locale"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:157
+#, php-format
+msgid "da %s"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:160
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:169
+msgid "info in arrivo"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:44
+msgid "Prodotto non valido."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:48
+msgid "WooCommerce non è attivo."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:54
+msgid "Prodotto non disponibile."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:67
+msgid "Variazione non valida."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:71
+msgid "La combinazione selezionata non è disponibile."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:77
+msgid "Il tour non è attualmente disponibile."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:84
+msgid "Prodotto aggiunto al carrello."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:87
+msgid "Impossibile aggiungere il prodotto al carrello."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:104
+msgid "Per favore, compila correttamente nome ed email."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:108
+msgid "Tour non specificato"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:111
+#, php-format
+msgid "Richiesta informazioni per il tour: %s"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:113
+msgid "Nuova Richiesta Informazioni"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:114
+#, php-format
+msgid "Hai ricevuto una nuova richiesta per il tour: %s"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:121
+msgid "Messaggio"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:134
+msgid "Email inviata con successo."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-ajax-handlers.php:137
+msgid "Impossibile inviare l'email. Riprova più tardi."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-shortcodes.php:33
+msgid "Cultura"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-shortcodes.php:34
+msgid "Passeggiata"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-shortcodes.php:35
+msgid "Comfort"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-shortcodes.php:36
+msgid "Esclusività"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-shortcodes.php:157
+msgid "La mappa non è disponibile al momento. Riprova più tardi."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-shortcodes.php:168
+msgid "Abilita JavaScript per visualizzare la mappa del tour."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-portfolio-display.php:70
+msgid "Partner"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-loop-display.php:116
+msgid "Vai al tour"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-shop-page.php:45
+msgid "Destinazioni fuori dai sentieri battuti"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Frontend/class-shop-page.php:73
+msgid "Ritorna al sito web"
+msgstr ""

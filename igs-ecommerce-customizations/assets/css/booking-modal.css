@@ -1,0 +1,246 @@
+:root {
+    --igs-brand-color: #0e5763;
+    --igs-brand-color-hover: #0a434c;
+    --igs-background-light: #f8f9fa;
+    --igs-text-color: #333;
+    --igs-border-color: #dee2e6;
+}
+
+html.igs-modal-open {
+    overflow: hidden;
+}
+
+.igs-booking-cta {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+}
+
+.igs-booking-cta__button {
+    width: 100%;
+    padding: 16px;
+    background: var(--igs-brand-color);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.igs-booking-cta__button:hover {
+    background: var(--igs-brand-color-hover);
+}
+
+.igs-booking-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
+    padding: 20px;
+}
+
+.igs-booking-modal.is-visible {
+    display: flex;
+}
+
+.igs-booking-modal__dialog {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 720px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.igs-booking-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--igs-border-color);
+}
+
+.igs-booking-modal__header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.igs-booking-modal__close {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.igs-booking-modal__views {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.igs-booking-view {
+    padding: 20px 24px;
+}
+
+.igs-booking-view[hidden] {
+    display: none !important;
+}
+
+.igs-booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.igs-booking-form__group legend {
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.igs-booking-form__options {
+    display: grid;
+    gap: 12px;
+}
+
+.igs-booking-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--igs-border-color);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.igs-booking-option input[type="radio"] {
+    accent-color: var(--igs-brand-color);
+}
+
+.igs-booking-option__price {
+    margin-left: auto;
+    font-weight: 600;
+}
+
+.igs-booking-quantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.igs-booking-quantity__button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--igs-brand-color);
+    color: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.igs-booking-quantity__button:hover {
+    background: var(--igs-brand-color-hover);
+}
+
+#igs-booking-quantity {
+    width: 60px;
+    text-align: center;
+    border: 1px solid var(--igs-border-color);
+    border-radius: 6px;
+    height: 40px;
+}
+
+.igs-booking-total {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--igs-brand-color);
+    background: var(--igs-background-light);
+    padding: 14px;
+    border-radius: 8px;
+}
+
+.igs-booking-modal__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.igs-booking-primary,
+.igs-booking-secondary {
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.igs-booking-primary {
+    background: var(--igs-brand-color);
+    color: #fff;
+}
+
+.igs-booking-primary:hover {
+    background: var(--igs-brand-color-hover);
+}
+
+.igs-booking-secondary {
+    background: none;
+    border: 1px solid var(--igs-border-color);
+    color: var(--igs-text-color);
+}
+
+.igs-booking-secondary:hover {
+    background: var(--igs-border-color);
+}
+
+.igs-booking-form input[type="text"],
+.igs-booking-form input[type="email"],
+.igs-booking-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--igs-border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.igs-booking-info-message {
+    background: #e0f8e9;
+    color: #1e6a3c;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .igs-booking-cta {
+        padding: 0;
+    }
+
+    .igs-booking-cta__button {
+        border-radius: 0;
+    }
+
+    .igs-booking-modal__dialog {
+        border-radius: 0;
+        max-height: 100vh;
+    }
+
+    .igs-booking-modal__header,
+    .igs-booking-view {
+        padding-inline: 16px;
+    }
+}
