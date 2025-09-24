@@ -25,6 +25,13 @@ if ( isset( $wpdb->options ) ) {
 
     $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like_base ) );
     $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like_timeout ) );
+
+    // Remove stored booking/info rate limit windows.
+    $info_like_base    = $wpdb->esc_like( '_transient_igs_info_rl_' ) . '%';
+    $info_like_timeout = $wpdb->esc_like( '_transient_timeout_igs_info_rl_' ) . '%';
+
+    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $info_like_base ) );
+    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $info_like_timeout ) );
 }
 
 if ( is_multisite() && isset( $wpdb->sitemeta ) ) {
@@ -33,4 +40,11 @@ if ( is_multisite() && isset( $wpdb->sitemeta ) ) {
 
     $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->sitemeta} WHERE meta_key LIKE %s", $like_base ) );
     $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->sitemeta} WHERE meta_key LIKE %s", $like_timeout ) );
+
+    // Remove stored booking/info rate limit windows on the network table too.
+    $info_like_base    = $wpdb->esc_like( '_site_transient_igs_info_rl_' ) . '%';
+    $info_like_timeout = $wpdb->esc_like( '_site_transient_timeout_igs_info_rl_' ) . '%';
+
+    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->sitemeta} WHERE meta_key LIKE %s", $info_like_base ) );
+    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->sitemeta} WHERE meta_key LIKE %s", $info_like_timeout ) );
 }
