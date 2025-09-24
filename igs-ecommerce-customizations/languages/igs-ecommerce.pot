@@ -5,10 +5,10 @@
 
 msgid ""
 msgstr ""
-"Project-Id-Version: IGS Ecommerce Customizations 1.2.0\n"
+"Project-Id-Version: IGS Ecommerce Customizations 1.3.0\n"
 "Report-Msgid-Bugs-To: https://ilgiardinosegreto.it/\n"
-"POT-Creation-Date: 2025-09-24 11:10+0000\n"
-"PO-Revision-Date: 2025-09-24 11:10+0000\n"
+"POT-Creation-Date: 2025-10-09 12:00+0000\n"
+"PO-Revision-Date: 2025-10-09 12:00+0000\n"
 "Last-Translator: Il Giardino Segreto <translations@example.com>\n"
 "Language-Team: Il Giardino Segreto <translations@example.com>\n"
 "Language: \n"
@@ -492,4 +492,35 @@ msgstr ""
 
 #: igs-ecommerce-customizations/includes/Frontend/class-shop-page.php:73
 msgid "Ritorna al sito web"
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-dependencies.php:93
+msgid "IGS Ecommerce Customizations non può avviarsi perché alcuni requisiti non sono soddisfatti."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-dependencies.php:95
+msgid "Per favore, risolvi i seguenti problemi e riprova ad attivare il plugin."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-dependencies.php:115
+#, php-format
+msgid "IGS Ecommerce Customizations richiede PHP %1$s o superiore. Versione corrente: %2$s."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-dependencies.php:126
+#, php-format
+msgid "IGS Ecommerce Customizations richiede WordPress %1$s o superiore. Versione corrente: %2$s."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-dependencies.php:133
+msgid "WooCommerce non è installato o attivo."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-dependencies.php:138
+msgid "Impossibile determinare la versione di WooCommerce installata."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-dependencies.php:142
+#, php-format
+msgid "IGS Ecommerce Customizations richiede WooCommerce %1$s o superiore. Versione corrente: %2$s."
 msgstr ""
