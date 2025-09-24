@@ -18,6 +18,10 @@ Questo repository contiene il plugin WordPress **IGS Ecommerce Customizations**,
 2. Carica l’archivio dal pannello **Plugin → Aggiungi nuovo** di WordPress e attivalo.
 3. Dopo l’attivazione il plugin non richiede configurazioni aggiuntive: le funzionalità vengono applicate automaticamente ai prodotti tour.
 
+## Disinstallazione
+
+- La rimozione del plugin da **Plugin → Plugin installati** elimina automaticamente le opzioni di configurazione (`gw_string_replacements_global`) e svuota i transient utilizzati dalla funzione di geocoding, così da non lasciare dati orfani nel database.
+
 ## Dipendenze incluse
 
 - **Leaflet 1.9.4** (JS/CSS) viene caricato da `https://unpkg.com/` tramite gli hook `igs_leaflet_style_url` e `igs_leaflet_script_url`, così da evitare asset binari nel repository mantenendo la possibilità di sostituire l’origine.
