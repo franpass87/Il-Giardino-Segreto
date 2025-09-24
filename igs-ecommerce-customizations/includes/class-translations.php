@@ -17,6 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Provide a PO-based fallback for environments that cannot ship MO binaries.
  */
 class Translations {
+    private const CACHE_GROUP = 'igs_ecommerce_translations';
+
     /**
      * Cached translations grouped by locale.
      *
@@ -162,40 +164,50 @@ class Translations {
      * }
      */
     private static function load_translations( string $locale ): array {
-        $file = Helpers\path( 'languages/igs-ecommerce-' . $locale . '.po' );
+        $file      = Helpers\path( 'languages/igs-ecommerce-' . $locale . '.po' );
+        $cache_key = self::build_cache_key( $locale, $file );
+
+        $cached = wp_cache_get( $cache_key, self::CACHE_GROUP );
+
+        if ( false !== $cached ) {
+            if ( is_array( $cached ) ) {
+                return $cached;
+            }
+
+            return self::empty_catalogue();
+        }
+
+        $transient = get_transient( $cache_key );
+
+        if ( false !== $transient ) {
+            wp_cache_set( $cache_key, $transient, self::CACHE_GROUP );
+
+            if ( is_array( $transient ) ) {
+                return $transient;
+            }
+
+            return self::empty_catalogue();
+        }
 
         if ( ! is_readable( $file ) ) {
-            return [
-                'default'    => [],
-                'contextual' => [],
-                'plural'     => [],
-                'contextual_plural' => [],
-                'nplurals'   => 2,
-                'plural_rule'=> 'n != 1',
-            ];
+            $catalogue = self::empty_catalogue();
+            wp_cache_set( $cache_key, $catalogue, self::CACHE_GROUP );
+            set_transient( $cache_key, $catalogue, DAY_IN_SECONDS );
+
+            return $catalogue;
         }
 
         $handle = fopen( $file, 'rb' );
 
         if ( ! $handle ) {
-            return [
-                'default'    => [],
-                'contextual' => [],
-                'plural'     => [],
-                'contextual_plural' => [],
-                'nplurals'   => 2,
-                'plural_rule'=> 'n != 1',
-            ];
+            $catalogue = self::empty_catalogue();
+            wp_cache_set( $cache_key, $catalogue, self::CACHE_GROUP );
+            set_transient( $cache_key, $catalogue, DAY_IN_SECONDS );
+
+            return $catalogue;
         }
 
-        $entries = [
-            'default'    => [],
-            'contextual' => [],
-            'plural'     => [],
-            'contextual_plural' => [],
-            'nplurals'   => 2,
-            'plural_rule'=> 'n != 1',
-        ];
+        $entries = self::empty_catalogue();
         $msgid         = null;
         $msgid_plural  = null;
         $msgstr        = '';
@@ -287,7 +299,57 @@ class Translations {
             }
         }
 
+        wp_cache_set( $cache_key, $entries, self::CACHE_GROUP );
+        set_transient( $cache_key, $entries, DAY_IN_SECONDS );
+
         return $entries;
+    }
+
+    /**
+     * Provide the default empty catalogue shape.
+     *
+     * @return array{
+     *     default: array<string,string>,
+     *     contextual: array<string,array<string,string>>,
+     *     plural: array<string,array<int,string>>,
+     *     contextual_plural: array<string,array<string,array<int,string>>>,
+     *     nplurals: int,
+     *     plural_rule: string,
+     * }
+     */
+    private static function empty_catalogue(): array {
+        return [
+            'default'          => [],
+            'contextual'       => [],
+            'plural'           => [],
+            'contextual_plural'=> [],
+            'nplurals'         => 2,
+            'plural_rule'      => 'n != 1',
+        ];
+    }
+
+    /**
+     * Build a cache key for the provided locale and file path.
+     */
+    private static function build_cache_key( string $locale, string $file ): string {
+        $parts = [ $locale ];
+
+        if ( is_readable( $file ) ) {
+            $mtime = @filemtime( $file );
+            $size  = @filesize( $file );
+
+            if ( false !== $mtime ) {
+                $parts[] = (string) $mtime;
+            }
+
+            if ( false !== $size ) {
+                $parts[] = (string) $size;
+            }
+        } else {
+            $parts[] = 'missing';
+        }
+
+        return 'igs_translation_' . md5( implode( '|', $parts ) );
     }
 
     /**
