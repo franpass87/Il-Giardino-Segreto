@@ -56,6 +56,7 @@ final class Plugin {
         require_once IGS_ECOMMERCE_PATH . 'includes/helpers.php';
 
         Translations::init();
+        Helpers\register_tour_product_cache_invalidation();
 
         // Admin modules.
         require_once IGS_ECOMMERCE_PATH . 'includes/Admin/class-product-meta.php';
