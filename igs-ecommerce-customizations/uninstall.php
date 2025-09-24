@@ -1,0 +1,36 @@
+<?php
+/**
+ * Plugin uninstall routine.
+ *
+ * @package IGS_Ecommerce_Customizations
+ */
+
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+    exit;
+}
+
+// Remove plugin specific options.
+delete_option( 'gw_string_replacements_global' );
+delete_site_option( 'gw_string_replacements_global' );
+
+// Clear transients used by the geocoding helper.
+delete_transient( 'igs_geocode_rate_limit' );
+delete_site_transient( 'igs_geocode_rate_limit' );
+
+global $wpdb;
+
+if ( isset( $wpdb->options ) ) {
+    $like_base    = $wpdb->esc_like( '_transient_igs_geocode_' ) . '%';
+    $like_timeout = $wpdb->esc_like( '_transient_timeout_igs_geocode_' ) . '%';
+
+    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like_base ) );
+    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $like_timeout ) );
+}
+
+if ( is_multisite() && isset( $wpdb->sitemeta ) ) {
+    $like_base    = $wpdb->esc_like( '_site_transient_igs_geocode_' ) . '%';
+    $like_timeout = $wpdb->esc_like( '_site_transient_timeout_igs_geocode_' ) . '%';
+
+    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->sitemeta} WHERE meta_key LIKE %s", $like_base ) );
+    $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->sitemeta} WHERE meta_key LIKE %s", $like_timeout ) );
+}
