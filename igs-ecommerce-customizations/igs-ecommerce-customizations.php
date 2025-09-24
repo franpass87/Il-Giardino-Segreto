@@ -19,6 +19,12 @@ define( 'IGS_ECOMMERCE_FILE', __FILE__ );
 define( 'IGS_ECOMMERCE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'IGS_ECOMMERCE_URL', plugin_dir_url( __FILE__ ) );
 
+require_once IGS_ECOMMERCE_PATH . 'includes/class-dependencies.php';
+
+if ( ! IGS\Ecommerce\Dependencies::bootstrap() ) {
+    return;
+}
+
 require_once IGS_ECOMMERCE_PATH . 'includes/class-igs-ecommerce-customizations.php';
 
 IGS\Ecommerce\Plugin::instance();
