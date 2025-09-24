@@ -16,6 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: xgettext & polib\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: igs-ecommerce-customizations/includes/Admin/class-product-meta.php:53
 msgid "Aggiungi"
@@ -349,10 +350,12 @@ msgstr "Paese non specificato"
 msgid "Pagamento a rate disponibile"
 msgstr "Pagamento a rate disponibile"
 
-#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:126
+#: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:127
 #: igs-ecommerce-customizations/includes/Frontend/class-loop-display.php:76
-msgid "giorni"
-msgstr "giorni"
+msgid "giorno"
+msgid_plural "giorni"
+msgstr[0] "giorno"
+msgstr[1] "giorni"
 
 #: igs-ecommerce-customizations/includes/Frontend/class-product-display.php:130
 msgid "Ingressi ai siti e giardini"

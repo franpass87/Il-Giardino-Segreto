@@ -73,7 +73,8 @@ class Loop_Display {
             }
 
             if ( $duration ) {
-                echo '<div class="igs-loop-meta__duration">' . esc_html( $duration ) . ' ' . esc_html__( 'giorni', 'igs-ecommerce' ) . '</div>';
+                $label = _n( 'giorno', 'giorni', (int) $duration, 'igs-ecommerce' );
+                echo '<div class="igs-loop-meta__duration">' . esc_html( $duration ) . ' ' . esc_html( $label ) . '</div>';
             }
         }
 

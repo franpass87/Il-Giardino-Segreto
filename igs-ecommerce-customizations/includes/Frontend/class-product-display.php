@@ -123,7 +123,8 @@ class Product_Display {
         echo '<div class="igs-tour-layout__installment">' . esc_html__( 'Pagamento a rate disponibile', 'igs-ecommerce' ) . '</div>';
 
         if ( $duration ) {
-            echo '<div class="igs-tour-layout__duration"><strong>' . esc_html( $duration ) . '</strong> ' . esc_html__( 'giorni', 'igs-ecommerce' ) . '</div>';
+            $label = _n( 'giorno', 'giorni', (int) $duration, 'igs-ecommerce' );
+            echo '<div class="igs-tour-layout__duration"><strong>' . esc_html( $duration ) . '</strong> ' . esc_html( $label ) . '</div>';
         }
 
         echo '<ul class="igs-tour-layout__services">';
