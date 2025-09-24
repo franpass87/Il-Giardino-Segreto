@@ -7,6 +7,8 @@
 
 namespace IGS\Ecommerce\Frontend;
 
+use IGS\Ecommerce\Helpers;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
