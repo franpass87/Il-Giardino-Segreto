@@ -140,7 +140,13 @@ class Booking_Modal {
 
         echo '<fieldset class="igs-booking-form__group">';
         echo '<legend>' . esc_html__( 'Scegli la tua opzione', 'igs-ecommerce' ) . '</legend>';
-        echo '<div class="igs-booking-form__options" id="igs-booking-options" data-options=\'' . wp_json_encode( $options ) . '\'></div>';
+        $options_json = wp_json_encode( $options, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+
+        if ( false === $options_json ) {
+            $options_json = '[]';
+        }
+
+        echo '<div class="igs-booking-form__options" id="igs-booking-options" data-options="' . esc_attr( $options_json ) . '"></div>';
         echo '</fieldset>';
 
         echo '<fieldset class="igs-booking-form__group igs-booking-form__group--quantity">';
@@ -152,7 +158,7 @@ class Booking_Modal {
         echo '</div>';
         echo '</fieldset>';
 
-        echo '<div class="igs-booking-total" id="igs-booking-total">' . esc_html( wc_price( 0, [ 'decimals' => 2 ] ) ) . '</div>';
+        echo '<div class="igs-booking-total" id="igs-booking-total">' . wp_kses_post( wc_price( 0, [ 'decimals' => 2 ] ) ) . '</div>';
         echo '</form>';
 
         echo '<div class="igs-booking-modal__footer">';
