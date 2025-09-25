@@ -398,24 +398,39 @@ class Translations {
      * @return array{file:string,slug:string}
      */
     private static function locate_translation_source( string $locale ): array {
-        $candidates = self::generate_locale_variants( $locale );
+        $candidates   = self::generate_locale_variants( $locale );
+        $directories  = self::get_translation_directories();
 
         foreach ( $candidates as $candidate ) {
-            $file = Helpers\path( 'languages/igs-ecommerce-' . $candidate . '.po' );
+            foreach ( $directories as $directory ) {
+                $file = $directory . 'igs-ecommerce-' . $candidate . '.po';
 
-            if ( is_readable( $file ) ) {
+                if ( is_readable( $file ) ) {
+                    return [
+                        'file' => $file,
+                        'slug' => $candidate,
+                    ];
+                }
+            }
+        }
+
+        foreach ( $directories as $directory ) {
+            $template = $directory . 'igs-ecommerce.pot';
+
+            if ( is_readable( $template ) ) {
                 return [
-                    'file' => $file,
-                    'slug' => $candidate,
+                    'file' => $template,
+                    'slug' => 'template',
                 ];
             }
         }
 
-        $fallback = $candidates[0] ?? 'en_US';
+        $fallback_directory = $directories[0] ?? trailingslashit( Helpers\path( 'languages' ) );
+        $fallback_locale    = $candidates[0] ?? 'en_US';
 
         return [
-            'file' => Helpers\path( 'languages/igs-ecommerce-' . $fallback . '.po' ),
-            'slug' => $fallback,
+            'file' => $fallback_directory . 'igs-ecommerce-' . $fallback_locale . '.po',
+            'slug' => $fallback_locale,
         ];
     }
 
@@ -480,6 +495,61 @@ class Translations {
         }
 
         return implode( '_', $normalised );
+    }
+
+    /**
+     * Determine directories that may contain translation sources.
+     *
+     * @return array<int,string>
+     */
+    private static function get_translation_directories(): array {
+        $directories = [];
+
+        $directories[] = trailingslashit( Helpers\path( 'languages' ) );
+
+        if ( defined( 'WP_LANG_DIR' ) ) {
+            $lang_dir = trailingslashit( WP_LANG_DIR );
+
+            $directories[] = $lang_dir;
+            $directories[] = $lang_dir . 'plugins/';
+        }
+
+        $directories = array_map( 'wp_normalize_path', $directories );
+        $directories = array_map( 'trailingslashit', $directories );
+        $directories = array_values( array_unique( array_filter( $directories ) ) );
+
+        /**
+         * Filter the directories scanned for translation catalogues.
+         *
+         * @param array<int,string> $directories Normalised absolute directories.
+         */
+        $directories = apply_filters( 'igs_translation_directories', $directories );
+
+        if ( ! is_array( $directories ) ) {
+            return [ trailingslashit( Helpers\path( 'languages' ) ) ];
+        }
+
+        $sanitized = [];
+
+        foreach ( $directories as $directory ) {
+            if ( ! is_string( $directory ) || '' === $directory ) {
+                continue;
+            }
+
+            $normalised = trailingslashit( wp_normalize_path( $directory ) );
+
+            if ( '' === $normalised ) {
+                continue;
+            }
+
+            $sanitized[] = $normalised;
+        }
+
+        if ( empty( $sanitized ) ) {
+            return [ trailingslashit( Helpers\path( 'languages' ) ) ];
+        }
+
+        return array_values( array_unique( $sanitized ) );
     }
 
     /**
