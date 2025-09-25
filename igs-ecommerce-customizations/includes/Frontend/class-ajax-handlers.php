@@ -150,6 +150,16 @@ class Ajax_Handlers {
         $tour_title = $product->get_title();
         $admin_mail = get_option( 'admin_email' );
 
+        if ( ! is_string( $admin_mail ) || '' === $admin_mail ) {
+            $blog_admin = get_bloginfo( 'admin_email', 'display' );
+
+            if ( is_string( $blog_admin ) && '' !== $blog_admin ) {
+                $admin_mail = $blog_admin;
+            } else {
+                $admin_mail = '';
+            }
+        }
+
         $subject = sprintf( __( 'Richiesta informazioni per il tour: %s', 'igs-ecommerce' ), $tour_title );
 
         $body  = '<h2>' . esc_html__( 'Nuova Richiesta Informazioni', 'igs-ecommerce' ) . '</h2>';
@@ -250,15 +260,15 @@ class Ajax_Handlers {
     /**
      * Determine the recipient list for the tour info email.
      *
-     * @param string $default Default admin email.
-     * @param int    $tour_id Tour identifier.
-     * @param string $name    Requester name.
-     * @param string $email   Requester email.
-     * @param string $comment Optional message.
+     * @param string|null $default Default admin email.
+     * @param int         $tour_id Tour identifier.
+     * @param string      $name    Requester name.
+     * @param string      $email   Requester email.
+     * @param string      $comment Optional message.
      *
      * @return array<int,string>
      */
-    private static function determine_info_recipients( string $default, int $tour_id, string $name, string $email, string $comment ): array {
+    private static function determine_info_recipients( ?string $default, int $tour_id, string $name, string $email, string $comment ): array {
         $recipient = apply_filters( 'igs_tour_info_recipient', $default, $tour_id, $name, $email, $comment );
         $candidate = [];
 
@@ -271,7 +281,7 @@ class Ajax_Handlers {
         }
 
         if ( empty( $candidate ) ) {
-            $fallback = sanitize_email( $default );
+            $fallback = sanitize_email( (string) $default );
 
             if ( $fallback && is_email( $fallback ) ) {
                 $candidate[] = $fallback;
