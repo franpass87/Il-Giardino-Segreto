@@ -524,3 +524,27 @@ msgstr ""
 #, php-format
 msgid "IGS Ecommerce Customizations richiede WooCommerce %1$s o superiore. Versione corrente: %2$s."
 msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:43
+#, php-format
+msgid "Cache dei tour ripulita per %d prodotti."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:46
+#, php-format
+msgid "Eliminati %d transient di geocoding."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:49
+#, php-format
+msgid "Eliminati %d transient di rate limiting."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:52
+#, php-format
+msgid "Ripuliti %d transient di traduzione."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:54
+msgid "Cache del plugin svuotate."
+msgstr ""

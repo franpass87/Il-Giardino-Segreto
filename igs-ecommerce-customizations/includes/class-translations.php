@@ -34,6 +34,20 @@ class Translations {
     private static array $cache = [];
 
     /**
+     * Clear the in-memory catalogue cache.
+     */
+    public static function flush_runtime_cache(): void {
+        self::$cache = [];
+    }
+
+    /**
+     * Retrieve the cache group used for object cache entries.
+     */
+    public static function get_cache_group(): string {
+        return self::CACHE_GROUP;
+    }
+
+    /**
      * Bootstrap the translation filters.
      */
     public static function init(): void {

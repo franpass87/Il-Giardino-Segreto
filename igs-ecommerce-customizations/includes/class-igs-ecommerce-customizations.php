@@ -89,5 +89,11 @@ final class Plugin {
         Frontend\Shortcodes::init();
         Frontend\Ajax_Handlers::init();
         Frontend\Portfolio_Display::init();
+
+        if ( defined( 'WP_CLI' ) && WP_CLI ) {
+            require_once IGS_ECOMMERCE_PATH . 'includes/class-cli-commands.php';
+
+            CLI_Commands::register();
+        }
     }
 }
