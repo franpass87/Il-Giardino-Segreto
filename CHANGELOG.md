@@ -2,6 +2,12 @@
 
 Tutte le modifiche rilevanti del plugin **IGS Ecommerce Customizations** sono documentate in questo file.
 
+## [1.3.2] - 2025-09-26
+- Esteso il sistema di sostituzioni globali con supporto per regole regex, validando pattern e flag consentiti.
+- Aggiunta cache dei risultati delle sostituzioni per migliorare le prestazioni in produzione.
+- Aggiornate le istruzioni dell'interfaccia di amministrazione per documentare la sintassi delle regex.
+- Incrementata la versione del plugin a 1.3.2.
+
 ## [1.3.1] - 2025-09-25
 - Aggiornata la documentazione ufficiale con panoramica completa delle funzionalità e delle procedure operative.
 - Impostati i dati autore su Francesco Passeri con relativi riferimenti di contatto.

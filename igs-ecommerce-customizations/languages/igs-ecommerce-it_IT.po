@@ -199,7 +199,7 @@ msgstr "Regole di sostituzione testo"
 msgid "Regole"
 msgstr "Regole"
 
-#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:92
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:105
 msgid ""
 "Inserisci una regola per riga. Separa il testo originale dal nuovo testo con"
 " il carattere \"|\"."
@@ -207,11 +207,15 @@ msgstr ""
 "Inserisci una regola per riga. Separa il testo originale dal nuovo testo con"
 " il carattere \"|\"."
 
-#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:93
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:106
+msgid "Per usare le espressioni regolari, prefissa la regola con \"regex:\" e racchiudi il pattern tra slash, ad esempio regex:/prodotti/i."
+msgstr "Per usare le espressioni regolari, prefissa la regola con \"regex:\" e racchiudi il pattern tra slash, ad esempio regex:/prodotti/i."
+
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:107
 msgid "Esempio:"
 msgstr "Esempio:"
 
-#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:117
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:132
 msgid "Salva modifiche"
 msgstr "Salva modifiche"
 

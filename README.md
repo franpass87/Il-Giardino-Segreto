@@ -6,7 +6,7 @@ ambiente di produzione.
 
 ## Metadati del plugin
 
-- **Versione:** 1.3.1
+- **Versione:** 1.3.2
 - **Autore:** Francesco Passeri
 - **Sito web:** [francescopasseri.com](https://francescopasseri.com/)
 - **Email di riferimento:** [info@francescopasseri.com](mailto:info@francescopasseri.com)
