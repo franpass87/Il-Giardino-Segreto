@@ -229,23 +229,9 @@ class Map_Meta_Box {
         // Set a short rate limiting transient (2 seconds).
         set_transient( $transient_key, time(), 2 );
 
-        $user_agent = sprintf( 'IGS-Ecommerce/%s (%s)', IGS_ECOMMERCE_VERSION, home_url() );
-
         $response = wp_remote_get(
             'https://nominatim.openstreetmap.org/search',
-            [
-                'timeout' => 10,
-                'headers' => [
-                    'User-Agent' => $user_agent,
-                    'Referer'    => home_url(),
-                    'Accept'     => 'application/json',
-                ],
-                'body'    => [
-                    'format' => 'json',
-                    'q'      => $query,
-                    'limit'  => 5,
-                ],
-            ]
+            self::build_geocode_request_args( $query )
         );
 
         if ( is_wp_error( $response ) ) {
@@ -315,5 +301,121 @@ class Map_Meta_Box {
         }
 
         return 'ip_' . $ip;
+    }
+
+    /**
+     * Build request arguments for the Nominatim geocoding API.
+     *
+     * @return array<string,mixed>
+     */
+    private static function build_geocode_request_args( string $query ): array {
+        $contact_email   = Helpers\get_admin_contact_email();
+        $accept_language = self::determine_accept_language();
+        $site_url        = esc_url_raw( home_url() );
+
+        $user_agent = sprintf( 'IGS-Ecommerce/%s', IGS_ECOMMERCE_VERSION );
+        $ua_suffix  = [];
+
+        if ( '' !== $site_url ) {
+            $ua_suffix[] = $site_url;
+        }
+
+        if ( $contact_email ) {
+            $ua_suffix[] = $contact_email;
+        }
+
+        if ( ! empty( $ua_suffix ) ) {
+            $user_agent .= ' (' . implode( '; ', $ua_suffix ) . ')';
+        }
+
+        $headers = [
+            'User-Agent' => $user_agent,
+            'Referer'    => $site_url,
+            'Accept'     => 'application/json',
+        ];
+
+        if ( $accept_language ) {
+            $headers['Accept-Language'] = $accept_language;
+        }
+
+        $body = [
+            'format' => 'json',
+            'q'      => $query,
+            'limit'  => 5,
+        ];
+
+        if ( $contact_email ) {
+            $body['email'] = $contact_email;
+        }
+
+        $args = [
+            'timeout' => 10,
+            'headers' => $headers,
+            'body'    => $body,
+        ];
+
+        /**
+         * Filter the HTTP request arguments sent to the geocoding provider.
+         *
+         * @param array<string,mixed> $args          Request arguments.
+         * @param string              $query         Original query string.
+         * @param string|null         $contact_email Contact email passed to the provider.
+         */
+        $args = apply_filters( 'igs_geocode_http_args', $args, $query, $contact_email );
+
+        if ( ! is_array( $args ) ) {
+            return [
+                'timeout' => 10,
+                'headers' => $headers,
+                'body'    => $body,
+            ];
+        }
+
+        return $args;
+    }
+
+    /**
+     * Determine the Accept-Language header value for the geocoding request.
+     */
+    private static function determine_accept_language(): ?string {
+        $locale = function_exists( 'determine_locale' ) ? determine_locale() : get_locale();
+
+        if ( ! is_string( $locale ) || '' === $locale ) {
+            return null;
+        }
+
+        $locale = str_replace( '-', '_', $locale );
+        $parts  = array_filter( explode( '_', $locale ) );
+
+        if ( empty( $parts ) ) {
+            return null;
+        }
+
+        $normalised = [];
+
+        foreach ( $parts as $index => $part ) {
+            $clean = preg_replace( '/[^A-Za-z0-9]/', '', $part );
+
+            if ( '' === $clean ) {
+                continue;
+            }
+
+            $normalised[] = 0 === $index ? strtolower( $clean ) : strtoupper( $clean );
+        }
+
+        if ( empty( $normalised ) ) {
+            return null;
+        }
+
+        $primary = implode( '-', $normalised );
+        $values  = [ $primary ];
+
+        if ( count( $normalised ) > 1 ) {
+            $values[] = strtolower( $normalised[0] );
+        }
+
+        $values[] = 'en';
+
+        return implode( ',', array_unique( $values ) );
     }
 }

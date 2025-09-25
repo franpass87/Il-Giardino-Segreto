@@ -147,18 +147,8 @@ class Ajax_Handlers {
 
         self::enforce_info_rate_limit();
 
-        $tour_title = $product->get_title();
-        $admin_mail = get_option( 'admin_email' );
-
-        if ( ! is_string( $admin_mail ) || '' === $admin_mail ) {
-            $blog_admin = get_bloginfo( 'admin_email', 'display' );
-
-            if ( is_string( $blog_admin ) && '' !== $blog_admin ) {
-                $admin_mail = $blog_admin;
-            } else {
-                $admin_mail = '';
-            }
-        }
+        $tour_title  = $product->get_title();
+        $admin_mail  = Helpers\get_admin_contact_email();
 
         $subject = sprintf( __( 'Richiesta informazioni per il tour: %s', 'igs-ecommerce' ), $tour_title );
 
@@ -182,7 +172,7 @@ class Ajax_Handlers {
 
         $headers   = [ 'Content-Type: text/html; charset=UTF-8' ];
         $from_name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
-        $from_mail = sanitize_email( $admin_mail );
+        $from_mail = $admin_mail ? sanitize_email( $admin_mail ) : '';
 
         if ( $from_mail && is_email( $from_mail ) ) {
             $headers[] = 'From: ' . $from_name . ' <' . $from_mail . '>';

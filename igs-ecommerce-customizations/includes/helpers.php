@@ -32,6 +32,45 @@ function url( string $relative ): string {
 }
 
 /**
+ * Retrieve a sanitized contact email address for the site administrator.
+ */
+function get_admin_contact_email(): ?string {
+    $candidates = [];
+
+    $option_email = get_option( 'admin_email' );
+
+    if ( is_string( $option_email ) && '' !== $option_email ) {
+        $candidates[] = $option_email;
+    }
+
+    $blog_email = get_bloginfo( 'admin_email', 'display' );
+
+    if ( is_string( $blog_email ) && '' !== $blog_email ) {
+        $candidates[] = $blog_email;
+    }
+
+    foreach ( $candidates as $candidate ) {
+        $sanitized = sanitize_email( $candidate );
+
+        if ( $sanitized && is_email( $sanitized ) ) {
+            /**
+             * Filter the contact email address used for external services.
+             *
+             * @param string|null $sanitized Email address, if available.
+             */
+            return apply_filters( 'igs_admin_contact_email', $sanitized );
+        }
+    }
+
+    /**
+     * Allow customization of the fallback value when no valid email is available.
+     *
+     * @param string|null $value Null by default when no email is found.
+     */
+    return apply_filters( 'igs_admin_contact_email', null );
+}
+
+/**
  * Determine whether the provided product should be handled as a tour.
  *
  * @param int|WC_Product|null $product Product instance or ID.
