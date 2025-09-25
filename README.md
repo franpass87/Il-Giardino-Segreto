@@ -52,4 +52,8 @@ Questo repository contiene il plugin WordPress **IGS Ecommerce Customizations**,
   - `igs_tour_map_tile_layer` per definire URL, attributi e opzioni del tile provider utilizzato dalla mappa Leaflet.
 - Se aggiungi o aggiorni stringhe localizzate esegui `xgettext` o un equivalente (`wp i18n make-pot`) per rigenerare `languages/igs-ecommerce.pot`, quindi aggiorna `languages/igs-ecommerce-it_IT.po`. Il plugin carica direttamente i file `.po`, ma puoi comunque compilare `.mo` se distribuisci il pacchetto tramite altri canali.
 
+## Utilità WP-CLI
+
+- Esegui `wp igs flush-caches` per svuotare le cache del plugin (tour, geocoding, rate limiting e traduzioni) dopo aver aggiornato i dati o in caso di ambienti con oggetti cache persistenti.
+
 Per contributi o segnalazioni apri una issue o una pull request descrivendo in modo chiaro le modifiche proposte.

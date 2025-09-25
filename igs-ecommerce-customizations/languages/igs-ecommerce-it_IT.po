@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: IGS Ecommerce Customizations 1.3.0\n"
 "Report-Msgid-Bugs-To: https://ilgiardinosegreto.it/\n"
 "POT-Creation-Date: 2025-10-09 12:00+0000\n"
-"PO-Revision-Date: 2025-10-09 12:00+0000\n"
+"PO-Revision-Date: 2025-10-10 12:00+0000\n"
 "Last-Translator: Il Giardino Segreto <translations@example.com>\n"
 "Language-Team: Il Giardino Segreto <translations@example.com>\n"
 "Language: it\n"
@@ -527,3 +527,27 @@ msgstr "Impossibile determinare la versione di WooCommerce installata."
 #, php-format
 msgid "IGS Ecommerce Customizations richiede WooCommerce %1$s o superiore. Versione corrente: %2$s."
 msgstr "IGS Ecommerce Customizations richiede WooCommerce %1$s o superiore. Versione corrente: %2$s."
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:43
+#, php-format
+msgid "Cache dei tour ripulita per %d prodotti."
+msgstr "Cache dei tour ripulita per %d prodotti."
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:46
+#, php-format
+msgid "Eliminati %d transient di geocoding."
+msgstr "Eliminati %d transient di geocoding."
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:49
+#, php-format
+msgid "Eliminati %d transient di rate limiting."
+msgstr "Eliminati %d transient di rate limiting."
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:52
+#, php-format
+msgid "Ripuliti %d transient di traduzione."
+msgstr "Ripuliti %d transient di traduzione."
+
+#: igs-ecommerce-customizations/includes/class-cli-commands.php:54
+msgid "Cache del plugin svuotate."
+msgstr "Cache del plugin svuotate."
