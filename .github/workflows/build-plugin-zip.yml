@@ -1,0 +1,47 @@
+name: Build WordPress plugin package
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Package plugin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Retrieve plugin metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          VERSION=$(php -r '$header = file_get_contents("igs-ecommerce-customizations/igs-ecommerce-customizations.php"); if (preg_match("/^\\s*\\*\\s*Version:\\s*(.+)$/mi", $header, $m)) { echo trim($m[1]); } else { fwrite(STDERR, "Unable to find plugin version\n"); exit(1); }')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare artifact directory
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          mkdir dist
+
+      - name: Build distribution zip
+        run: |
+          set -euo pipefail
+          ZIP_NAME="igs-ecommerce-customizations-${{ steps.meta.outputs.version }}.zip"
+          (cd igs-ecommerce-customizations && zip -r "../dist/$ZIP_NAME" . -x "*.git*" "*tests/*" "*node_modules/*")
+          ls -lh dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: igs-ecommerce-customizations-${{ steps.meta.outputs.version }}
+          path: dist/igs-ecommerce-customizations-${{ steps.meta.outputs.version }}.zip
+          if-no-files-found: error
