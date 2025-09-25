@@ -242,6 +242,47 @@ function normalize_longitude( $value ): ?string {
 }
 
 /**
+ * Normalise an HTML5 date (YYYY-MM-DD) string.
+ */
+function normalize_html5_date( $value ): ?string {
+    if ( ! is_scalar( $value ) ) {
+        return null;
+    }
+
+    $normalized = trim( (string) $value );
+
+    if ( '' === $normalized ) {
+        return null;
+    }
+
+    $timezone = null;
+
+    if ( function_exists( 'wp_timezone' ) ) {
+        $wp_timezone = wp_timezone();
+
+        if ( $wp_timezone instanceof \DateTimeZone ) {
+            $timezone = $wp_timezone;
+        }
+    }
+
+    $date = $timezone instanceof \DateTimeZone
+        ? \DateTime::createFromFormat( '!Y-m-d', $normalized, $timezone )
+        : \DateTime::createFromFormat( '!Y-m-d', $normalized );
+
+    if ( ! $date instanceof \DateTime ) {
+        return null;
+    }
+
+    $errors = \DateTime::getLastErrors();
+
+    if ( is_array( $errors ) && ( (int) ( $errors['warning_count'] ?? 0 ) > 0 || (int) ( $errors['error_count'] ?? 0 ) > 0 ) ) {
+        return null;
+    }
+
+    return $date->format( 'Y-m-d' );
+}
+
+/**
  * Internal helper that validates and formats coordinate values.
  *
  * @param mixed $value Raw coordinate value.

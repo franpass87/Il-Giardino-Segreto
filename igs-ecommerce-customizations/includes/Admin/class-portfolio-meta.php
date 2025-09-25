@@ -7,6 +7,8 @@
 
 namespace IGS\Ecommerce\Admin;
 
+use IGS\Ecommerce\Helpers;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
@@ -41,8 +43,8 @@ class Portfolio_Meta {
      * Render the controls.
      */
     public static function render( \WP_Post $post ): void {
-        $departure = get_post_meta( $post->ID, '_data_partenza', true );
-        $return    = get_post_meta( $post->ID, '_data_arrivo', true );
+        $departure = Helpers\normalize_html5_date( get_post_meta( $post->ID, '_data_partenza', true ) ) ?? '';
+        $return    = Helpers\normalize_html5_date( get_post_meta( $post->ID, '_data_arrivo', true ) ) ?? '';
 
         wp_nonce_field( 'igs_save_portfolio_dates', 'igs_portfolio_dates_nonce' );
 
@@ -70,10 +72,14 @@ class Portfolio_Meta {
         }
 
         foreach ( [ 'data_partenza', 'data_arrivo' ] as $field ) {
-            if ( isset( $_POST[ $field ] ) && '' !== $_POST[ $field ] ) {
-                update_post_meta( $post_id, '_' . $field, sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) );
-            } else {
-                delete_post_meta( $post_id, '_' . $field );
+            if ( isset( $_POST[ $field ] ) ) {
+                $value = Helpers\normalize_html5_date( wp_unslash( $_POST[ $field ] ) );
+
+                if ( null !== $value ) {
+                    update_post_meta( $post_id, '_' . $field, $value );
+                } else {
+                    delete_post_meta( $post_id, '_' . $field );
+                }
             }
         }
     }
