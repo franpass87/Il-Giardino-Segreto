@@ -3,7 +3,7 @@
  * Plugin Name:       IGS Ecommerce Customizations
  * Plugin URI:        https://francescopasseri.com/
  * Description:       Raccolta di personalizzazioni per Il Giardino Segreto su WooCommerce.
- * Version:           1.3.1
+ * Version:           1.3.2
  * Author:            Francesco Passeri
  * Author URI:        https://francescopasseri.com/
  * Text Domain:       igs-ecommerce
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'IGS_ECOMMERCE_VERSION', '1.3.1' );
+define( 'IGS_ECOMMERCE_VERSION', '1.3.2' );
 define( 'IGS_ECOMMERCE_FILE', __FILE__ );
 define( 'IGS_ECOMMERCE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'IGS_ECOMMERCE_URL', plugin_dir_url( __FILE__ ) );

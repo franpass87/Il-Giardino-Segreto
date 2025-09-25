@@ -16,11 +16,21 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Global_Strings {
     /**
-     * Cached replacement rules.
+     * Cached replacement rules grouped by type.
      *
-     * @var array<string,string>|null
+     * @var array{
+     *     literal: array<string,string>,
+     *     regex: array<int,array{pattern:string,replacement:string}>
+     * }|null
      */
     private static ?array $rules_cache = null;
+
+    /**
+     * Cache results of previous replacements to avoid repeated processing.
+     *
+     * @var array<string,string>
+     */
+    private static array $result_cache = [];
 
     /**
      * Hook registration.
@@ -81,8 +91,9 @@ class Global_Strings {
     public static function sanitize_rules( $value ): string {
         $value = is_string( $value ) ? wp_unslash( $value ) : '';
 
-        // Reset cache so the new rules are applied immediately.
+        // Reset caches so the new rules are applied immediately.
         self::$rules_cache = null;
+        self::$result_cache = [];
 
         return wp_kses_post( $value );
     }
@@ -92,6 +103,7 @@ class Global_Strings {
      */
     public static function render_section_description(): void {
         echo '<p>' . esc_html__( 'Inserisci una regola per riga. Separa il testo originale dal nuovo testo con il carattere "|".', 'igs-ecommerce' ) . '</p>';
+        echo '<p>' . esc_html__( 'Per usare le espressioni regolari, prefissa la regola con "regex:" e racchiudi il pattern tra slash, ad esempio regex:/prodotti/i.', 'igs-ecommerce' ) . '</p>';
         echo '<p><strong>' . esc_html__( 'Esempio:', 'igs-ecommerce' ) . '</strong> <code>Prodotti correlati | Ti potrebbe interessare anche</code></p>';
     }
 
@@ -139,27 +151,192 @@ class Global_Strings {
      * Replace the provided string using cached rules if available.
      */
     private static function replace_with_rules( string $value ): string {
-        if ( null === self::$rules_cache ) {
-            self::$rules_cache = [];
-            $raw_rules         = get_option( 'gw_string_replacements_global', '' );
+        self::ensure_rules_cache();
 
-            foreach ( preg_split( '/\r?\n/', $raw_rules ) as $line ) {
-                if ( strpos( $line, '|' ) === false ) {
+        if ( isset( self::$result_cache[ $value ] ) ) {
+            return self::$result_cache[ $value ];
+        }
+
+        $result = $value;
+
+        if ( isset( self::$rules_cache['literal'][ $value ] ) ) {
+            $result = self::$rules_cache['literal'][ $value ];
+        } else {
+            foreach ( self::$rules_cache['regex'] as $rule ) {
+                $replaced = @preg_replace( $rule['pattern'], $rule['replacement'], $result );
+
+                if ( null === $replaced || ! is_string( $replaced ) ) {
                     continue;
                 }
 
-                [ $original, $replacement ] = array_map( 'trim', explode( '|', $line, 2 ) );
-
-                if ( '' !== $original ) {
-                    self::$rules_cache[ $original ] = $replacement;
-                }
+                $result = $replaced;
             }
         }
 
-        if ( isset( self::$rules_cache[ $value ] ) ) {
-            return self::$rules_cache[ $value ];
+        self::$result_cache[ $value ] = $result;
+
+        return $result;
+    }
+
+    /**
+     * Parse and cache the configured replacement rules.
+     */
+    private static function ensure_rules_cache(): void {
+        if ( null !== self::$rules_cache ) {
+            return;
         }
 
-        return $value;
+        self::$rules_cache = [
+            'literal' => [],
+            'regex'   => [],
+        ];
+
+        $raw_rules = get_option( 'gw_string_replacements_global', '' );
+
+        foreach ( preg_split( '/\r?\n/', (string) $raw_rules ) as $line ) {
+            $parts = self::split_rule_line( $line );
+
+            if ( null === $parts ) {
+                continue;
+            }
+
+            [ $original, $replacement ] = $parts;
+
+            if ( '' === $original ) {
+                continue;
+            }
+
+            if ( 0 === stripos( $original, 'regex:' ) ) {
+                $parsed = self::parse_regex_rule( substr( $original, 6 ) );
+
+                if ( null !== $parsed ) {
+                    self::$rules_cache['regex'][] = [
+                        'pattern'     => $parsed,
+                        'replacement' => $replacement,
+                    ];
+                }
+
+                continue;
+            }
+
+            if ( '\\' === substr( $original, 0, 1 ) && 0 === stripos( substr( $original, 1 ), 'regex:' ) ) {
+                $original = substr( $original, 1 );
+            }
+
+            self::$rules_cache['literal'][ $original ] = $replacement;
+        }
+    }
+
+    /**
+     * Split a raw rule line into source and replacement, supporting escaped separators.
+     *
+     * @param string $line Raw rule line.
+     *
+     * @return array{0:string,1:string}|null
+     */
+    private static function split_rule_line( $line ): ?array {
+        if ( ! is_string( $line ) || '' === $line ) {
+            return null;
+        }
+
+        $length  = strlen( $line );
+        $escaped = false;
+
+        for ( $i = 0; $i < $length; $i++ ) {
+            $char = $line[ $i ];
+
+            if ( '\\' === $char ) {
+                $escaped = ! $escaped;
+                continue;
+            }
+
+            if ( '|' === $char && ! $escaped ) {
+                $original    = substr( $line, 0, $i );
+                $replacement = substr( $line, $i + 1 );
+
+                return [
+                    self::unescape_rule_segment( $original ),
+                    self::unescape_rule_segment( $replacement ),
+                ];
+            }
+
+            $escaped = false;
+        }
+
+        return null;
+    }
+
+    /**
+     * Normalize a rule segment by trimming and unescaping escaped separators.
+     */
+    private static function unescape_rule_segment( string $segment ): string {
+        $segment = trim( $segment );
+
+        if ( '' === $segment ) {
+            return '';
+        }
+
+        return str_replace( '\\|', '|', $segment );
+    }
+
+    /**
+     * Convert a user provided regex rule into a safe PCRE pattern.
+     */
+    private static function parse_regex_rule( string $pattern ): ?string {
+        $pattern = trim( $pattern );
+
+        if ( '' === $pattern ) {
+            return null;
+        }
+
+        if ( preg_match( '#^/(.*?)(?<!\\)/([A-Za-z]*)$#', $pattern, $matches ) ) {
+            $body  = $matches[1];
+            $flags = self::sanitize_regex_flags( $matches[2] );
+            $regex = '/' . $body . '/' . $flags;
+        } else {
+            $body  = str_replace( '/', '\/', $pattern );
+            $regex = '/' . $body . '/';
+        }
+
+        if ( ! self::is_valid_regex( $regex ) ) {
+            return null;
+        }
+
+        return $regex;
+    }
+
+    /**
+     * Sanitize the allowed regex flags, removing unsupported characters and duplicates.
+     */
+    private static function sanitize_regex_flags( string $flags ): string {
+        if ( '' === $flags ) {
+            return '';
+        }
+
+        $allowed = [ 'i', 'm', 's', 'u', 'x', 'A', 'D', 'U', 'J' ];
+        $clean   = '';
+
+        foreach ( str_split( $flags ) as $flag ) {
+            if ( in_array( $flag, $allowed, true ) && false === strpos( $clean, $flag ) ) {
+                $clean .= $flag;
+            }
+        }
+
+        return $clean;
+    }
+
+    /**
+     * Determine whether the provided regex compiles successfully.
+     */
+    private static function is_valid_regex( string $pattern ): bool {
+        set_error_handler( static function () {
+            // Swallow warnings generated by invalid patterns.
+        } );
+
+        $result = preg_match( $pattern, '' );
+
+        restore_error_handler();
+
+        return false !== $result;
     }
 }

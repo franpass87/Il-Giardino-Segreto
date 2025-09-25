@@ -199,17 +199,21 @@ msgstr ""
 msgid "Regole"
 msgstr ""
 
-#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:92
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:105
 msgid ""
 "Inserisci una regola per riga. Separa il testo originale dal nuovo testo con"
 " il carattere \"|\"."
 msgstr ""
 
-#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:93
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:106
+msgid "Per usare le espressioni regolari, prefissa la regola con \"regex:\" e racchiudi il pattern tra slash, ad esempio regex:/prodotti/i."
+msgstr ""
+
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:107
 msgid "Esempio:"
 msgstr ""
 
-#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:117
+#: igs-ecommerce-customizations/includes/Admin/class-global-strings.php:132
 msgid "Salva modifiche"
 msgstr ""
 
