@@ -1,59 +1,102 @@
-# Il Giardino Segreto – Personalizzazioni WooCommerce
+# IGS Ecommerce Customizations
 
-Questo repository contiene il plugin WordPress **IGS Ecommerce Customizations**, utilizzato dal team de Il Giardino Segreto per gestire il catalogo tour su WooCommerce.
+Plugin WordPress per gestire il catalogo tour e le personalizzazioni WooCommerce del progetto **Il Giardino Segreto**.
+Offre metabox dedicati, layout front-end su misura, strumenti di internazionalizzazione e utility operative pensate per un
+ambiente di produzione.
+
+## Metadati del plugin
+
+- **Versione:** 1.3.1
+- **Autore:** Francesco Passeri
+- **Sito web:** [francescopasseri.com](https://francescopasseri.com/)
+- **Email di riferimento:** [info@francescopasseri.com](mailto:info@francescopasseri.com)
 
 ## Funzionalità principali
 
-- **Layout dedicato alla scheda tour** con hero a tutta larghezza, colonna riassuntiva e lista servizi; l’aspetto viene attivato solo per i prodotti identificati come tour.
-- **Campi aggiuntivi in amministrazione** per intervalli di date, paese del tour e punteggi “garden”: i dati vengono salvati in modo sicuro con nonce e sanificazione.
-- **CTA con modal di prenotazione** che consente di scegliere opzioni, quantità e di inviare richieste informazioni via AJAX senza perdere gli articoli già presenti nel carrello.
-- **Shortcode front-end** per protagonista, barre dei livelli e mappa dell’itinerario basata su Leaflet caricato da CDN configurabile, con fallback lato interfaccia.
-- **Schede portfolio arricchite** con formattazione delle date tramite `wp_date()` e possibilità di aggiungere un logo partner tramite filtro.
-- **Gestione sostituzioni testuali globali** accessibile da “Impostazioni → Gestione testo”, con convalida e cache dei pattern.
-- **Colonne e viste archivio personalizzate** per evidenziare date e metadati dei tour nelle liste prodotto.
+### Gestione catalogo e dati
+- Layout dedicato alla scheda tour con hero a tutta larghezza, colonna riassuntiva e sezione servizi attivata solo per i
+  prodotti identificati come tour.
+- Metabox avanzati per date, paese, punteggi "garden" e coordinate, con sanificazione dei dati, validazioni dedicate e
+  cache per ridurre l’accesso ai servizi di geocoding.
+- Schede portfolio arricchite con formattazione automatica delle date e supporto per loghi partner personalizzati tramite
+  filtro.
 
-## Installazione
+### Esperienza di prenotazione e front-end
+- Modal di prenotazione AJAX che permette di raccogliere richieste senza svuotare il carrello, con controlli lato client e
+  lato server per evitare selezioni inconsistenti.
+- Shortcode per protagonista, livelli di difficoltà e mappa dell’itinerario basata su Leaflet caricabile da CDN
+  configurabile tramite filtri, con fallback per ambienti offline.
+- Personalizzazioni della lista prodotti, colonne amministrative e viste archivio pensate per mettere in evidenza i
+  metadati chiave dei tour.
 
-1. Comprimi il contenuto della cartella `igs-ecommerce-customizations` in uno zip.
-2. Carica l’archivio dal pannello **Plugin → Aggiungi nuovo** di WordPress e attivalo.
-3. Dopo l’attivazione il plugin non richiede configurazioni aggiuntive: le funzionalità vengono applicate automaticamente ai prodotti tour.
+### Internazionalizzazione e contenuti
+- Gestione centralizzata delle sostituzioni testuali tramite pagina "Impostazioni → Gestione testo", con pattern regex
+  validati e cache dei risultati.
+- Loader delle traduzioni compatibile con contesti e plurali, con cache persistente e invalidazione automatica al cambio
+  di versione.
+- Pacchetti lingua `.pot` e `.po` già pronti per l’italiano, caricati direttamente senza necessità del binario `.mo`.
+
+### Operatività, performance e sicurezza
+- Validazione preventiva delle dipendenze minime (WordPress, WooCommerce, PHP) sia all’attivazione sia durante il
+  bootstrap, con messaggistica chiara per gli amministratori.
+- Cache di individuazione dei prodotti tour con invalidazione automatica sugli aggiornamenti per ridurre gli accessi al
+  database.
+- Rate limiting per le richieste di geocoding e per il form informazioni, con strumenti di monitoraggio tramite log e
+  transients dedicati.
+- Comando WP-CLI `wp igs flush-caches` per svuotare cache di tour, geocoding, rate limiting e traduzioni in ambienti con
+  cache persistenti.
+- Migliorie sulla gestione email (fallback dell’indirizzo amministratore) e sui processi AJAX per minimizzare errori e
+  dati inconsistenti.
 
 ## Requisiti minimi
 
-- PHP **7.4**
-- WordPress **6.0**
-- WooCommerce **7.0**
+- PHP **7.4** o superiore
+- WordPress **6.0** o superiore
+- WooCommerce **7.0** o superiore
+
+## Installazione
+
+1. Comprimi il contenuto della cartella `igs-ecommerce-customizations` in un archivio `.zip`.
+2. Carica il pacchetto da **Plugin → Aggiungi nuovo** nel back-office WordPress e attivalo.
+3. Le personalizzazioni vengono applicate automaticamente ai prodotti tour; non è richiesta una configurazione iniziale.
+
+## Aggiornamento
+
+- Prima di aggiornare effettua un backup completo di file e database.
+- Sostituisci la cartella del plugin con la nuova versione e assicurati di eseguire nuovamente `wp igs flush-caches` se
+  utilizzi cache persistenti.
+- Dopo l’aggiornamento verifica la sezione **Impostazioni → Gestione testo** e i metadati tour per confermare che non ci
+  siano avvisi o campi mancanti.
 
 ## Disinstallazione
 
-- La rimozione del plugin da **Plugin → Plugin installati** elimina automaticamente le opzioni di configurazione (`gw_string_replacements_global`) e svuota i transient utilizzati dalla funzione di geocoding, così da non lasciare dati orfani nel database.
+La disinstallazione dal menu **Plugin → Plugin installati** rimuove automaticamente le opzioni di configurazione
+(`gw_string_replacements_global`) e azzera i transient creati dal plugin, evitando residui nel database.
 
-## Dipendenze incluse
+## Comandi WP-CLI
 
-- **Leaflet 1.9.4** (JS/CSS) viene caricato da `https://unpkg.com/` tramite gli hook `igs_leaflet_style_url` e `igs_leaflet_script_url`, così da evitare asset binari nel repository mantenendo la possibilità di sostituire l’origine.
-- **Stili data picker** custom sono forniti in `assets/css/admin-datepicker.css` per completare l’interfaccia jQuery UI fornita da WordPress.
-- Gli script front-end principali si trovano in `assets/js/`, mentre gli stili sono organizzati in `assets/css/`.
-- Il pacchetto lingua si trova in `languages/` e contiene il template `.pot` e la traduzione italiana `.po`; le stringhe vengono caricate a runtime senza bisogno del binario `.mo`.
+Esegui `wp igs flush-caches` per ripulire cache e transient relativi a:
 
-## Struttura del codice
+- risultati della classificazione tour;
+- risposte di geocoding e relativi limiti;
+- limitatori di richiesta del form informazioni;
+- cataloghi di traduzioni caricati a runtime.
 
-- Il bootstrap (`igs-ecommerce-customizations.php`) definisce le costanti e istanzia `IGS\Ecommerce\Plugin`, che a sua volta carica i moduli presenti in `includes/`.
-- I file nella cartella `includes/Admin/` contengono le funzionalità di back-office (metabox, colonne, impostazioni testo, geocoding via AJAX).
-- I file nella cartella `includes/Frontend/` gestiscono layout, shortcode, AJAX pubblico e personalizzazioni del negozio.
-- Funzioni condivise (helper, sanificazione delle date, rilevamento tour) sono definite in `includes/helpers.php`.
+Il comando restituisce un riepilogo puntuale degli elementi rimossi e termina con un messaggio di successo.
 
-## Sviluppo
+## Localizzazione
 
-- Esegui `php -l` sui file PHP toccati prima di proporre una pull request.
-- Includi eventuali asset minificati generati dall’ambiente di build; gli strumenti non devono essere eseguiti in produzione.
-- Per modificare i comportamenti del modal di prenotazione puoi agganciare i filtri:
-  - `igs_booking_should_empty_cart` per forzare lo svuotamento del carrello prima dell’aggiunta.
-  - `igs_portfolio_partner_logo` per impostare un logo partner personalizzato nelle schede portfolio.
-  - `igs_tour_map_tile_layer` per definire URL, attributi e opzioni del tile provider utilizzato dalla mappa Leaflet.
-- Se aggiungi o aggiorni stringhe localizzate esegui `xgettext` o un equivalente (`wp i18n make-pot`) per rigenerare `languages/igs-ecommerce.pot`, quindi aggiorna `languages/igs-ecommerce-it_IT.po`. Il plugin carica direttamente i file `.po`, ma puoi comunque compilare `.mo` se distribuisci il pacchetto tramite altri canali.
+Se aggiungi o modifichi stringhe localizzate rigenera il template con `wp i18n make-pot` (o tool equivalente) e aggiorna
+`languages/igs-ecommerce-it_IT.po`. Il plugin carica direttamente i file `.po`, ma puoi includere un eventuale `.mo` se
+necessario per la distribuzione.
 
-## Utilità WP-CLI
+## Supporto e contatti
 
-- Esegui `wp igs flush-caches` per svuotare le cache del plugin (tour, geocoding, rate limiting e traduzioni) dopo aver aggiornato i dati o in caso di ambienti con oggetti cache persistenti.
+Per assistenza, richieste di personalizzazione o segnalazioni scrivi a
+[info@francescopasseri.com](mailto:info@francescopasseri.com) oppure visita
+[francescopasseri.com](https://francescopasseri.com/).
 
-Per contributi o segnalazioni apri una issue o una pull request descrivendo in modo chiaro le modifiche proposte.
+## Documentazione storica
+
+Consulta il file [CHANGELOG.md](CHANGELOG.md) per la panoramica completa delle versioni e delle modifiche introdotte nel
+tempo.
