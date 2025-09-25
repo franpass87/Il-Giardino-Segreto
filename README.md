@@ -6,7 +6,7 @@ ambiente di produzione.
 
 ## Metadati del plugin
 
-- **Versione:** 1.3.2
+- **Versione:** 1.3.3
 - **Autore:** Francesco Passeri
 - **Sito web:** [francescopasseri.com](https://francescopasseri.com/)
 - **Email di riferimento:** [info@francescopasseri.com](mailto:info@francescopasseri.com)
@@ -43,6 +43,8 @@ ambiente di produzione.
   database.
 - Rate limiting per le richieste di geocoding e per il form informazioni, con strumenti di monitoraggio tramite log e
   transients dedicati.
+- Routine di upgrade automatiche che svuotano le cache persistenti quando il plugin viene aggiornato, garantendo dati
+  coerenti senza interventi manuali.
 - Comando WP-CLI `wp igs flush-caches` per svuotare cache di tour, geocoding, rate limiting e traduzioni in ambienti con
   cache persistenti.
 - Migliorie sulla gestione email (fallback dell’indirizzo amministratore) e sui processi AJAX per minimizzare errori e
