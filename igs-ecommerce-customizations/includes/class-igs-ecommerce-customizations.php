@@ -54,9 +54,12 @@ final class Plugin {
     private function load_dependencies(): void {
         require_once IGS_ECOMMERCE_PATH . 'includes/class-translations.php';
         require_once IGS_ECOMMERCE_PATH . 'includes/helpers.php';
+        require_once IGS_ECOMMERCE_PATH . 'includes/class-maintenance.php';
+        require_once IGS_ECOMMERCE_PATH . 'includes/class-upgrades.php';
 
         Translations::init();
         Helpers\register_tour_product_cache_invalidation();
+        Upgrades::init();
 
         // Admin modules.
         require_once IGS_ECOMMERCE_PATH . 'includes/Admin/class-product-meta.php';
