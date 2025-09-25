@@ -2,6 +2,11 @@
 
 Tutte le modifiche rilevanti del plugin **IGS Ecommerce Customizations** sono documentate in questo file.
 
+## [1.3.3] - 2025-09-27
+- Ottimizzato il calcolo runtime delle regole plurali nelle traduzioni per ridurre le valutazioni ripetute e garantire
+  fallback sicuri.
+- Svuotata anche la cache dei calcolatori dei plurali quando viene invalidata la cache delle traduzioni.
+
 ## [1.3.2] - 2025-09-26
 - Esteso il sistema di sostituzioni globali con supporto per regole regex, validando pattern e flag consentiti.
 - Aggiunta cache dei risultati delle sostituzioni per migliorare le prestazioni in produzione.

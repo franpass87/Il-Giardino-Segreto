@@ -34,10 +34,18 @@ class Translations {
     private static array $cache = [];
 
     /**
+     * Cached plural evaluators keyed by the rule signature.
+     *
+     * @var array<string,callable>
+     */
+    private static array $plural_evaluators = [];
+
+    /**
      * Clear the in-memory catalogue cache.
      */
     public static function flush_runtime_cache(): void {
-        self::$cache = [];
+        self::$cache             = [];
+        self::$plural_evaluators = [];
     }
 
     /**
@@ -684,45 +692,95 @@ class Translations {
     }
 
     /**
-     * Determine the plural index for a given quantity.
+     * Retrieve (or build) a safe evaluator for the provided plural rule.
+     *
+     * @return callable(int):int
      */
-    private static function determine_plural_index( array $catalogue, int $number ): int {
-        $nplurals = isset( $catalogue['nplurals'] ) ? max( 1, (int) $catalogue['nplurals'] ) : 2;
-        $rule     = $catalogue['plural_rule'] ?? 'n != 1';
+    private static function get_plural_evaluator( string $rule, int $nplurals ): callable {
+        $nplurals = max( 1, $nplurals );
+        $signature = md5( $rule . '|' . $nplurals );
+
+        if ( isset( self::$plural_evaluators[ $signature ] ) ) {
+            return self::$plural_evaluators[ $signature ];
+        }
+
+        $fallback = static function ( int $n ) use ( $nplurals ): int {
+            if ( $nplurals <= 1 ) {
+                return 0;
+            }
+
+            return ( 1 === $n ) ? 0 : 1;
+        };
 
         $rule = trim( $rule );
 
         if ( '' === $rule ) {
-            return min( $nplurals - 1, ( 1 === $number ) ? 0 : 1 );
+            self::$plural_evaluators[ $signature ] = $fallback;
+
+            return $fallback;
         }
 
-        // Allow only safe characters before evaluating.
         if ( preg_match( '/[^n0-9\s\(\)\?\:\|\&\!\<\>\=\+\-\*\/\%]/', $rule ) ) {
-            return min( $nplurals - 1, ( 1 === $number ) ? 0 : 1 );
+            self::$plural_evaluators[ $signature ] = $fallback;
+
+            return $fallback;
         }
 
-        $n      = (int) $number;
-        $result = 0;
+        $expression = str_replace( 'n', '$n', $rule );
 
         try {
             /** @psalm-suppress UnresolvableInclude */
-            $result = eval( 'return (int) (' . str_replace( 'n', '$n', $rule ) . ');' );
+            $callable = eval( 'return static function (int $n): int { return (int) (' . $expression . '); };' );
         } catch ( \Throwable $e ) {
-            $result = ( 1 === $number ) ? 0 : 1;
+            self::$plural_evaluators[ $signature ] = $fallback;
+
+            return $fallback;
         }
 
-        if ( ! is_int( $result ) ) {
-            $result = (int) $result;
+        if ( ! is_callable( $callable ) ) {
+            self::$plural_evaluators[ $signature ] = $fallback;
+
+            return $fallback;
         }
 
-        if ( $result < 0 ) {
-            $result = 0;
-        }
+        $wrapper = static function ( int $n ) use ( $callable, $nplurals, $fallback ): int {
+            try {
+                $result = $callable( $n );
+            } catch ( \Throwable $e ) {
+                return $fallback( $n );
+            }
 
-        if ( $result >= $nplurals ) {
-            $result = $nplurals - 1;
-        }
+            if ( ! is_int( $result ) ) {
+                $result = (int) $result;
+            }
 
-        return $result;
+            if ( $result < 0 ) {
+                return 0;
+            }
+
+            $max_index = $nplurals - 1;
+
+            if ( $result > $max_index ) {
+                return $max_index;
+            }
+
+            return $result;
+        };
+
+        self::$plural_evaluators[ $signature ] = $wrapper;
+
+        return $wrapper;
+    }
+
+    /**
+     * Determine the plural index for a given quantity.
+     */
+    private static function determine_plural_index( array $catalogue, int $number ): int {
+        $nplurals = isset( $catalogue['nplurals'] ) ? max( 1, (int) $catalogue['nplurals'] ) : 2;
+        $rule     = isset( $catalogue['plural_rule'] ) && is_string( $catalogue['plural_rule'] ) ? $catalogue['plural_rule'] : 'n != 1';
+
+        $evaluator = self::get_plural_evaluator( $rule, $nplurals );
+
+        return $evaluator( (int) $number );
     }
 }
