@@ -215,14 +215,19 @@ class Map_Meta_Box {
             wp_send_json_success( $cached );
         }
 
-        $rate_limit = get_transient( 'igs_geocode_rate_limit' );
+        $rate_limit_key = self::get_geocode_rate_limit_key();
+        $transient_key  = 'igs_geocode_rl_' . md5( $rate_limit_key ?: 'global' );
 
-        if ( $rate_limit ) {
+        if ( get_transient( $transient_key ) ) {
+            if ( ! headers_sent() ) {
+                header( 'Retry-After: 2' );
+            }
+
             wp_send_json_error( [ 'message' => __( 'Attendi qualche istante prima di effettuare una nuova ricerca.', 'igs-ecommerce' ) ], 429 );
         }
 
         // Set a short rate limiting transient (2 seconds).
-        set_transient( 'igs_geocode_rate_limit', time(), 2 );
+        set_transient( $transient_key, time(), 2 );
 
         $user_agent = sprintf( 'IGS-Ecommerce/%s (%s)', IGS_ECOMMERCE_VERSION, home_url() );
 
@@ -244,14 +249,14 @@ class Map_Meta_Box {
         );
 
         if ( is_wp_error( $response ) ) {
-            delete_transient( 'igs_geocode_rate_limit' );
+            delete_transient( $transient_key );
             wp_send_json_error( [ 'message' => __( 'Servizio non disponibile.', 'igs-ecommerce' ) ], 503 );
         }
 
         $code = wp_remote_retrieve_response_code( $response );
 
         if ( 200 !== $code ) {
-            delete_transient( 'igs_geocode_rate_limit' );
+            delete_transient( $transient_key );
             wp_send_json_error( [ 'message' => __( 'Risposta non valida dal servizio.', 'igs-ecommerce' ) ], $code ?: 500 );
         }
 
@@ -264,7 +269,7 @@ class Map_Meta_Box {
         $first = $data[0];
 
         if ( ! is_array( $first ) ) {
-            delete_transient( 'igs_geocode_rate_limit' );
+            delete_transient( $transient_key );
             wp_send_json_error( [ 'message' => __( 'Località non trovata.', 'igs-ecommerce' ) ], 404 );
         }
 
@@ -272,7 +277,7 @@ class Map_Meta_Box {
         $lon = Helpers\normalize_longitude( $first['lon'] ?? '' );
 
         if ( null === $lat || null === $lon ) {
-            delete_transient( 'igs_geocode_rate_limit' );
+            delete_transient( $transient_key );
             wp_send_json_error( [ 'message' => __( 'Coordinate non valide restituite dal servizio.', 'igs-ecommerce' ) ], 502 );
         }
 
@@ -287,5 +292,28 @@ class Map_Meta_Box {
         set_transient( $cache_key, $result, DAY_IN_SECONDS );
 
         wp_send_json_success( $result );
+    }
+
+    /**
+     * Build a rate limit key based on the current user or client IP.
+     */
+    private static function get_geocode_rate_limit_key(): ?string {
+        if ( is_user_logged_in() ) {
+            return 'user_' . get_current_user_id();
+        }
+
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+
+        if ( '' === $ip ) {
+            return null;
+        }
+
+        $ip = filter_var( wp_unslash( $ip ), FILTER_VALIDATE_IP );
+
+        if ( false === $ip ) {
+            return null;
+        }
+
+        return 'ip_' . $ip;
     }
 }
