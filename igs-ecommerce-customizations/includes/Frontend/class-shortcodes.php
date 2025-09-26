@@ -128,9 +128,11 @@ class Shortcodes {
 
         wp_enqueue_style( 'igs-shortcodes' );
 
-        return '<div class="igs-garden-feature">'
+        return '<div class="igs-garden-feature" data-feature="plant" role="group" aria-label="' . esc_attr__( 'Pianta protagonista', 'igs-ecommerce' ) . '">'
+            . '<div class="igs-garden-feature__card">'
             . '<div class="igs-garden-feature__label">' . esc_html__( 'Pianta', 'igs-ecommerce' ) . '</div>'
             . '<div class="igs-garden-feature__value">' . esc_html( $value ) . '</div>'
+            . '</div>'
             . '</div>';
     }
 
@@ -150,16 +152,23 @@ class Shortcodes {
 
         wp_enqueue_style( 'igs-shortcodes' );
 
-        $bars = '';
+        $bars       = '';
+        $aria_label = sprintf( _n( '%s livello su 5', '%s livelli su 5', $value, 'igs-ecommerce' ), number_format_i18n( $value ) );
 
         for ( $i = 1; $i <= 5; $i++ ) {
             $filled = $i <= $value ? 'igs-garden-bars__item--active' : '';
-            $bars  .= '<span class="igs-garden-bars__item ' . esc_attr( $filled ) . '"></span>';
+            $bars  .= '<span class="igs-garden-bars__item ' . esc_attr( $filled ) . '" style="--igs-garden-bar-index:' . esc_attr( (string) $i ) . ';" aria-hidden="true"></span>';
         }
 
-        return '<div class="igs-garden-feature">'
+        return '<div class="igs-garden-feature" data-feature="' . esc_attr( $meta_key ) . '" data-level="' . esc_attr( (string) $value ) . '" role="img" aria-label="' . esc_attr( $aria_label ) . '">'
+            . '<div class="igs-garden-feature__card">'
             . '<div class="igs-garden-feature__label">' . esc_html( $label ) . '</div>'
-            . '<div class="igs-garden-bars">' . $bars . '</div>'
+            . '<div class="igs-garden-bars" aria-hidden="true">' . $bars . '</div>'
+            . '<div class="igs-garden-bars__scale" aria-hidden="true">'
+            . '<span class="igs-garden-bars__scale-label igs-garden-bars__scale-label--min">' . esc_html__( 'Basso', 'igs-ecommerce' ) . '</span>'
+            . '<span class="igs-garden-bars__scale-label igs-garden-bars__scale-label--max">' . esc_html__( 'Alto', 'igs-ecommerce' ) . '</span>'
+            . '</div>'
+            . '</div>'
             . '</div>';
     }
 

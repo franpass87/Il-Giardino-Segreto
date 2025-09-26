@@ -21,20 +21,11 @@ class Shop_Page {
      * Hook registration.
      */
     public static function init(): void {
-        add_action( 'template_redirect', [ __CLASS__, 'remove_breadcrumb' ] );
         add_filter( 'woocommerce_page_title', [ __CLASS__, 'filter_title' ] );
         add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue_styles' ] );
         add_filter( 'woocommerce_return_to_shop_redirect', [ __CLASS__, 'filter_return_url' ] );
         add_filter( 'woocommerce_return_to_shop_text', [ __CLASS__, 'filter_return_text' ] );
-    }
-
-    /**
-     * Remove the breadcrumb on the main shop archive.
-     */
-    public static function remove_breadcrumb(): void {
-        if ( is_shop() ) {
-            remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
-        }
+        add_filter( 'woocommerce_breadcrumb_defaults', [ __CLASS__, 'breadcrumb_defaults' ] );
     }
 
     /**
@@ -71,5 +62,24 @@ class Shop_Page {
      */
     public static function filter_return_text( string $text ): string {
         return __( 'Ritorna al sito web', 'igs-ecommerce' );
+    }
+
+    /**
+     * Customise breadcrumb markup to a compact pill-based layout.
+     *
+     * @param array<string,mixed> $defaults Existing defaults.
+     */
+    public static function breadcrumb_defaults( array $defaults ): array {
+        if ( ! is_shop() ) {
+            return $defaults;
+        }
+
+        $defaults['wrap_before'] = '<nav class="woocommerce-breadcrumb igs-breadcrumb" aria-label="' . esc_attr__( 'Percorso di navigazione', 'igs-ecommerce' ) . '"><ol class="igs-breadcrumb__list">';
+        $defaults['wrap_after']  = '</ol></nav>';
+        $defaults['before']      = '<li class="igs-breadcrumb__item">';
+        $defaults['after']       = '</li>';
+        $defaults['delimiter']   = '<span class="igs-breadcrumb__separator" aria-hidden="true">/</span>';
+
+        return $defaults;
     }
 }

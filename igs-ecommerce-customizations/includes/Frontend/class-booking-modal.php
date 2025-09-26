@@ -116,7 +116,8 @@ class Booking_Modal {
         $product_title = $product->get_title();
 
         echo '<div class="igs-booking-cta" id="igs-booking-cta">';
-        echo '<button type="button" class="igs-booking-cta__button" data-modal-target="igs-booking-modal">' . esc_html__( 'Scopri e Prenota', 'igs-ecommerce' ) . '</button>';
+        echo '<span class="igs-booking-cta__helper" aria-hidden="true">' . esc_html__( 'Prenotazione rapida', 'igs-ecommerce' ) . '</span>';
+        echo '<button type="button" class="igs-booking-cta__button" data-modal-target="igs-booking-modal" aria-haspopup="dialog" aria-controls="igs-booking-modal" aria-expanded="false">' . esc_html__( 'Scopri e Prenota', 'igs-ecommerce' ) . '</button>';
         echo '</div>';
 
         echo '<div class="igs-booking-modal" id="igs-booking-modal" aria-hidden="true">';
@@ -143,14 +144,14 @@ class Booking_Modal {
         echo '<form id="igs-booking-form" class="igs-booking-form" novalidate>';
 
         echo '<fieldset class="igs-booking-form__group">';
-        echo '<legend>' . esc_html__( 'Scegli la tua opzione', 'igs-ecommerce' ) . '</legend>';
+        echo '<legend id="igs-booking-options-label">' . esc_html__( 'Scegli la tua opzione', 'igs-ecommerce' ) . '</legend>';
         $options_json = wp_json_encode( $options, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
 
         if ( false === $options_json ) {
             $options_json = '[]';
         }
 
-        echo '<div class="igs-booking-form__options" id="igs-booking-options" data-options="' . esc_attr( $options_json ) . '"></div>';
+        echo '<div class="igs-booking-form__options" id="igs-booking-options" role="radiogroup" aria-labelledby="igs-booking-options-label" data-options="' . esc_attr( $options_json ) . '"></div>';
         echo '</fieldset>';
 
         echo '<fieldset class="igs-booking-form__group igs-booking-form__group--quantity">';
@@ -162,7 +163,7 @@ class Booking_Modal {
         echo '</div>';
         echo '</fieldset>';
 
-        echo '<div class="igs-booking-total" id="igs-booking-total">' . wp_kses_post( wc_price( 0 ) ) . '</div>';
+        echo '<div class="igs-booking-total" id="igs-booking-total" role="status" aria-live="polite">' . wp_kses_post( wc_price( 0 ) ) . '</div>';
         echo '</form>';
 
         echo '<div class="igs-booking-modal__footer">';
@@ -177,7 +178,7 @@ class Booking_Modal {
      */
     private static function render_info_view( WC_Product $product ): void {
         echo '<div class="igs-booking-view" data-view="info" hidden>';
-        echo '<div class="igs-booking-info-message" id="igs-booking-info-success" hidden>' . esc_html__( 'Grazie! La tua richiesta è stata inviata. Ti risponderemo al più presto.', 'igs-ecommerce' ) . '</div>';
+        echo '<div class="igs-booking-info-message" id="igs-booking-info-success" hidden role="status" aria-live="polite" tabindex="-1">' . esc_html__( 'Grazie! La tua richiesta è stata inviata. Ti risponderemo al più presto.', 'igs-ecommerce' ) . '</div>';
         echo '<form id="igs-info-form" class="igs-booking-form" novalidate>';
         echo '<input type="hidden" name="tour_id" value="' . esc_attr( $product->get_id() ) . '">';
 

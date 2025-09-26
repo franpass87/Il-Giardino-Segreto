@@ -56,35 +56,108 @@ class Loop_Display {
             return;
         }
 
-        $ranges  = get_post_meta( $product->get_id(), '_date_ranges', true );
-        $country = get_post_meta( $product->get_id(), '_paese_tour', true );
+        $ranges            = get_post_meta( $product->get_id(), '_date_ranges', true );
+        $country_value_raw = get_post_meta( $product->get_id(), '_paese_tour', true );
+        $country_label     = $country_value_raw ? sanitize_text_field( $country_value_raw ) : __( 'Paese non specificato', 'igs-ecommerce' );
 
-        $has_valid_dates = false;
+        $details = [];
+        $badges  = [];
+
+        $dates_label   = __( 'Partenze', 'igs-ecommerce' );
+        $duration_text = '';
+        $duration      = null;
+        $has_dates     = false;
 
         if ( is_array( $ranges ) && ! empty( $ranges ) ) {
-            $range    = reset( $ranges );
-            $start    = $range['start'] ?? '';
-            $end      = $range['end'] ?? '';
-            $duration = ( $start && $end ) ? Helpers\calculate_duration( $start, $end ) : null;
+            $range = reset( $ranges );
+            $start = isset( $range['start'] ) ? sanitize_text_field( $range['start'] ) : '';
+            $end   = isset( $range['end'] ) ? sanitize_text_field( $range['end'] ) : '';
 
             if ( $start && $end ) {
-                echo '<div class="igs-loop-meta__dates">' . esc_html( $start ) . ' → ' . esc_html( $end ) . '</div>';
-                $has_valid_dates = true;
+                $details[] = [
+                    'label' => $dates_label,
+                    'value' => $start . ' → ' . $end,
+                    'class' => '',
+                ];
+                $has_dates = true;
+                $duration  = Helpers\calculate_duration( $start, $end );
             }
-
-            if ( $duration ) {
-                $label = _n( 'giorno', 'giorni', (int) $duration, 'igs-ecommerce' );
-                echo '<div class="igs-loop-meta__duration">' . esc_html( $duration ) . ' ' . esc_html( $label ) . '</div>';
-            }
         }
 
-        if ( ! $has_valid_dates ) {
-            echo '<div class="igs-loop-meta__dates">' . esc_html__( 'Date non disponibili', 'igs-ecommerce' ) . '</div>';
+        if ( ! $has_dates ) {
+            $details[] = [
+                'label' => $dates_label,
+                'value' => __( 'Date non disponibili', 'igs-ecommerce' ),
+                'class' => 'igs-loop-card__value--muted',
+            ];
         }
 
-        if ( $country ) {
-            echo '<div class="igs-loop-meta__country">' . esc_html( $country ) . '</div>';
+        if ( $duration ) {
+            $duration_label = _n( 'giorno', 'giorni', (int) $duration, 'igs-ecommerce' );
+            $duration_text  = $duration . ' ' . $duration_label;
+
+            $details[] = [
+                'label' => __( 'Durata', 'igs-ecommerce' ),
+                'value' => $duration_text,
+                'class' => '',
+            ];
+
+            $badges[] = '<span class="igs-loop-card__badge igs-loop-card__badge--duration">' . esc_html( $duration_text ) . '</span>';
         }
+
+        if ( $country_label ) {
+            $details[] = [
+                'label' => __( 'Paese', 'igs-ecommerce' ),
+                'value' => $country_label,
+                'class' => '',
+            ];
+
+            $badges[] = '<span class="igs-loop-card__badge igs-loop-card__badge--country">' . esc_html( $country_label ) . '</span>';
+        }
+
+        $average_rating = (float) $product->get_average_rating();
+        $rating_count   = (int) $product->get_rating_count();
+
+        if ( $average_rating > 0 && $rating_count > 0 ) {
+            $rating_value = number_format_i18n( $average_rating, 1 );
+            $reviews_text = sprintf(
+                /* translators: 1: number of reviews. */
+                _n( '%s recensione', '%s recensioni', $rating_count, 'igs-ecommerce' ),
+                number_format_i18n( $rating_count )
+            );
+
+            $details[] = [
+                'label' => __( 'Valutazione', 'igs-ecommerce' ),
+                /* translators: 1: average rating, 2: number of reviews. */
+                'value' => sprintf( __( '%1$s su 5 · %2$s', 'igs-ecommerce' ), $rating_value, $reviews_text ),
+                'class' => '',
+            ];
+
+            $badges[] = '<span class="igs-loop-card__badge igs-loop-card__badge--rating">' . esc_html( $rating_value ) . '<span aria-hidden="true">★</span></span>';
+        }
+
+        if ( empty( $details ) ) {
+            return;
+        }
+
+        echo '<div class="igs-loop-card__meta">';
+
+        if ( ! empty( $badges ) ) {
+            echo '<div class="igs-loop-card__badges" aria-hidden="true">' . implode( '', $badges ) . '</div>';
+        }
+
+        echo '<dl class="igs-loop-card__details">';
+
+        foreach ( $details as $detail ) {
+            echo '<div class="igs-loop-card__detail">';
+            echo '<dt class="igs-loop-card__label">' . esc_html( $detail['label'] ) . '</dt>';
+            $value_class = 'igs-loop-card__value' . ( ! empty( $detail['class'] ) ? ' ' . esc_attr( $detail['class'] ) : '' );
+            echo '<dd class="' . $value_class . '">' . esc_html( $detail['value'] ) . '</dd>';
+            echo '</div>';
+        }
+
+        echo '</dl>';
+        echo '</div>';
     }
 
     /**
