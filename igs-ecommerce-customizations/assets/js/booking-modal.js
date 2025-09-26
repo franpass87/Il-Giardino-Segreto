@@ -14,6 +14,24 @@ jQuery(function ($) {
     let selectedVariation = null;
     let selectedAttributes = {};
     let unitPrice = 0;
+    let lastFocusedElement = null;
+
+    function setActiveOption(element) {
+        if (!element || !element.length) {
+            return;
+        }
+
+        optionsWrapper.find('.igs-booking-option').removeClass('is-active');
+        element.closest('.igs-booking-option').addClass('is-active');
+    }
+
+    function setFocusState(element, toggle) {
+        if (!element || !element.length) {
+            return;
+        }
+
+        element.closest('.igs-booking-option').toggleClass('is-focused', Boolean(toggle));
+    }
 
     function normaliseAttributes(attributes) {
         if (!attributes || typeof attributes !== 'object') {
@@ -72,6 +90,26 @@ jQuery(function ($) {
         return settings.variations || [];
     }
 
+    function getFocusableElements(container) {
+        if (!container || !container.length) {
+            return $();
+        }
+
+        return container
+            .find(
+                'a[href], area[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            )
+            .filter(':visible');
+    }
+
+    function focusFirstElement(container) {
+        const focusable = getFocusableElements(container);
+
+        if (focusable.length) {
+            focusable.first().trigger('focus');
+        }
+    }
+
     function renderOptions() {
         const variations = getVariations();
 
@@ -121,6 +159,7 @@ jQuery(function ($) {
             optionsWrapper.append(wrapper);
         });
 
+        setActiveOption(optionsWrapper.find('input[name="variation_id"]:checked'));
         updateTotal();
     }
 
@@ -135,17 +174,32 @@ jQuery(function ($) {
             return;
         }
 
+        lastFocusedElement = document.activeElement;
         renderOptions();
         switchView('booking');
         infoMessage.prop('hidden', true);
         modal.addClass('is-visible').attr('aria-hidden', 'false');
+        if (ctaButton.length) {
+            ctaButton.attr('aria-expanded', 'true');
+        }
         html.addClass('igs-modal-open');
         dialog.attr('tabindex', '-1').focus();
+        window.requestAnimationFrame(function () {
+            focusFirstElement(bookingView);
+        });
     }
 
     function closeModal() {
         modal.removeClass('is-visible').attr('aria-hidden', 'true');
         html.removeClass('igs-modal-open');
+        if (ctaButton.length) {
+            ctaButton.attr('aria-expanded', 'false');
+        }
+        if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+            window.requestAnimationFrame(function () {
+                lastFocusedElement.focus();
+            });
+        }
     }
 
     function switchView(view) {
@@ -156,6 +210,14 @@ jQuery(function ($) {
             infoView.attr('hidden', true);
             bookingView.attr('hidden', false);
         }
+
+        window.requestAnimationFrame(function () {
+            if ('info' === view) {
+                focusFirstElement(infoView);
+            } else {
+                focusFirstElement(bookingView);
+            }
+        });
     }
 
     ctaButton.on('click', openModal);
@@ -172,11 +234,47 @@ jQuery(function ($) {
         }
     });
 
+    dialog.on('keydown', function (event) {
+        if (event.key !== 'Tab') {
+            return;
+        }
+
+        const focusable = getFocusableElements(dialog);
+
+        if (!focusable.length) {
+            return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey) {
+            if (document.activeElement === first) {
+                event.preventDefault();
+                $(last).trigger('focus');
+            }
+        } else if (document.activeElement === last) {
+            event.preventDefault();
+            $(first).trigger('focus');
+        }
+    });
+
     optionsWrapper.on('change', 'input[name="variation_id"]', function () {
         selectedVariation = String($(this).val());
         unitPrice = parseFloat($(this).data('price')) || 0;
         selectedAttributes = normaliseAttributes($(this).data('attributes'));
+        setActiveOption($(this));
         updateTotal();
+    });
+
+    optionsWrapper.on('focus', 'input[name="variation_id"]', function () {
+        const element = $(this);
+        setActiveOption(element);
+        setFocusState(element, true);
+    });
+
+    optionsWrapper.on('blur', 'input[name="variation_id"]', function () {
+        setFocusState($(this), false);
     });
 
     $('.igs-booking-quantity__button').on('click', function () {
@@ -256,6 +354,9 @@ jQuery(function ($) {
                 if (response.success) {
                     $('#igs-info-form')[0].reset();
                     infoMessage.prop('hidden', false);
+                    window.requestAnimationFrame(function () {
+                        infoMessage.trigger('focus');
+                    });
                 } else {
                     window.alert((response && response.data && response.data.message) || settings.i18n.infoError || '');
                 }
