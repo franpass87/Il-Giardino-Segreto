@@ -2,6 +2,28 @@
 
 Tutte le modifiche rilevanti del plugin **IGS Ecommerce Customizations** sono documentate in questo file.
 
+## [2.1.0] - 2025-03-09
+
+### Added
+
+- **CountryFlags**: helper per associare bandiere emoji ai nomi dei paesi (card, hero, sidebar).
+- **BookingModal**: tab Prenotazione/Richiedi info, avviso carrello pieno, errore inline sul form info, campi obbligatori con asterisco.
+- **MapShortcode**: tile CartoDB Positron (mappa chiara), loading spinner, pannello errore con retry.
+- **MapMetabox**: feedback "Ricerca in corso..." e "Coordinate trovate" durante geocoding.
+- **GardenShortcodes**: animazione barrette livello al caricamento.
+
+### Changed
+
+- **ProductLoop**: barre durata/paese con colori brand, hover su card, cursor pointer, align-items start (no spazio bianco sotto).
+- **BookingModal**: focus trap, chiusura ESC, tap targets 44px su mobile, aria-live.
+- **TourLayout**: lazy load immagine hero con Intersection Observer.
+- **MapShortcode**: stile container con border-radius e shadow, pin con bordo bianco.
+
+### Fixed
+
+- **BookingModal**: simbolo euro nel totale (html_entity_decode su get_woocommerce_currency_symbol).
+- **BookingModal**: guard su trapFocus quando non ci sono elementi focusabili.
+
 ## [2.0.1] - 2025-03-09
 
 ### Changed

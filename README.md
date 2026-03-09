@@ -4,7 +4,7 @@ Plugin WordPress per le personalizzazioni WooCommerce del progetto **Il Giardino
 
 ## Metadati del plugin
 
-- **Versione:** 2.0.1
+- **Versione:** 2.1.0
 - **Autore:** Francesco Passeri
 - **Sito web:** [francescopasseri.com](https://francescopasseri.com)
 - **Email:** [info@francescopasseri.com](mailto:info@francescopasseri.com)

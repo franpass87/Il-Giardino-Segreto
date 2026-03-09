@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace IGS\Ecommerce\Frontend;
 
+use IGS\Ecommerce\Helper\CountryFlags;
 use IGS\Ecommerce\Helper\Locale;
 use WC_Product;
 
@@ -26,25 +27,42 @@ class ProductLoop
     public function enqueueStyles(): void
     {
         $shopPages = is_shop() || is_product_taxonomy() || is_product_category() || is_product_tag();
-        if (!$shopPages) {
-            return;
-        }
-        $css = '
-            .loop-tour-dates, .loop-tour-duration, .loop-tour-country {
-                font-size: 0.9em; color: #555; margin-top: 0.3em;
-            }
+
+        $cssShop = $shopPages ? '
             .woocommerce ul.products li.product .woocommerce-loop-product__title {
                 line-height: 1.4em; min-height: calc(1.4em * 3); margin-bottom: 0.5em; overflow: visible;
             }
-            .woocommerce ul.products li.product { border-radius: 10px; overflow: hidden; }
+        ' : '';
+
+        $cssGlobal = '
+            .loop-tour-dates { font-size: 0.9em; color: #555; margin-top: 0.3em; }
+            .loop-tour-duration {
+                font-size: 0.9em; font-weight: 600; color: #fff; background: #0e5763;
+                padding: 8px 12px; margin: 10px -15px 0; border-radius: 0;
+            }
+            .loop-tour-country {
+                font-size: 0.9em; font-weight: 600; color: #fff; background: #2a9d8f;
+                padding: 8px 12px; margin: 2px -15px 0; border-radius: 0 0 10px 10px;
+            }
+            .woocommerce ul.products li.product {
+                border-radius: 10px; overflow: hidden; position: relative; cursor: pointer;
+                transition: box-shadow .25s ease, transform .25s ease;
+            }
+            .woocommerce ul.products li.product:hover {
+                box-shadow: 0 8px 24px rgba(0,0,0,.12); transform: translateY(-2px);
+            }
             .woocommerce ul.products li.product a { display: block; border-radius: 10px; }
-            .woocommerce ul.products li.product { position: relative; overflow: hidden; }
             .woocommerce ul.products li.product .full-card-link {
                 position: absolute; top: 0; left: 0; width: 100%; height: 100%;
                 z-index: 10; text-indent: -9999px;
             }
+            .woocommerce ul.products { margin-bottom: 1.5em; align-items: start; }
         ';
-        wp_add_inline_style('woocommerce-general', $css);
+
+        $css = trim($cssShop . $cssGlobal);
+        if ($css !== '') {
+            wp_add_inline_style('woocommerce-general', $css);
+        }
     }
 
     public function renderLoopMeta(): void
@@ -81,7 +99,8 @@ class ProductLoop
         }
 
         if (!empty($paese)) {
-            echo '<div class="loop-tour-country">' . esc_html($paese) . '</div>';
+            $display = CountryFlags::withFlag($paese);
+            echo '<div class="loop-tour-country">' . esc_html($display) . '</div>';
         } else {
             echo '<div class="loop-tour-country">' . ($isIt ? 'Paese non specificato' : 'Country not specified') . '</div>';
         }

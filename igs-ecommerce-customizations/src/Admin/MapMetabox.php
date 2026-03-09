@@ -146,13 +146,18 @@ class MapMetabox
 
             $(document).on('click', '.trova-coord', function(e){
                 e.preventDefault();
-                var wrapper = $(this).closest('.tappa-item');
+                var btn = $(this);
+                var wrapper = btn.closest('.tappa-item');
                 var $nome = wrapper.find('input[name*="[nome]"]');
                 var $lat  = wrapper.find('input[name*="[lat]"]');
                 var $lon  = wrapper.find('input[name*="[lon]"]');
+                var $msg = wrapper.find('.igs-geo-feedback');
+                if(!$msg.length) $msg = $('<span class="igs-geo-feedback" style="margin-left:8px;font-size:13px;"></span>').insertAfter(btn);
                 var nomeLocalita = ($nome.val() || '').trim();
                 if(!nomeLocalita){ alert('Inserisci il nome della località'); return; }
 
+                btn.prop('disabled', true);
+                $msg.removeClass('success error').text('Ricerca in corso...').show();
                 var url = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(nomeLocalita);
                 fetch(url, { headers: {'Accept':'application/json'} })
                 .then(function(r){ return r.json(); })
@@ -160,11 +165,17 @@ class MapMetabox
                     if(Array.isArray(data) && data.length > 0){
                         $lat.val(data[0].lat);
                         $lon.val(data[0].lon);
+                        $msg.addClass('success').css('color','#00a32a').text('Coordinate trovate');
                     } else {
-                        alert('Località non trovata');
+                        $msg.addClass('error').css('color','#b32d2e').text('Località non trovata');
                     }
+                    setTimeout(function(){ $msg.fadeOut(); }, 2500);
                 })
-                .catch(function(){ alert('Errore nella ricerca coordinate'); });
+                .catch(function(){
+                    $msg.addClass('error').css('color','#b32d2e').text('Errore nella ricerca');
+                    setTimeout(function(){ $msg.fadeOut(); }, 2500);
+                })
+                .finally(function(){ btn.prop('disabled', false); });
             });
         });
         </script>

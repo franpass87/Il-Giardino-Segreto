@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace IGS\Ecommerce\Frontend;
 
+use IGS\Ecommerce\Helper\CountryFlags;
 use IGS\Ecommerce\Helper\Locale;
 use WC_Product;
 
@@ -63,6 +64,7 @@ class TourLayout
                 border-radius:0 0 12px 12px;
                 margin:-20px -20px 0; font-weight:bold;
             }
+            .custom-hero.igs-hero-lazy { background-color: #e8e8e8; }
             @media (min-width:769px) { .custom-hero { height:70vh; } }
             @media (max-width:768px) { .custom-tour-columns { flex-direction:column; } }
         ';
@@ -89,10 +91,11 @@ class TourLayout
         $imgId = $product->get_image_id();
         $imgUrl = $imgId ? wp_get_attachment_image_url($imgId, 'full') : wc_placeholder_img_src();
 
-        echo '<div class="custom-hero" style="background-image:url(' . esc_url($imgUrl) . ')">';
+        echo '<div class="custom-hero igs-hero-lazy" data-bg="' . esc_attr($imgUrl) . '">';
         echo '<div class="custom-hero-content">';
         echo '<h1>' . esc_html(get_the_title()) . '</h1>';
-        echo '<div class="country">' . ($paese ? esc_html($paese) : ($isIt ? 'Paese non specificato' : 'Country not specified')) . '</div>';
+        $countryDisplay = $paese ? CountryFlags::withFlag($paese) : ($isIt ? 'Paese non specificato' : 'Country not specified');
+        echo '<div class="country">' . esc_html($countryDisplay) . '</div>';
         if (is_array($ranges) && count($ranges) > 0) {
             echo '<div class="dates">' . esc_html($ranges[0]['start']) . ' → ' . esc_html($ranges[0]['end']) . '</div>';
         } else {
@@ -129,7 +132,31 @@ class TourLayout
         echo '<span>🗺️ ' . ($isIt ? 'Guida locale' : 'Local guide') . '</span>';
         echo '</div>';
 
-        echo '<div class="country-band">' . ($paese ? esc_html($paese) : ($isIt ? 'Paese non specificato' : 'Country not specified')) . '</div>';
+        $countryBandDisplay = $paese ? CountryFlags::withFlag($paese) : ($isIt ? 'Paese non specificato' : 'Country not specified');
+        echo '<div class="country-band">' . esc_html($countryBandDisplay) . '</div>';
         echo '</div></div></div>';
+        $this->renderHeroLazyScript();
+    }
+
+    private function renderHeroLazyScript(): void
+    {
+        ?>
+        <script>
+        (function(){
+            var el = document.querySelector('.igs-hero-lazy');
+            if(!el || !el.dataset.bg) return;
+            if('IntersectionObserver' in window){
+                var io = new IntersectionObserver(function(entries){
+                    if(entries[0].isIntersecting){
+                        el.style.backgroundImage = 'url(' + el.dataset.bg + ')';
+                        el.classList.remove('igs-hero-lazy');
+                        io.disconnect();
+                    }
+                }, { rootMargin: '50px' });
+                io.observe(el);
+            } else { el.style.backgroundImage = 'url(' + el.dataset.bg + ')'; el.classList.remove('igs-hero-lazy'); }
+        })();
+        </script>
+        <?php
     }
 }

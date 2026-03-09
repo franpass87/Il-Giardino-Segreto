@@ -57,7 +57,11 @@ class BookingModal
             'commErr' => $isIt ? 'Errore di comunicazione. Riprova.' : 'Communication error. Please try again.',
             'genericErr' => $isIt ? 'Si è verificato un errore. Riprova.' : 'An error occurred. Please try again.',
             'fillNameEmail' => $isIt ? 'Per favore, compila nome ed email.' : 'Please fill in name and email.',
+            'cartNotice' => $isIt ? 'Attenzione: procedendo al checkout, il carrello verrà svuotato e sostituito con questo tour.' : 'Note: proceeding to checkout will empty your cart and replace it with this tour.',
+            'tabBooking' => $isIt ? 'Prenotazione' : 'Booking',
+            'tabInfo' => $isIt ? 'Richiedi info' : 'Request info',
         ];
+        $cartCount = function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
         ?>
         <style>
         :root{--brand-color:#0e5763;--brand-color-hover:#0a434c;--background-light:#f8f9fa;--text-color:#333;--border-color:#dee2e6;--font-main:'foundersgrotesk',sans-serif}
@@ -91,18 +95,33 @@ class BookingModal
         .gs-btn-primary:hover{background:var(--brand-color-hover)}
         .gs-btn-secondary{background:none;border:1px solid var(--border-color);color:var(--text-color)}
         .gs-btn-secondary:hover{background:var(--border-color);color:#000}
-        @media(max-width:768px){#gs-fixed-cta{padding:0}#gs-open-modal{border-radius:0}.gs-modal-header,.gs-modal-body,.gs-modal-footer{padding-left:15px;padding-right:15px}}
+        .gs-modal-tabs{display:flex;border-bottom:1px solid var(--border-color);background:var(--background-light)}
+        .gs-tab{flex:1;padding:12px 16px;border:none;background:none;cursor:pointer;font-size:0.95rem;color:#666;transition:all .2s}
+        .gs-tab:hover{color:var(--text-color)}
+        .gs-tab.active{font-weight:600;color:var(--brand-color);border-bottom:2px solid var(--brand-color);margin-bottom:-1px}
+        .gs-cart-notice{padding:10px 20px;background:#fff3cd;color:#856404;font-size:0.9rem;border-bottom:1px solid #ffc107}
+        .gs-form-errors{padding:10px 20px;background:#f8d7da;color:#721c24;border-radius:6px;margin-bottom:15px;display:none}
+        .gs-form-errors:not(:empty){display:block}
+        .required{color:#b32d2e}
+        @media(max-width:768px){#gs-fixed-cta{padding:0}#gs-open-modal{border-radius:0;min-height:48px}.gs-modal-header,.gs-modal-body,.gs-modal-footer{padding-left:15px;padding-right:15px}.gs-btn,.gs-tab{min-height:44px;padding:12px 16px}}
         </style>
 
         <div id="gs-fixed-cta"><button id="gs-open-modal"><?php echo esc_html($L['cta']); ?></button></div>
 
-        <div id="gs-tour-modal" aria-hidden="true">
+        <div id="gs-tour-modal" aria-hidden="true" aria-live="polite" aria-atomic="true">
             <div class="gs-modal-content" role="dialog" aria-modal="true" aria-label="<?php echo esc_attr($productTitle); ?>">
                 <div class="gs-modal-header">
                     <h3><?php echo esc_html($productTitle); ?></h3>
                     <button type="button" class="gs-close-modal" aria-label="<?php echo esc_attr($L['closeAria']); ?>">×</button>
                 </div>
-                <div class="booking-view">
+                <div class="gs-modal-tabs" role="tablist">
+                    <button type="button" class="gs-tab active" data-view="booking" role="tab" aria-selected="true" aria-controls="gs-booking-panel"><?php echo esc_html($L['tabBooking']); ?></button>
+                    <button type="button" class="gs-tab" data-view="info" role="tab" aria-selected="false" aria-controls="gs-info-panel"><?php echo esc_html($L['tabInfo']); ?></button>
+                </div>
+                <div class="booking-view" id="gs-booking-panel" role="tabpanel">
+                    <?php if ($cartCount > 0) : ?>
+                    <div class="gs-cart-notice" id="gs-cart-notice"><?php echo esc_html($L['cartNotice']); ?></div>
+                    <?php endif; ?>
                     <div class="gs-modal-body">
                         <form id="tour-booking-form" onsubmit="return false;">
                             <div class="gs-form-group">
@@ -149,18 +168,19 @@ class BookingModal
                         <button type="button" id="go-to-info" class="gs-btn gs-btn-secondary"><?php echo esc_html($L['toInfo']); ?></button>
                     </div>
                 </div>
-                <div class="info-view">
+                <div class="info-view" id="gs-info-panel" role="tabpanel" aria-hidden="true">
                     <div class="gs-modal-body">
                         <div id="info-success-message"><strong><?php echo esc_html($L['thanks']); ?></strong><br><?php echo esc_html($L['infoSent']); ?></div>
                         <form id="info-form" onsubmit="return false;">
                             <input type="hidden" name="tour_id" value="<?php echo esc_attr((string) $productId); ?>">
+                            <div id="info-form-errors" class="gs-form-errors" role="alert" aria-live="polite"></div>
                             <div class="gs-form-group">
-                                <label for="info_name"><?php echo esc_html($L['name']); ?></label>
-                                <input type="text" id="info_name" name="info_name" required>
+                                <label for="info_name"><?php echo esc_html($L['name']); ?> <span class="required">*</span></label>
+                                <input type="text" id="info_name" name="info_name" required aria-required="true" aria-invalid="false">
                             </div>
                             <div class="gs-form-group">
-                                <label for="info_email"><?php echo esc_html($L['email']); ?></label>
-                                <input type="email" id="info_email" name="info_email" required>
+                                <label for="info_email"><?php echo esc_html($L['email']); ?> <span class="required">*</span></label>
+                                <input type="email" id="info_email" name="info_email" required aria-required="true" aria-invalid="false">
                             </div>
                             <div class="gs-form-group">
                                 <label for="info_comment"><?php echo esc_html($L['yourReq']); ?></label>
@@ -189,29 +209,50 @@ class BookingModal
                 if(!$sel.length) return;
                 var unit = parseFloat($sel.data('price')) || 0;
                 var qty = parseInt($('#tour-quantity').val(), 10) || 1;
-                $('#tour-price-total').html('<?php echo esc_js(get_woocommerce_currency_symbol()); ?>' + (unit*qty).toFixed(2).replace('.', ','));
+                $('#tour-price-total').html('<?php echo esc_js(html_entity_decode((string) get_woocommerce_currency_symbol(), ENT_QUOTES | ENT_HTML5, 'UTF-8')); ?>' + (unit*qty).toFixed(2).replace('.', ','));
             }
+            var lastFocused;
             function openModal(){
                 if(!$bookingForm.find('input[name="variation_id"]:checked').length){
                     $bookingForm.find('input[name="variation_id"]').first().prop('checked', true);
                 }
                 updatePrice();
                 $modal.removeClass('info-view-active');
+                switchView(false);
                 $('#info-success-message').hide();
+                $('#info-form-errors').empty().hide();
                 $infoForm.show();
                 $('.info-view .gs-modal-footer').show();
                 $modal.css('display','flex').addClass('is-visible').attr('aria-hidden','false');
+                $modal.find('[aria-live]').attr('aria-live','polite');
+                lastFocused = document.activeElement;
+                setTimeout(function(){ $modal.find('button, input, [tabindex]:not([tabindex="-1"])').first().focus(); }, 50);
             }
             function closeModal(){
                 $modal.removeClass('is-visible').attr('aria-hidden','true');
-                setTimeout(function(){ $modal.hide(); }, 300);
+                setTimeout(function(){ $modal.hide(); if(lastFocused && lastFocused.focus) lastFocused.focus(); }, 300);
+            }
+            function trapFocus(e){
+                if(e.key !== 'Tab' || !$modal.hasClass('is-visible')) return;
+                var focusable = $modal.find('button, input, textarea, [href], [tabindex]:not([tabindex="-1"])').filter(':visible');
+                var first = focusable.first()[0], last = focusable.last()[0];
+                if(!first || !last) return;
+                if(e.shiftKey){ if(document.activeElement === first){ e.preventDefault(); last.focus(); } }
+                else{ if(document.activeElement === last){ e.preventDefault(); first.focus(); } }
             }
 
+            $(document).on('keydown', function(e){ if(e.key === 'Escape' && $('#gs-tour-modal').hasClass('is-visible')){ e.preventDefault(); closeModal(); } });
+            $(document).on('keydown', '#gs-tour-modal', trapFocus);
+            function switchView(toInfo){
+                if(toInfo){ $modal.addClass('info-view-active'); $modal.find('.gs-tab[data-view="info"]').addClass('active').attr('aria-selected','true'); $modal.find('.gs-tab[data-view="booking"]').removeClass('active').attr('aria-selected','false'); $('#gs-info-panel').attr('aria-hidden','false'); $('#gs-booking-panel').attr('aria-hidden','true'); }
+                else{ $modal.removeClass('info-view-active'); $modal.find('.gs-tab[data-view="booking"]').addClass('active').attr('aria-selected','true'); $modal.find('.gs-tab[data-view="info"]').removeClass('active').attr('aria-selected','false'); $('#gs-booking-panel').attr('aria-hidden','false'); $('#gs-info-panel').attr('aria-hidden','true'); }
+            }
             $(document).on('click', '#gs-open-modal', function(e){ e.preventDefault(); openModal(); });
             $(document).on('click', '#gs-tour-modal', function(e){ if(e.target === this) closeModal(); });
             $(document).on('click', '.gs-close-modal', function(){ closeModal(); });
-            $(document).on('click', '#go-to-info', function(){ $modal.addClass('info-view-active'); });
-            $(document).on('click', '#back-to-booking', function(){ $modal.removeClass('info-view-active'); });
+            $(document).on('click', '.gs-tab', function(){ var v=$(this).data('view'); switchView(v==='info'); });
+            $(document).on('click', '#go-to-info', function(e){ e.preventDefault(); switchView(true); });
+            $(document).on('click', '#back-to-booking', function(e){ e.preventDefault(); switchView(false); });
 
             $bookingForm.on('change', 'input[name="variation_id"]', updatePrice);
             $(document).on('click', '.qty-plus', function(){ var v = parseInt($('#tour-quantity').val(),10)||1; $('#tour-quantity').val(v+1); updatePrice(); });
@@ -242,7 +283,15 @@ class BookingModal
 
             $(document).on('click', '#submit-info', function(){
                 var $btn = $(this);
-                if($('#info_name').val()==='' || $('#info_email').val()===''){ alert('<?php echo esc_js($L['fillNameEmail']); ?>'); return; }
+                var $err = $('#info-form-errors');
+                $err.empty().hide();
+                $('#info_name, #info_email').removeAttr('aria-invalid');
+                if($('#info_name').val()==='' || $('#info_email').val()===''){
+                    $err.text('<?php echo esc_js($L['fillNameEmail']); ?>').show();
+                    if($('#info_name').val()==='') $('#info_name').attr('aria-invalid','true').focus();
+                    else if($('#info_email').val()==='') $('#info_email').attr('aria-invalid','true').focus();
+                    return;
+                }
                 $btn.prop('disabled', true).text('<?php echo esc_js($L['wait']); ?>');
                 $.post(ajaxUrl, {
                     action: 'gs_handle_tour_info_request',
@@ -257,11 +306,11 @@ class BookingModal
                         $('.info-view .gs-modal-footer').hide();
                         $('#info-success-message').fadeIn();
                     }else{
-                        alert((r && r.data && r.data.message) || '<?php echo esc_js($L['genericErr']); ?>');
+                        $err.text((r && r.data && r.data.message) || '<?php echo esc_js($L['genericErr']); ?>').show();
                         $btn.prop('disabled', false).text('<?php echo esc_js($L['sendReq']); ?>');
                     }
                 }).fail(function(){
-                    alert('<?php echo esc_js($L['commErr']); ?>');
+                    $err.text('<?php echo esc_js($L['commErr']); ?>').show();
                     $btn.prop('disabled', false).text('<?php echo esc_js($L['sendReq']); ?>');
                 });
             });
