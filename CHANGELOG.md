@@ -2,6 +2,18 @@
 
 Tutte le modifiche rilevanti del plugin **IGS Ecommerce Customizations** sono documentate in questo file.
 
+## [2.0.0] - 2025-03-09
+
+### Changed
+
+- Riscrittura completa del plugin con architettura PSR-4 (scaffold FP).
+- Rimossi: CLI `wp igs flush-caches`, cache tour/geocoding/traduzioni, sistema traduzioni .po/.pot, upgrade routines, rate limiting geocoding.
+- Codice originale consolidato in classi modulari (Admin, Frontend, Shortcodes, Booking, Portfolio, Cart).
+
+### Fixed
+
+- Nessuna modifica funzionale rispetto al codice originale: meta keys, action AJAX e nonce invariati per compatibilità.
+
 ## [1.3.3] - 2025-09-27
 - Ottimizzato il calcolo runtime delle regole plurali nelle traduzioni per ridurre le valutazioni ripetute e garantire
   fallback sicuri.

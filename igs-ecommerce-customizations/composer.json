@@ -1,0 +1,12 @@
+{
+    "name": "franpass87/igs-ecommerce-customizations",
+    "description": "WooCommerce customizations for Il Giardino Segreto",
+    "autoload": {
+        "psr-4": {
+            "IGS\\Ecommerce\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0"
+    }
+}

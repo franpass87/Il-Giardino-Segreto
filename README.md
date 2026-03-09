@@ -1,104 +1,80 @@
 # IGS Ecommerce Customizations
 
-Plugin WordPress per gestire il catalogo tour e le personalizzazioni WooCommerce del progetto **Il Giardino Segreto**.
-Offre metabox dedicati, layout front-end su misura, strumenti di internazionalizzazione e utility operative pensate per un
-ambiente di produzione.
+Plugin WordPress per le personalizzazioni WooCommerce del progetto **Il Giardino Segreto**: catalogo tour, date, prenotazioni, mappa itinerario.
 
 ## Metadati del plugin
 
-- **Versione:** 1.3.3
+- **Versione:** 2.0.0
 - **Autore:** Francesco Passeri
-- **Sito web:** [francescopasseri.com](https://francescopasseri.com/)
-- **Email di riferimento:** [info@francescopasseri.com](mailto:info@francescopasseri.com)
+- **Sito web:** [francescopasseri.com](https://francescopasseri.com)
+- **Email:** [info@francescopasseri.com](mailto:info@francescopasseri.com)
 
 ## Funzionalità principali
 
-### Gestione catalogo e dati
-- Layout dedicato alla scheda tour con hero a tutta larghezza, colonna riassuntiva e sezione servizi attivata solo per i
-  prodotti identificati come tour.
-- Metabox avanzati per date, paese, punteggi "garden" e coordinate, con sanificazione dei dati, validazioni dedicate e
-  cache per ridurre l’accesso ai servizi di geocoding.
-- Schede portfolio arricchite con formattazione automatica delle date e supporto per loghi partner personalizzati tramite
-  filtro.
+### Admin
 
-### Esperienza di prenotazione e front-end
-- Modal di prenotazione AJAX che permette di raccogliere richieste senza svuotare il carrello, con controlli lato client e
-  lato server per evitare selezioni inconsistenti.
-- Shortcode per protagonista, livelli di difficoltà e mappa dell’itinerario basata su Leaflet caricabile da CDN
-  configurabile tramite filtri, con fallback per ambienti offline.
-- Personalizzazioni della lista prodotti, colonne amministrative e viste archivio pensate per mettere in evidenza i
-  metadati chiave dei tour.
+- Metabox date tour (repeater con datepicker) e paese
+- Metabox Dettagli Garden Tour (protagonista, livelli cultura/passeggiata/comfort/esclusività)
+- Metabox Date del Tour sui portfolio
+- Metabox Mappa del Viaggio (tappe con geocoding Nominatim)
+- Colonna "Date tour" in Prodotti
+- Impostazioni → Gestione Testo (sostituzioni globali pipe-separate)
 
-### Internazionalizzazione e contenuti
-- Gestione centralizzata delle sostituzioni testuali tramite pagina "Impostazioni → Gestione testo", con pattern regex
-  validati e cache dei risultati.
-- Loader delle traduzioni compatibile con contesti e plurali, con cache persistente e invalidazione automatica al cambio
-  di versione.
-- Pacchetti lingua `.pot` e `.po` già pronti per l’italiano, caricati direttamente senza necessità del binario `.mo`.
+### Frontend
 
-### Operatività, performance e sicurezza
-- Validazione preventiva delle dipendenze minime (WordPress, WooCommerce, PHP) sia all’attivazione sia durante il
-  bootstrap, con messaggistica chiara per gli amministratori.
-- Cache di individuazione dei prodotti tour con invalidazione automatica sugli aggiornamenti per ridurre gli accessi al
-  database.
-- Rate limiting per le richieste di geocoding e per il form informazioni, con strumenti di monitoraggio tramite log e
-  transients dedicati.
-- Routine di upgrade automatiche che svuotano le cache persistenti quando il plugin viene aggiornato, garantendo dati
-  coerenti senza interventi manuali.
-- Comando WP-CLI `wp igs flush-caches` per svuotare cache di tour, geocoding, rate limiting e traduzioni in ambienti con
-  cache persistenti.
-- Migliorie sulla gestione email (fallback dell’indirizzo amministratore) e sui processi AJAX per minimizzare errori e
-  dati inconsistenti.
+- Layout tour: hero full-width, sidebar con prezzo, durata, servizi, country band
+- Prezzi senza decimali, "da/from" per variabili
+- Loop prodotti: meta date/durata/paese, card cliccabile, no add-to-cart
+- Shop: titolo personalizzato IT/EN, breadcrumb nascosto
+- Shortcode `[protagonista_tour]` e `[livello_*]` per garden features
+- Shortcode `[mappa_viaggio id=""]` con Leaflet
+- Modal prenotazione: add-to-cart (svuota carrello) + richiesta informazioni
+- Portfolio: date nel titolo, logo partner per categoria `tour-in-partnership`
+- Carrello vuoto: pulsante "Ritorna al sito web" → homepage
 
 ## Requisiti minimi
 
-- PHP **7.4** o superiore
+- PHP **8.0** o superiore
 - WordPress **6.0** o superiore
 - WooCommerce **7.0** o superiore
+- CPT `portfolio` e tassonomia `portfolio_category` (es. Salient Portfolio)
 
 ## Installazione
 
-1. Comprimi il contenuto della cartella `igs-ecommerce-customizations` in un archivio `.zip`.
-2. Carica il pacchetto da **Plugin → Aggiungi nuovo** nel back-office WordPress e attivalo.
-3. Le personalizzazioni vengono applicate automaticamente ai prodotti tour; non è richiesta una configurazione iniziale.
+1. Comprimi la cartella `igs-ecommerce-customizations` in un archivio `.zip`
+2. Carica da **Plugin → Aggiungi nuovo** e attivalo
+3. Esegui `composer install` nella cartella del plugin (per autoload PSR-4)
 
-## Aggiornamento
+## Struttura
 
-- Prima di aggiornare effettua un backup completo di file e database.
-- Sostituisci la cartella del plugin con la nuova versione e assicurati di eseguire nuovamente `wp igs flush-caches` se
-  utilizzi cache persistenti.
-- Dopo l’aggiornamento verifica la sezione **Impostazioni → Gestione testo** e i metadati tour per confermare che non ci
-  siano avvisi o campi mancanti.
+```
+igs-ecommerce-customizations/
+├── igs-ecommerce-customizations.php
+├── composer.json
+├── uninstall.php
+└── src/
+    ├── Core/Plugin.php
+    ├── Helper/Locale.php
+    ├── Admin/ (TourProductMetabox, GardenMetabox, MapMetabox, ecc.)
+    ├── Frontend/ (WooCommerceDisabler, TourLayout, ProductLoop, ecc.)
+    ├── Shortcodes/ (GardenShortcodes, MapShortcode)
+    ├── Booking/BookingModal.php
+    ├── Portfolio/PortfolioTitleFilter.php
+    └── Cart/ReturnToShop.php
+```
 
 ## Disinstallazione
 
-La disinstallazione dal menu **Plugin → Plugin installati** rimuove automaticamente le opzioni di configurazione
-(`gw_string_replacements_global`) e azzera i transient creati dal plugin, evitando residui nel database.
-
-## Comandi WP-CLI
-
-Esegui `wp igs flush-caches` per ripulire cache e transient relativi a:
-
-- risultati della classificazione tour;
-- risposte di geocoding e relativi limiti;
-- limitatori di richiesta del form informazioni;
-- cataloghi di traduzioni caricati a runtime.
-
-Il comando restituisce un riepilogo puntuale degli elementi rimossi e termina con un messaggio di successo.
-
-## Localizzazione
-
-Se aggiungi o modifichi stringhe localizzate rigenera il template con `wp i18n make-pot` (o tool equivalente) e aggiorna
-`languages/igs-ecommerce-it_IT.po`. Il plugin carica direttamente i file `.po`, ma puoi includere un eventuale `.mo` se
-necessario per la distribuzione.
-
-## Supporto e contatti
-
-Per assistenza, richieste di personalizzazione o segnalazioni scrivi a
-[info@francescopasseri.com](mailto:info@francescopasseri.com) oppure visita
-[francescopasseri.com](https://francescopasseri.com/).
+Rimuove l'opzione `gw_string_replacements_global`.
 
 ## Documentazione storica
 
-Consulta il file [CHANGELOG.md](CHANGELOG.md) per la panoramica completa delle versioni e delle modifiche introdotte nel
-tempo.
+Vedi [CHANGELOG.md](CHANGELOG.md).
+
+## Autore
+
+**Francesco Passeri**
+
+- Sito: [francescopasseri.com](https://francescopasseri.com)
+- Email: [info@francescopasseri.com](mailto:info@francescopasseri.com)
+- GitHub: [github.com/franpass87](https://github.com/franpass87)
