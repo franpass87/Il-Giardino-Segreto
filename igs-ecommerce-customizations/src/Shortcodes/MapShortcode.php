@@ -24,6 +24,18 @@ class MapShortcode
             return '';
         }
 
+        $tappeForJs = [];
+        foreach ($tappe as $t) {
+            $tappeForJs[] = [
+                'nome' => $t['nome'] ?? '',
+                'descrizione' => $t['descrizione'] ?? '',
+                'lat' => $t['lat'] ?? '',
+                'lon' => $t['lon'] ?? '',
+                'nomeSafe' => esc_html($t['nome'] ?? ''),
+                'descrizioneSafe' => esc_html($t['descrizione'] ?? ''),
+            ];
+        }
+
         wp_enqueue_script('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', [], null, true);
         wp_enqueue_style('leaflet-css', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
 
@@ -43,7 +55,7 @@ class MapShortcode
                 attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            var tappe = <?php echo wp_json_encode($tappe); ?>;
+            var tappe = <?php echo wp_json_encode($tappeForJs); ?>;
             var punti = [];
 
             tappe.forEach(function(tappa, i){
@@ -55,7 +67,7 @@ class MapShortcode
                         iconSize: [36, 36],
                         popupAnchor: [0, -18]
                     })
-                }).addTo(map).bindPopup('<b>'+ (tappa.nome || '') +'</b><br>'+ (tappa.descrizione || ''), { maxWidth: 250 });
+                }).addTo(map).bindPopup('<b>'+ (tappa.nomeSafe || '') +'</b><br>'+ (tappa.descrizioneSafe || ''), { maxWidth: 250 });
                 punti.push([tappa.lat, tappa.lon]);
             });
 

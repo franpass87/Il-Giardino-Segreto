@@ -2,6 +2,17 @@
 
 Tutte le modifiche rilevanti del plugin **IGS Ecommerce Customizations** sono documentate in questo file.
 
+## [2.0.1] - 2025-03-09
+
+### Changed
+
+- **TourLayout**: uso di `apply_filters('woocommerce_get_price_html', '', $product)` al posto di istanziare `PriceDisplay` direttamente, per rispettare la catena di filtri WooCommerce.
+- **ShopCustomizations**: CSS shop iniettato tramite `wp_add_inline_style('woocommerce-general', ...)` su `wp_enqueue_scripts` invece di `echo` in `wp_head`.
+
+### Fixed
+
+- **BookingModal**: sanitizzazione del nome nell'header Reply-To per prevenire header injection (`\r`, `\n`, `<`, `>` rimossi).
+
 ## [2.0.0] - 2025-03-09
 
 ### Changed

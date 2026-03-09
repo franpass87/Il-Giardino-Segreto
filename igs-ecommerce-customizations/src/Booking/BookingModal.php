@@ -334,10 +334,11 @@ class BookingModal
         }
         $body .= "</body></html>";
 
+        $safeName = str_replace(["\r", "\n", '<', '>'], '', $name);
         $headers = [
             'Content-Type: text/html; charset=UTF-8',
             'From: ' . wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES) . ' <' . $adminEmail . '>',
-            'Reply-To: ' . $name . ' <' . $email . '>',
+            'Reply-To: ' . $safeName . ' <' . $email . '>',
         ];
 
         if (wp_mail($adminEmail, $subject, $body, $headers)) {

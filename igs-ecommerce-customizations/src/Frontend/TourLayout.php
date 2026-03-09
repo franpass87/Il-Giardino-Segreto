@@ -105,8 +105,7 @@ class TourLayout
         echo '<div class="custom-tour-desc">' . wp_kses_post($excerpt) . '</div>';
         echo '<div class="custom-tour-sidebar">';
 
-        $priceDisplay = new PriceDisplay();
-        $priceHtml = $priceDisplay->filterPriceHtml('', $product);
+        $priceHtml = apply_filters('woocommerce_get_price_html', '', $product);
         echo '<div class="price">' . $priceHtml . '</div>';
         echo '<div class="installment">' . ($isIt ? 'Pagamento a rate disponibile' : 'Installment payment available') . '</div>';
 

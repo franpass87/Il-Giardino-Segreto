@@ -89,15 +89,16 @@ class TourProductMetabox
             delete_post_meta($postId, '_date_ranges');
         } else {
             $ranges = [];
-            foreach ($_POST['date_ranges']['start'] as $i => $start) {
-                $end = $_POST['date_ranges']['end'][$i] ?? '';
-                if (
-                    preg_match('/^\d{2}\/\d{2}\/\d{4}$/', sanitize_text_field($start))
-                    && preg_match('/^\d{2}\/\d{2}\/\d{4}$/', sanitize_text_field($end))
-                ) {
+            $startArr = isset($_POST['date_ranges']['start']) && is_array($_POST['date_ranges']['start']) ? wp_unslash($_POST['date_ranges']['start']) : [];
+            $endArr = isset($_POST['date_ranges']['end']) && is_array($_POST['date_ranges']['end']) ? wp_unslash($_POST['date_ranges']['end']) : [];
+            foreach ($startArr as $i => $start) {
+                $end = $endArr[$i] ?? '';
+                $start = sanitize_text_field($start);
+                $end = sanitize_text_field($end);
+                if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $start) && preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $end)) {
                     $ranges[] = [
-                        'start' => sanitize_text_field($start),
-                        'end' => sanitize_text_field($end),
+                        'start' => $start,
+                        'end' => $end,
                     ];
                 }
             }

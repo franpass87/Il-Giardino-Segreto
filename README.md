@@ -4,7 +4,7 @@ Plugin WordPress per le personalizzazioni WooCommerce del progetto **Il Giardino
 
 ## Metadati del plugin
 
-- **Versione:** 2.0.0
+- **Versione:** 2.0.1
 - **Autore:** Francesco Passeri
 - **Sito web:** [francescopasseri.com](https://francescopasseri.com)
 - **Email:** [info@francescopasseri.com](mailto:info@francescopasseri.com)
@@ -41,9 +41,34 @@ Plugin WordPress per le personalizzazioni WooCommerce del progetto **Il Giardino
 
 ## Installazione
 
-1. Comprimi la cartella `igs-ecommerce-customizations` in un archivio `.zip`
+1. Comprimi la cartella `igs-ecommerce-customizations` in un archivio `.zip` (includi `vendor/` se presente, oppure esegui `composer install` dopo l’upload)
 2. Carica da **Plugin → Aggiungi nuovo** e attivalo
-3. Esegui `composer install` nella cartella del plugin (per autoload PSR-4)
+3. Se la cartella `vendor/` non è presente: esegui `composer install` nella cartella del plugin
+
+## Migrazione da Code Snippets
+
+Se usavi snippet PHP in Code Snippets per le personalizzazioni IGS:
+
+1. **Backup** del database e dei file
+2. **Installa e attiva** il plugin IGS Ecommerce Customizations (dopo `composer install`)
+3. **Verifica** che l’opzione `gw_string_replacements_global` sia presente in Opzioni (Impostazioni → Gestione Testo)
+4. **Disattiva** gli snippet IGS in Code Snippets (non eliminarli subito: tieni un backup)
+5. **Controlla** le pagine shop, singolo prodotto, carrello vuoto e portfolio
+
+### Checklist funzionalità (parità con gli snippet)
+
+| Funzionalità | Verifica |
+|--------------|----------|
+| Layout prodotto: hero, sidebar, servizi | Pagina singolo tour |
+| Date tour, paese, prezzo senza decimali | Scheda prodotto + frontend |
+| Modal prenotazione + richiesta info | Bottone "Scopri e Prenota" |
+| Loop: date, durata, paese, card cliccabile | Pagina shop/archivio |
+| Shortcode `[protagonista_tour]`, `[livello_*]` | Nei template |
+| Shortcode `[mappa_viaggio id=""]` | Dove usato |
+| Portfolio: date nel titolo, logo partner | Loop portfolio |
+| Shop: titolo, no breadcrumb | Pagina shop |
+| Carrello vuoto: "Ritorna al sito web" | Carrello vuoto |
+| Gestione Testo (sostituzioni) | Impostazioni → Gestione Testo |
 
 ## Struttura
 

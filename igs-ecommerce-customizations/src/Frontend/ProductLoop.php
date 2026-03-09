@@ -95,7 +95,6 @@ class ProductLoop
         }
         $url = esc_url(get_permalink($product->get_id()));
         $title = esc_attr(get_the_title($product->get_id()));
-        $label = Locale::isIt() ? 'Vai al tour' : 'View tour';
-        echo '<a href="' . $url . '" class="full-card-link" aria-label="' . $title . '">' . esc_html($label) . '</a>';
+        echo '<a href="' . $url . '" class="full-card-link" aria-label="' . $title . '">' . esc_html('Vai al tour') . '</a>';
     }
 }

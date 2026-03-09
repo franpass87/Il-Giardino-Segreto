@@ -12,7 +12,7 @@ class ShopCustomizations
     {
         add_action('template_redirect', [$this, 'removeShopBreadcrumb']);
         add_filter('woocommerce_page_title', [$this, 'filterPageTitle']);
-        add_action('wp_head', [$this, 'headStyles']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueStyles'], 20);
     }
 
     public function removeShopBreadcrumb(): void
@@ -30,16 +30,12 @@ class ShopCustomizations
         return $title;
     }
 
-    public function headStyles(): void
+    public function enqueueStyles(): void
     {
         if (!is_shop()) {
             return;
         }
-        echo '<style>
-            .woocommerce-products-header h1.page-title,
-            .woocommerce-page .page-title,
-            .woocommerce .page-title { text-align: center !important; margin-top: 35px; }
-            nav.woocommerce-breadcrumb { display: none !important; }
-        </style>';
+        $css = '.woocommerce-products-header h1.page-title,.woocommerce-page .page-title,.woocommerce .page-title{text-align:center!important;margin-top:35px}nav.woocommerce-breadcrumb{display:none!important}';
+        wp_add_inline_style('woocommerce-general', $css);
     }
 }

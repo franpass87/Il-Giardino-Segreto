@@ -26,9 +26,14 @@ class PortfolioTitleFilter
             return $title;
         }
 
-        setlocale(LC_TIME, 'it_IT.UTF-8');
-        $dataPartenzaFmt = ucfirst((string) strftime('%d %b %Y', strtotime($dataPartenza)));
-        $dataArrivoFmt = ucfirst((string) strftime('%d %b %Y', strtotime($dataArrivo)));
+        $tsPartenza = strtotime($dataPartenza);
+        $tsArrivo = strtotime($dataArrivo);
+        if ($tsPartenza === false || $tsArrivo === false) {
+            return $title;
+        }
+
+        $dataPartenzaFmt = date_i18n('d M Y', $tsPartenza);
+        $dataArrivoFmt = date_i18n('d M Y', $tsArrivo);
 
         $cssClass = is_singular('portfolio') ? 'tour-date-single' : 'tour-date-loop';
         $dateHtml = '<div class="' . esc_attr($cssClass) . '">' . esc_html($dataPartenzaFmt) . ' → ' . esc_html($dataArrivoFmt) . '</div>';
