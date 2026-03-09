@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace IGS\Ecommerce\Admin;
 
-use IGS\Ecommerce\Helper\Locale;
-
 class ProductColumns
 {
     public function register(): void
@@ -18,7 +16,7 @@ class ProductColumns
     public function addColumn(array $columns): array
     {
         $new = [];
-        $label = Locale::isIt() ? 'Date tour' : 'Tour dates';
+        $label = __('Date tour', 'igs-ecommerce');
 
         foreach ($columns as $key => $val) {
             $new[$key] = $val;

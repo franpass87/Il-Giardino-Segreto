@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace IGS\Ecommerce\Core;
 
+use IGS\Ecommerce\Admin\EmailSettings;
 use IGS\Ecommerce\Admin\GardenMetabox;
 use IGS\Ecommerce\Admin\GlobalStringsSettings;
 use IGS\Ecommerce\Admin\MapMetabox;
@@ -16,6 +17,7 @@ use IGS\Ecommerce\Frontend\PriceDisplay;
 use IGS\Ecommerce\Frontend\ProductLoop;
 use IGS\Ecommerce\Frontend\ShopCustomizations;
 use IGS\Ecommerce\Frontend\TourLayout;
+use IGS\Ecommerce\Frontend\TourProductTabs;
 use IGS\Ecommerce\Frontend\WooCommerceDisabler;
 use IGS\Ecommerce\Portfolio\PortfolioTitleFilter;
 use IGS\Ecommerce\Shortcodes\GardenShortcodes;
@@ -46,9 +48,11 @@ final class Plugin
         (new MapMetabox())->register();
         (new ProductColumns())->register();
         (new GlobalStringsSettings())->register();
+        (new EmailSettings())->register();
 
         (new PriceDisplay())->register();
         (new TourLayout())->register();
+        (new TourProductTabs())->register();
         (new ProductLoop())->register();
         (new ShopCustomizations())->register();
 

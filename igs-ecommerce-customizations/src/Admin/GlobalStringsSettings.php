@@ -17,8 +17,8 @@ class GlobalStringsSettings
     public function addMenu(): void
     {
         add_options_page(
-            'Gestione Testo Globale',
-            'Gestione Testo',
+            __('Gestione Testo Globale', 'igs-ecommerce'),
+            __('Gestione Testo', 'igs-ecommerce'),
             'manage_options',
             'gw-global-strings',
             [$this, 'renderPage']
@@ -33,14 +33,14 @@ class GlobalStringsSettings
 
         add_settings_section(
             'gw_global_strings_section',
-            'Regole di Sostituzione Testo',
+            __('Regole di Sostituzione Testo', 'igs-ecommerce'),
             [$this, 'sectionCallback'],
             'gw-global-strings'
         );
 
         add_settings_field(
             'gw_string_replacements_global_field',
-            'Inserisci le tue regole',
+            __('Inserisci le tue regole', 'igs-ecommerce'),
             [$this, 'fieldCallback'],
             'gw-global-strings',
             'gw_global_strings_section'
@@ -71,7 +71,7 @@ class GlobalStringsSettings
                 <?php
                 settings_fields('gw_global_strings_group');
                 do_settings_sections('gw-global-strings');
-                submit_button('Salva Modifiche');
+                submit_button(__('Salva Modifiche', 'igs-ecommerce'));
                 ?>
             </form>
         </div>

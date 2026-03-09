@@ -76,8 +76,8 @@ class MapMetabox
             $pulite = [];
             foreach ($raw as $t) {
                 $nome = isset($t['nome']) ? sanitize_text_field($t['nome']) : '';
-                $lat = isset($t['lat']) ? sanitize_text_field($t['lat']) : '';
-                $lon = isset($t['lon']) ? sanitize_text_field($t['lon']) : '';
+                $lat = isset($t['lat']) ? $this->sanitizeCoord($t['lat'], -90, 90) : '';
+                $lon = isset($t['lon']) ? $this->sanitizeCoord($t['lon'], -180, 180) : '';
                 $desc = isset($t['descrizione']) ? sanitize_textarea_field($t['descrizione']) : '';
                 if ($nome !== '') {
                     $pulite[] = [
@@ -96,6 +96,13 @@ class MapMetabox
         } else {
             delete_post_meta($postId, '_mappa_tappe');
         }
+    }
+
+    private function sanitizeCoord(mixed $val, float $min, float $max): string
+    {
+        $v = is_numeric($val) ? (float) $val : 0.0;
+        $v = max($min, min($max, $v));
+        return $v !== 0.0 || $val === '0' || $val === 0 ? (string) round($v, 6) : '';
     }
 
     private function renderScript(): void

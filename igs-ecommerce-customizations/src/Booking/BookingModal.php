@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace IGS\Ecommerce\Booking;
 
-use IGS\Ecommerce\Helper\Locale;
+use IGS\Ecommerce\Admin\EmailSettings;
 use WC_Product;
 
 class BookingModal
@@ -29,37 +29,36 @@ class BookingModal
             return;
         }
 
-        $isIt = Locale::isIt();
         $productId = $product->get_id();
         $productTitle = $product->get_title();
 
         $L = [
-            'cta' => $isIt ? 'Scopri e Prenota' : 'Discover & Book',
-            'closeAria' => $isIt ? 'Chiudi finestra' : 'Close window',
-            'choose' => $isIt ? 'Scegli la tua opzione:' : 'Choose your option:',
-            'single' => $isIt ? 'Opzione unica' : 'Single option',
-            'noOptions' => $isIt ? 'Non ci sono opzioni di acquisto disponibili per questo prodotto.' : 'No purchase options are available for this product.',
-            'qty' => $isIt ? 'Numero persone:' : 'Number of people:',
-            'qtyMinus' => $isIt ? 'Diminuisci quantità' : 'Decrease quantity',
-            'qtyPlus' => $isIt ? 'Aumenta quantità' : 'Increase quantity',
-            'total' => $isIt ? 'Totale' : 'Total',
-            'toCheckout' => $isIt ? 'Procedi al Checkout' : 'Proceed to Checkout',
-            'toInfo' => $isIt ? 'Richiedi Informazioni' : 'Request Information',
-            'thanks' => $isIt ? 'Grazie!' : 'Thank you!',
-            'infoSent' => $isIt ? 'La tua richiesta è stata inviata. Ti risponderemo al più presto.' : 'Your request has been sent. We will get back to you shortly.',
-            'name' => $isIt ? 'Nome' : 'Name',
-            'email' => 'Email',
-            'yourReq' => $isIt ? 'La tua richiesta (opzionale)' : 'Your request (optional)',
-            'sendReq' => $isIt ? 'Invia Richiesta' : 'Send Request',
-            'back' => $isIt ? 'Torna alla Prenotazione' : 'Back to Booking',
-            'alertChoose' => $isIt ? "Per favore, seleziona un'opzione prima di procedere." : 'Please select an option before proceeding.',
-            'wait' => $isIt ? 'Attendi...' : 'Please wait…',
-            'commErr' => $isIt ? 'Errore di comunicazione. Riprova.' : 'Communication error. Please try again.',
-            'genericErr' => $isIt ? 'Si è verificato un errore. Riprova.' : 'An error occurred. Please try again.',
-            'fillNameEmail' => $isIt ? 'Per favore, compila nome ed email.' : 'Please fill in name and email.',
-            'cartNotice' => $isIt ? 'Attenzione: procedendo al checkout, il carrello verrà svuotato e sostituito con questo tour.' : 'Note: proceeding to checkout will empty your cart and replace it with this tour.',
-            'tabBooking' => $isIt ? 'Prenotazione' : 'Booking',
-            'tabInfo' => $isIt ? 'Richiedi info' : 'Request info',
+            'cta' => __('Scopri e Prenota', 'igs-ecommerce'),
+            'closeAria' => __('Chiudi finestra', 'igs-ecommerce'),
+            'choose' => __('Scegli la tua opzione:', 'igs-ecommerce'),
+            'single' => __('Opzione unica', 'igs-ecommerce'),
+            'noOptions' => __('Non ci sono opzioni di acquisto disponibili per questo prodotto.', 'igs-ecommerce'),
+            'qty' => __('Numero persone:', 'igs-ecommerce'),
+            'qtyMinus' => __('Diminuisci quantità', 'igs-ecommerce'),
+            'qtyPlus' => __('Aumenta quantità', 'igs-ecommerce'),
+            'total' => __('Totale', 'igs-ecommerce'),
+            'toCheckout' => __('Procedi al Checkout', 'igs-ecommerce'),
+            'toInfo' => __('Richiedi Informazioni', 'igs-ecommerce'),
+            'thanks' => __('Grazie!', 'igs-ecommerce'),
+            'infoSent' => __('La tua richiesta è stata inviata. Ti risponderemo al più presto.', 'igs-ecommerce'),
+            'name' => __('Nome', 'igs-ecommerce'),
+            'email' => __('Email', 'igs-ecommerce'),
+            'yourReq' => __('La tua richiesta (opzionale)', 'igs-ecommerce'),
+            'sendReq' => __('Invia Richiesta', 'igs-ecommerce'),
+            'back' => __('Torna alla Prenotazione', 'igs-ecommerce'),
+            'alertChoose' => __("Per favore, seleziona un'opzione prima di procedere.", 'igs-ecommerce'),
+            'wait' => __('Attendi...', 'igs-ecommerce'),
+            'commErr' => __('Errore di comunicazione. Riprova.', 'igs-ecommerce'),
+            'genericErr' => __('Si è verificato un errore. Riprova.', 'igs-ecommerce'),
+            'fillNameEmail' => __('Per favore, compila nome ed email.', 'igs-ecommerce'),
+            'cartNotice' => __('Attenzione: procedendo al checkout, il carrello verrà svuotato e sostituito con questo tour.', 'igs-ecommerce'),
+            'tabBooking' => __('Prenotazione', 'igs-ecommerce'),
+            'tabInfo' => __('Richiedi info', 'igs-ecommerce'),
         ];
         $cartCount = function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
         ?>
@@ -322,10 +321,10 @@ class BookingModal
     public function ajaxAddToCart(): void
     {
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'add_to_cart_nonce')) {
-            wp_send_json_error(['message' => 'Verifica di sicurezza fallita.']);
+            wp_send_json_error(['message' => __('Verifica di sicurezza fallita.', 'igs-ecommerce')]);
         }
         if (!isset($_POST['tour_id']) || !isset($_POST['quantity'])) {
-            wp_send_json_error(['message' => 'Dati mancanti.']);
+            wp_send_json_error(['message' => __('Dati mancanti.', 'igs-ecommerce')]);
         }
 
         $productId = absint($_POST['tour_id']);
@@ -333,7 +332,7 @@ class BookingModal
         $variationId = isset($_POST['variation_id']) ? absint($_POST['variation_id']) : 0;
 
         if (!function_exists('WC') || !WC()->cart) {
-            wp_send_json_error(['message' => 'WooCommerce non è attivo.']);
+            wp_send_json_error(['message' => __('WooCommerce non è attivo.', 'igs-ecommerce')]);
         }
 
         WC()->cart->empty_cart();
@@ -343,16 +342,16 @@ class BookingModal
             : WC()->cart->add_to_cart($productId, $quantity);
 
         if ($added) {
-            wp_send_json_success(['message' => 'Prodotto aggiunto al carrello.']);
+            wp_send_json_success(['message' => __('Prodotto aggiunto al carrello.', 'igs-ecommerce')]);
         } else {
-            wp_send_json_error(['message' => 'Impossibile aggiungere il prodotto al carrello. Potrebbe non essere disponibile.']);
+            wp_send_json_error(['message' => __('Impossibile aggiungere il prodotto al carrello. Potrebbe non essere disponibile.', 'igs-ecommerce')]);
         }
     }
 
     public function ajaxInfoRequest(): void
     {
         if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'tour_info_nonce')) {
-            wp_send_json_error(['message' => 'Verifica di sicurezza fallita.']);
+            wp_send_json_error(['message' => __('Verifica di sicurezza fallita.', 'igs-ecommerce')]);
         }
 
         $tourId = isset($_POST['tour_id']) ? absint($_POST['tour_id']) : 0;
@@ -361,39 +360,33 @@ class BookingModal
         $comment = isset($_POST['info_comment']) ? sanitize_textarea_field(wp_unslash($_POST['info_comment'])) : '';
 
         if (empty($name) || !is_email($email) || empty($tourId)) {
-            wp_send_json_error(['message' => 'Per favore, compila correttamente nome ed email.']);
+            wp_send_json_error(['message' => __('Per favore, compila correttamente nome ed email.', 'igs-ecommerce')]);
         }
 
-        $adminEmail = get_option('admin_email');
+        $recipients = EmailSettings::getRecipients();
+        if ($recipients === '') {
+            $recipients = get_option('admin_email');
+        }
         $product = wc_get_product($tourId);
-        $tourTitle = $product ? $product->get_name() : 'Tour non specificato';
+        $tourTitle = $product ? $product->get_name() : __('Tour non specificato', 'igs-ecommerce');
+        $messaggio = $comment !== '' ? nl2br(esc_html($comment)) : '—';
 
-        $subject = "Richiesta informazioni per il tour: {$tourTitle}";
-
-        $body = "<html><body style='font-family: sans-serif;'>";
-        $body .= "<h2>Nuova Richiesta Informazioni</h2>";
-        $body .= "<p>Hai ricevuto una nuova richiesta per il tour: <strong>" . esc_html($tourTitle) . "</strong></p>";
-        $body .= "<ul>";
-        $body .= "<li><strong>Nome:</strong> " . esc_html($name) . "</li>";
-        $body .= "<li><strong>Email:</strong> " . esc_html($email) . "</li>";
-        $body .= "</ul>";
-        if (!empty($comment)) {
-            $body .= "<h4>Messaggio:</h4>";
-            $body .= "<p style='border-left: 3px solid #eee; padding-left: 15px; font-style: italic;'>" . nl2br(esc_html($comment)) . "</p>";
-        }
-        $body .= "</body></html>";
+        $subject = str_replace('{tour_title}', $tourTitle, EmailSettings::getSubjectTemplate());
+        $body = str_replace(
+            ['{tour_title}', '{nome}', '{email}', '{messaggio}'],
+            [esc_html($tourTitle), esc_html($name), esc_html($email), $messaggio],
+            EmailSettings::getBodyTemplate()
+        );
 
         $safeName = str_replace(["\r", "\n", '<', '>'], '', $name);
-        $headers = [
-            'Content-Type: text/html; charset=UTF-8',
-            'From: ' . wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES) . ' <' . $adminEmail . '>',
+        $headers = array_merge(EmailSettings::buildHeaders(), [
             'Reply-To: ' . $safeName . ' <' . $email . '>',
-        ];
+        ]);
 
-        if (wp_mail($adminEmail, $subject, $body, $headers)) {
-            wp_send_json_success(['message' => 'Email inviata con successo.']);
+        if (wp_mail($recipients, $subject, $body, $headers)) {
+            wp_send_json_success(['message' => __('Email inviata con successo.', 'igs-ecommerce')]);
         } else {
-            wp_send_json_error(['message' => "Impossibile inviare l'email. Riprova più tardi."]);
+            wp_send_json_error(['message' => __("Impossibile inviare l'email. Riprova più tardi.", 'igs-ecommerce')]);
         }
     }
 }

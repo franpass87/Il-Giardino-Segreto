@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace IGS\Ecommerce\Shortcodes;
 
-use IGS\Ecommerce\Helper\Locale;
-
 class MapShortcode
 {
     public function register(): void
@@ -26,7 +24,6 @@ class MapShortcode
             return '';
         }
 
-        $isIt = Locale::isIt();
         $tappeForJs = [];
         foreach ($tappe as $t) {
             $tappeForJs[] = [
@@ -66,8 +63,8 @@ class MapShortcode
         <div class="mappa-viaggio-wrapper">
         <div class="mappa-viaggio-loading" id="mappa-loading-<?php echo (int) $postId; ?>"></div>
         <div class="mappa-viaggio-error" id="mappa-error-<?php echo (int) $postId; ?>">
-            <p><?php echo esc_html($isIt ? 'Errore nel caricamento della mappa.' : 'Map loading error.'); ?></p>
-            <button type="button" class="button"><?php echo esc_html($isIt ? 'Riprova' : 'Retry'); ?></button>
+            <p><?php echo esc_html__('Errore nel caricamento della mappa.', 'igs-ecommerce'); ?></p>
+            <button type="button" class="button"><?php echo esc_html__('Riprova', 'igs-ecommerce'); ?></button>
         </div>
         <div id="mappa-viaggio-<?php echo (int) $postId; ?>"></div>
         </div>

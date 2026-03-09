@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace IGS\Ecommerce\Cart;
 
-use IGS\Ecommerce\Helper\Locale;
-
 class ReturnToShop
 {
     public function register(): void
@@ -21,6 +19,6 @@ class ReturnToShop
 
     public function filterText(string $text): string
     {
-        return Locale::isIt() ? 'Ritorna al sito web' : 'Return to website';
+        return __('Ritorna al sito web', 'igs-ecommerce');
     }
 }

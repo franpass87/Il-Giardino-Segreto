@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace IGS\Ecommerce\Frontend;
 
 use IGS\Ecommerce\Helper\CountryFlags;
-use IGS\Ecommerce\Helper\Locale;
 use WC_Product;
 
 class ProductLoop
@@ -35,21 +34,65 @@ class ProductLoop
         ' : '';
 
         $cssGlobal = '
-            .loop-tour-dates { font-size: 0.9em; color: #555; margin-top: 0.3em; }
+            .loop-tour-dates, .loop-tour-country {
+                font-size: 22px;
+                color: #555;
+                margin-top: 10px;
+                text-align: center;
+                font-weight: bold;
+                font-family: \'the-seasons-regular\';
+            }
+            .loop-tour-dates, .loop-tour-duration, .loop-tour-country {
+                font-size: 20px;
+                color: #555;
+                margin-top: 10px;
+                text-align: center;
+            }
             .loop-tour-duration {
-                font-size: 0.9em; font-weight: 600; color: #fff; background: #0e5763;
-                padding: 8px 12px; margin: 10px -15px 0; border-radius: 0;
+                background: #0b5764;
+                color: white;
+                padding-top: 5px;
             }
             .loop-tour-country {
-                font-size: 0.9em; font-weight: 600; color: #fff; background: #2a9d8f;
-                padding: 8px 12px; margin: 2px -15px 0; border-radius: 0 0 10px 10px;
+                font-size: 20px;
+                color: #ffffff;
+                margin-top: 0;
+                text-align: center;
+                background: #8fb159;
+                padding-bottom: 5px;
+            }
+            .tour-date-loop {
+                font-family: \'the-seasons-regular\';
+                font-weight: bold !important;
+                text-align: center !important;
+                background: #e0e9eb !important;
+                padding-bottom: 0 !important;
+                margin-bottom: 0 !important;
+                margin-top: 20px !important;
+                border-radius: 15px !important;
+                font-size: 15px !important;
+            }
+            .tour-date-single {
+                font-family: \'the-seasons-regular\';
+                font-weight: bold !important;
+                text-align: center !important;
+                background: #e0e9eb !important;
+                padding: 5px !important;
+                margin-bottom: 0 !important;
+                margin-top: 20px !important;
+                border-radius: 15px !important;
+                font-size: 20px !important;
             }
             .woocommerce ul.products li.product {
-                border-radius: 10px; overflow: hidden; position: relative; cursor: pointer;
+                border-radius: 10px;
+                overflow: hidden;
+                position: relative;
+                cursor: pointer;
                 transition: box-shadow .25s ease, transform .25s ease;
             }
             .woocommerce ul.products li.product:hover {
-                box-shadow: 0 8px 24px rgba(0,0,0,.12); transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(0,0,0,.12);
+                transform: translateY(-2px);
             }
             .woocommerce ul.products li.product a { display: block; border-radius: 10px; }
             .woocommerce ul.products li.product .full-card-link {
@@ -57,6 +100,46 @@ class ProductLoop
                 z-index: 10; text-indent: -9999px;
             }
             .woocommerce ul.products { margin-bottom: 1.5em; align-items: start; }
+            .woocommerce ul.products li.product .woocommerce-loop-product__title {
+                text-align: center;
+                font-weight: bold;
+                font-size: 30px;
+                line-height: 30px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            .woocommerce ul.products li.product .price,
+            .woocommerce ul.products li.product .price ins,
+            .woocommerce ul.products li.product .price ins .amount {
+                font-size: 28px;
+                line-height: 10px;
+                font-weight: 600;
+                text-align: center;
+            }
+            body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic,
+            body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.text_on_hover {
+                box-shadow: 0 3px 7px rgba(0,0,0,.07);
+                background: white;
+            }
+            body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic .price,
+            body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic .woocommerce-loop-product__title {
+                padding: 4px 20px 3px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 25px;
+                line-height: 26px;
+                font-family: \'the-seasons-regular\';
+            }
+            .woocommerce ul.products[data-product-style]:not([data-n-desktop-columns=default]) li.product,
+            .woocommerce ul.products[data-product-style]:not([data-n-desktop-small-columns=default]) li.product,
+            .woocommerce ul.products[data-product-style]:not([data-n-phone-columns=default]) li.product,
+            .woocommerce ul.products[data-product-style]:not([data-n-tablet-columns=default]) li.product {
+                float: none !important;
+                clear: none !important;
+                box-shadow: rgba(0,0,0,.04) 0 1px 0, rgba(0,0,0,.05) 0 2px 7px, rgba(0,0,0,.06) 0 12px 22px;
+            }
+            .woocommerce .woocommerce-result-count { display: none !important; }
+            .flickity-page-dots { display: none; }
         ';
 
         $css = trim($cssShop . $cssGlobal);
@@ -72,7 +155,6 @@ class ProductLoop
             return;
         }
 
-        $isIt = Locale::isIt();
         $ranges = get_post_meta($product->get_id(), '_date_ranges', true);
         $paese = get_post_meta($product->get_id(), '_paese_tour', true);
         $valid = false;
@@ -85,24 +167,25 @@ class ProductLoop
             if ($start && $end && $end >= $start) {
                 echo '<div class="loop-tour-dates">' . esc_html($r['start']) . ' → ' . esc_html($r['end']) . '</div>';
                 $days = $start->diff($end)->days + 1;
-                $label = $isIt
-                    ? (($days === 1) ? '1 giorno' : sprintf('%s giorni', number_format_i18n($days)))
-                    : (($days === 1) ? '1 day' : sprintf('%s days', number_format_i18n($days)));
+                $label = sprintf(
+                    _n('%s giorno', '%s giorni', $days, 'igs-ecommerce'),
+                    number_format_i18n($days)
+                );
                 echo '<div class="loop-tour-duration">' . esc_html($label) . '</div>';
                 $valid = true;
             }
         }
 
         if (!$valid) {
-            echo '<div class="loop-tour-dates">' . ($isIt ? 'Date non disponibili' : 'Dates not available') . '</div>';
-            echo '<div class="loop-tour-duration">' . ($isIt ? 'Durata non disponibile' : 'Duration not available') . '</div>';
+            echo '<div class="loop-tour-dates">' . esc_html__('Date non disponibili', 'igs-ecommerce') . '</div>';
+            echo '<div class="loop-tour-duration">' . esc_html__('Durata non disponibile', 'igs-ecommerce') . '</div>';
         }
 
         if (!empty($paese)) {
             $display = CountryFlags::withFlag($paese);
             echo '<div class="loop-tour-country">' . esc_html($display) . '</div>';
         } else {
-            echo '<div class="loop-tour-country">' . ($isIt ? 'Paese non specificato' : 'Country not specified') . '</div>';
+            echo '<div class="loop-tour-country">' . esc_html__('Paese non specificato', 'igs-ecommerce') . '</div>';
         }
     }
 
@@ -114,6 +197,7 @@ class ProductLoop
         }
         $url = esc_url(get_permalink($product->get_id()));
         $title = esc_attr(get_the_title($product->get_id()));
-        echo '<a href="' . $url . '" class="full-card-link" aria-label="' . $title . '">' . esc_html('Vai al tour') . '</a>';
+        $label = apply_filters('igs_loop_vai_al_tour_label', __('Vai al tour', 'igs-ecommerce'), $product);
+        echo '<a href="' . $url . '" class="full-card-link" aria-label="' . $title . '">' . esc_html($label) . '</a>';
     }
 }
