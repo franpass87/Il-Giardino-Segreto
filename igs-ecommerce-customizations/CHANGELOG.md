@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.3.1] - 2026-03-09
+
+### Changed
+
+- **Estetica**: hero con animazione fade-in e backdrop-filter su country/dates; trust badges hover con scale e icona animata; sidebar hover shadow; card caratteristiche con gradiente icona e lift; galleria zoom; programma hover padding; modale con bordi arrotondati, blur backdrop, tab e bottoni migliorati; loop shop con gradienti e shadow brand; toggle tab hover.
+
+### Added
+
+- **demo-preview.html**: file HTML per anteprima visiva componenti (hero, trust badges, sidebar, card, modale, loop).
+
 ## [2.3.0] - 2026-03-09
 
 ### Added

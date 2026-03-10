@@ -64,16 +64,16 @@ class BookingModal
         ?>
         <style>
         :root{--brand-color:#0e5763;--brand-color-hover:#0a434c;--background-light:#f8f9fa;--text-color:#333;--border-color:#dee2e6;--font-main:'foundersgrotesk',sans-serif}
-        #gs-fixed-cta{position:fixed;bottom:0;left:0;width:100%;z-index:99999;padding:10px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 -2px 10px rgba(0,0,0,.08)}
-        #gs-open-modal{width:100%;padding:14px;font-family:var(--font-main);font-size:1.1rem;font-weight:500;color:#fff;background:var(--brand-color);border:none;border-radius:8px;cursor:pointer;transition:background-color .3s,transform .2s}
-        #gs-open-modal:hover{background:var(--brand-color-hover);transform:scale(1.02)}
-        #gs-tour-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:100000;justify-content:center;align-items:center;padding:15px;font-family:var(--font-main)}
-        .gs-modal-content{background:#fff;width:100%;max-width:480px;border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,.2);position:relative;overflow:hidden;transform:scale(.95);opacity:0;transition:transform .3s,opacity .3s}
+        #gs-fixed-cta{position:fixed;bottom:0;left:0;width:100%;z-index:99999;padding:12px 16px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 -4px 24px rgba(0,0,0,.08)}
+        #gs-open-modal{width:100%;padding:16px;font-family:var(--font-main);font-size:1.1rem;font-weight:500;color:#fff;background:var(--brand-color);border:none;border-radius:10px;cursor:pointer;transition:background-color .3s,transform .2s,box-shadow .2s}
+        #gs-open-modal:hover{background:var(--brand-color-hover);transform:scale(1.02);box-shadow:0 4px 16px rgba(14,87,99,.35)}
+        #gs-tour-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);z-index:100000;justify-content:center;align-items:center;padding:15px;font-family:var(--font-main)}
+        .gs-modal-content{background:#fff;width:100%;max-width:480px;border-radius:16px;box-shadow:0 24px 48px rgba(0,0,0,.18);position:relative;overflow:hidden;transform:scale(.96);opacity:0;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s}
         #gs-tour-modal.is-visible .gs-modal-content{transform:scale(1);opacity:1}
-        .gs-modal-header{padding:15px 20px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center}
-        .gs-modal-header h3{margin:0;font-size:1.3rem;color:var(--text-color)}
-        .gs-close-modal{font-size:1.8rem;line-height:1;border:none;background:none;cursor:pointer;color:#888}
-        .gs-close-modal:hover{color:#000}
+        .gs-modal-header{padding:18px 24px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,#fff 0%,#fafbfc 100%)}
+        .gs-modal-header h3{margin:0;font-size:1.25rem;color:var(--text-color);font-weight:600}
+        .gs-close-modal{font-size:1.6rem;line-height:1;border:none;background:none;cursor:pointer;color:#888;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:background .2s,color .2s}
+        .gs-close-modal:hover{color:#000;background:rgba(0,0,0,.06)}
         .gs-modal-body{padding:20px}
         #gs-tour-modal .info-view,#gs-tour-modal.info-view-active .booking-view{display:none}
         #gs-tour-modal.info-view-active .info-view,#gs-tour-modal .booking-view{display:block}
@@ -85,19 +85,20 @@ class BookingModal
         .qty-control button:hover{background:var(--brand-color-hover)}
         .qty-control input{width:50px;height:35px;text-align:center;border:1px solid var(--border-color);border-radius:6px;font-size:1.1rem}
         #tour-price-total{text-align:center;font-size:1.6rem;font-weight:bold;color:var(--brand-color);margin:20px 0;background:var(--background-light);padding:12px;border-radius:8px}
-        #info-form input[type="text"],#info-form input[type="email"],#info-form textarea{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:6px;font-size:1rem}
+        #info-form input[type="text"],#info-form input[type="email"],#info-form textarea{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:8px;font-size:1rem;transition:border-color .2s,box-shadow .2s}
+        #info-form input:focus,#info-form textarea:focus{outline:none;border-color:var(--brand-color);box-shadow:0 0 0 3px rgba(14,87,99,.15)}
         #info-form textarea{min-height:100px}
-        #info-success-message{display:none;padding:20px;background-color:#e0f8e9;color:#1e6a3c;border-radius:8px;text-align:center}
+        #info-success-message{display:none;padding:24px;background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 100%);color:#1e6a3c;border-radius:10px;text-align:center;border:1px solid rgba(30,106,60,.2)}
         .gs-modal-footer{padding:15px 20px;background:var(--background-light);border-top:1px solid var(--border-color);display:flex;flex-direction:column;gap:10px}
-        .gs-btn{padding:14px;border:none;border-radius:8px;cursor:pointer;font-size:1rem;font-family:var(--font-main);transition:all .3s}
+        .gs-btn{padding:14px 20px;border:none;border-radius:10px;cursor:pointer;font-size:1rem;font-family:var(--font-main);transition:all .25s ease}
         .gs-btn-primary{background:var(--brand-color);color:#fff}
-        .gs-btn-primary:hover{background:var(--brand-color-hover)}
+        .gs-btn-primary:hover{background:var(--brand-color-hover);transform:translateY(-1px);box-shadow:0 4px 12px rgba(14,87,99,.3)}
         .gs-btn-secondary{background:none;border:1px solid var(--border-color);color:var(--text-color)}
-        .gs-btn-secondary:hover{background:var(--border-color);color:#000}
+        .gs-btn-secondary:hover{background:rgba(0,0,0,.04);border-color:#ccc;color:#000}
         .gs-modal-tabs{display:flex;border-bottom:1px solid var(--border-color);background:var(--background-light)}
-        .gs-tab{flex:1;padding:12px 16px;border:none;background:none;cursor:pointer;font-size:0.95rem;color:#666;transition:all .2s}
-        .gs-tab:hover{color:var(--text-color)}
-        .gs-tab.active{font-weight:600;color:var(--brand-color);border-bottom:2px solid var(--brand-color);margin-bottom:-1px}
+        .gs-tab{flex:1;padding:14px 16px;border:none;background:none;cursor:pointer;font-size:0.95rem;color:#666;transition:all .25s ease}
+        .gs-tab:hover{color:var(--brand-color);background:rgba(14,87,99,.05)}
+        .gs-tab.active{font-weight:600;color:var(--brand-color);border-bottom:3px solid var(--brand-color);margin-bottom:-1px;background:#fff}
         .gs-cart-notice{padding:10px 20px;background:#fff3cd;color:#856404;font-size:0.9rem;border-bottom:1px solid #ffc107}
         .gs-form-errors{padding:10px 20px;background:#f8d7da;color:#721c24;border-radius:6px;margin-bottom:15px;display:none}
         .gs-form-errors:not(:empty){display:block}

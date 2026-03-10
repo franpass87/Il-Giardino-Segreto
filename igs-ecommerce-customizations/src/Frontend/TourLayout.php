@@ -49,36 +49,45 @@ class TourLayout
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                overflow: hidden;
             }
             .custom-hero::before {
                 content: "";
                 position: absolute; top:0; left:0;
                 width:100%; height:100%;
-                background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.45) 100%);
+                background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 100%);
+                transition: opacity 0.4s ease;
             }
             .custom-hero-content {
                 position: relative; z-index:1;
                 text-align:center; color:#fff; padding:0 24px;
                 max-width: 900px;
+                animation: igs-hero-fade 0.8s ease-out;
+            }
+            @keyframes igs-hero-fade {
+                from { opacity: 0; transform: translateY(12px); }
+                to { opacity: 1; transform: translateY(0); }
             }
             .custom-hero-content h1 {
                 font-size: clamp(32px, 5vw, 52px);
                 line-height: 1.15;
                 margin-bottom: 0.5em;
                 color: #fff;
-                text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+                text-shadow: 0 2px 24px rgba(0,0,0,0.35);
                 letter-spacing: -0.02em;
             }
             .custom-hero-content .country,
             .custom-hero-content .dates {
                 font-size: clamp(18px, 2.2vw, 24px);
                 margin-bottom: 0.35em;
-                background: rgba(11,87,100,0.85);
+                background: rgba(11,87,100,0.88);
                 border-radius: var(--igs-radius-sm);
                 padding: 10px 20px;
                 font-weight: 600;
                 display: inline-block;
                 letter-spacing: 0.02em;
+                backdrop-filter: blur(4px);
+                box-shadow: 0 2px 12px rgba(0,0,0,0.15);
             }
             .custom-hero-content ul,
             .custom-hero-content ol { list-style: none; margin: 0; padding: 0; }
@@ -106,7 +115,9 @@ class TourLayout
                 flex-direction: column;
                 align-items: center;
                 border: 1px solid var(--igs-border);
+                transition: box-shadow 0.3s ease;
             }
+            .custom-tour-sidebar:hover { box-shadow: 0 8px 32px rgba(11,87,100,0.12); }
             .custom-tour-sidebar .price {
                 font-size: 2rem;
                 font-weight: 700;
@@ -183,7 +194,14 @@ class TourLayout
             .woocommerce div.product .woocommerce-tabs[data-tab-style=fullwidth_stacked] { padding-top: 0; margin-top: 0; }
             .woocommerce #ajax-content-wrap .woocommerce-tabs[data-tab-style=fullwidth_stacked] #tab-reviews>#reviews { padding-top: 40px; display: none; }
             #tab-additional_information { display: none !important; }
-            div[data-style="default"] .toggle .toggle-title a { border-radius: 10px; font-weight: bold; }
+            div[data-style="default"] .toggle .toggle-title a {
+                border-radius: 10px;
+                font-weight: bold;
+                transition: background .2s ease, color .2s ease;
+            }
+            div[data-style="default"] .toggle .toggle-title a:hover {
+                background: var(--igs-brand-bg) !important;
+            }
             .nectar-fancy-box[data-style=default] .inner *,
             .nectar-fancy-box[data-style=hover_desc] .inner *,
             .nectar-fancy-box[data-style=parallax_hover] .inner * {
@@ -221,7 +239,7 @@ class TourLayout
                 flex-wrap: wrap;
                 justify-content: center;
                 gap: 12px 20px;
-                padding: 20px 24px;
+                padding: 24px;
                 background: linear-gradient(135deg, var(--igs-brand) 0%, var(--igs-brand-light) 100%);
                 position: relative;
                 left: 50%;
@@ -234,23 +252,30 @@ class TourLayout
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
-                padding: 10px 18px;
-                background: rgba(255,255,255,0.97);
+                padding: 12px 20px;
+                background: rgba(255,255,255,0.98);
                 border-radius: 999px;
                 font-size: 0.9rem;
                 font-weight: 600;
                 color: var(--igs-brand);
                 box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-                transition: transform 0.2s, box-shadow 0.2s;
+                transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.2s;
             }
-            .igs-trust-badge:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-            .igs-trust-badge span.igs-badge-icon { font-size: 1.15em; }
+            .igs-trust-badge:hover {
+                transform: translateY(-3px) scale(1.02);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+                background: #fff;
+            }
+            .igs-trust-badge span.igs-badge-icon { font-size: 1.2em; transition: transform 0.2s; }
+            .igs-trust-badge:hover span.igs-badge-icon { transform: scale(1.1); }
             .igs-tour-programma { padding: 8px 0; }
             .igs-programma-day {
                 margin-bottom: 32px;
                 padding-bottom: 32px;
                 border-bottom: 1px solid var(--igs-border);
+                transition: padding 0.2s ease;
             }
+            .igs-programma-day:hover { padding-left: 4px; }
             .igs-programma-day:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
             .igs-programma-day h3 {
                 font-size: 1.2rem;
@@ -287,24 +312,27 @@ class TourLayout
                 text-align: center;
                 box-shadow: var(--igs-shadow);
                 border: 1px solid var(--igs-border);
-                transition: transform 0.2s, box-shadow 0.2s;
+                transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s;
             }
             .igs-caratteristica-card:hover {
-                transform: translateY(-4px);
-                box-shadow: var(--igs-shadow-hover);
+                transform: translateY(-6px);
+                box-shadow: 0 12px 40px rgba(11,87,100,0.15);
+                border-color: rgba(11,87,100,0.2);
             }
             .igs-car-icon {
                 width: 60px; height: 60px;
                 margin: 0 auto 14px;
                 border-radius: 50%;
-                background: var(--igs-brand);
+                background: linear-gradient(135deg, var(--igs-brand) 0%, var(--igs-brand-light) 100%);
                 color: #fff;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 font-size: 28px;
                 overflow: hidden;
+                transition: transform 0.3s ease;
             }
+            .igs-caratteristica-card:hover .igs-car-icon { transform: scale(1.08); }
             .igs-car-icon img { width: 100%; height: 100%; object-fit: contain; padding: 12px; }
             .igs-car-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; color: var(--igs-text); }
             .igs-car-subtitle { font-size: 0.85rem; color: var(--igs-text-muted); margin-bottom: 10px; }
@@ -329,11 +357,11 @@ class TourLayout
                 border-radius: var(--igs-radius-sm);
                 overflow: hidden;
                 box-shadow: var(--igs-shadow);
-                transition: transform 0.2s, box-shadow 0.2s;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
             }
             .igs-gallery-item:hover {
-                transform: scale(1.02);
-                box-shadow: var(--igs-shadow-hover);
+                transform: scale(1.03);
+                box-shadow: 0 12px 32px rgba(0,0,0,0.12);
             }
             .igs-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
             .woocommerce .igs-tour-programma .igs-programma-day,

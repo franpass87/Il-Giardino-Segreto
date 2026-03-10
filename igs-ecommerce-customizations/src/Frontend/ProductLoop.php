@@ -49,17 +49,19 @@ class ProductLoop
                 text-align: center;
             }
             .loop-tour-duration {
-                background: #0b5764;
+                background: linear-gradient(135deg, #0b5764 0%, #0e6b7a 100%);
                 color: white;
-                padding-top: 5px;
+                padding-top: 6px;
+                padding-bottom: 2px;
             }
             .loop-tour-country {
                 font-size: 20px;
                 color: #ffffff;
                 margin-top: 0;
                 text-align: center;
-                background: #8fb159;
-                padding-bottom: 5px;
+                background: linear-gradient(135deg, #7a9e4a 0%, #8fb159 100%);
+                padding-bottom: 6px;
+                padding-top: 2px;
             }
             .tour-date-loop {
                 font-family: \'the-seasons-regular\';
@@ -84,15 +86,15 @@ class ProductLoop
                 font-size: 20px !important;
             }
             .woocommerce ul.products li.product {
-                border-radius: 10px;
+                border-radius: 12px;
                 overflow: hidden;
                 position: relative;
                 cursor: pointer;
-                transition: box-shadow .25s ease, transform .25s ease;
+                transition: box-shadow .3s ease, transform .3s ease;
             }
             .woocommerce ul.products li.product:hover {
-                box-shadow: 0 8px 24px rgba(0,0,0,.12);
-                transform: translateY(-2px);
+                box-shadow: 0 12px 32px rgba(11,87,100,.12);
+                transform: translateY(-4px);
             }
             .woocommerce ul.products li.product a { display: block; border-radius: 10px; }
             .woocommerce ul.products li.product .full-card-link {

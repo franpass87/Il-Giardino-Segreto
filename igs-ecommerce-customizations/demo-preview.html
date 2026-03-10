@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IGS Ecommerce – Demo Preview</title>
+  <style>
+    /* === Variabili e stili dal plugin (TourLayout, ProductLoop, TrustBadges, BookingModal) === */
+    :root {
+      --igs-brand: #0b5764;
+      --igs-brand-light: #0e6b7a;
+      --igs-brand-bg: rgba(11,87,100,0.08);
+      --igs-brand-bg-strong: rgba(11,87,100,0.14);
+      --igs-text: #2d3748;
+      --igs-text-muted: #64748b;
+      --igs-border: #e2e8f0;
+      --igs-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      --igs-shadow-hover: 0 8px 30px rgba(0,0,0,0.1);
+      --igs-radius: 12px;
+      --igs-radius-sm: 8px;
+      --brand-color: #0e5763;
+      --brand-color-hover: #0a434c;
+      --background-light: #f8f9fa;
+      --text-color: #333;
+      --border-color: #dee2e6;
+      --font-main: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font-main); color: var(--igs-text); }
+
+    /* Hero */
+    .custom-hero {
+      position: relative;
+      width: 100%;
+      height: 65vh;
+      min-height: 380px;
+      background: linear-gradient(135deg, var(--igs-brand) 0%, var(--igs-brand-light) 100%);
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .custom-hero::before {
+      content: "";
+      position: absolute; top:0; left:0;
+      width:100%; height:100%;
+      background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 100%);
+    }
+    .custom-hero-content {
+      position: relative; z-index:1;
+      text-align:center; color:#fff; padding:0 24px;
+      max-width: 900px;
+      animation: igs-hero-fade 0.8s ease-out;
+    }
+    @keyframes igs-hero-fade {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .custom-hero-content h1 {
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.15;
+      margin-bottom: 0.5em;
+      color: #fff;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.35);
+    }
+    .custom-hero-content .country,
+    .custom-hero-content .dates {
+      font-size: clamp(18px, 2.2vw, 24px);
+      margin-bottom: 0.35em;
+      background: rgba(11,87,100,0.88);
+      border-radius: var(--igs-radius-sm);
+      padding: 10px 20px;
+      font-weight: 600;
+      display: inline-block;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Trust badges */
+    .igs-trust-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px 20px;
+      padding: 24px;
+      background: linear-gradient(135deg, var(--igs-brand) 0%, var(--igs-brand-light) 100%);
+    }
+    .igs-trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.98);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--igs-brand);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.2s;
+    }
+    .igs-trust-badge:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      background: #fff;
+    }
+    .igs-trust-badge span.igs-badge-icon { font-size: 1.2em; transition: transform 0.2s; }
+    .igs-trust-badge:hover span.igs-badge-icon { transform: scale(1.1); }
+
+    /* Layout tour */
+    .custom-tour-wrapper { max-width: 1200px; margin: 48px auto; padding: 0 24px; }
+    .custom-tour-columns { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; }
+
+    /* Sidebar prezzo */
+    .custom-tour-sidebar {
+      flex: 1;
+      min-width: 280px;
+      max-width: 360px;
+      background: linear-gradient(165deg, var(--igs-brand-bg) 0%, var(--igs-brand-bg-strong) 100%);
+      border-radius: var(--igs-radius);
+      box-shadow: var(--igs-shadow);
+      padding: 40px 32px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid var(--igs-border);
+      transition: box-shadow 0.3s ease;
+    }
+    .custom-tour-sidebar:hover { box-shadow: 0 8px 32px rgba(11,87,100,0.12); }
+    .custom-tour-sidebar .price {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--igs-brand);
+    }
+    .custom-tour-sidebar .installment {
+      font-size: 0.9rem;
+      color: var(--igs-text-muted);
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+    .custom-tour-sidebar .duration { font-size: 1.1rem; margin-bottom: 20px; color: var(--igs-text); }
+    .custom-tour-sidebar .tour-services {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 8px 0 20px;
+      width: 100%;
+      text-align: left;
+    }
+    .custom-tour-sidebar .tour-services span {
+      font-size: 0.95rem;
+      color: var(--igs-text);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--igs-border);
+    }
+    .custom-tour-sidebar .country-band {
+      background: var(--igs-brand);
+      padding: 14px 40px;
+      border-radius: var(--igs-radius-sm);
+      margin: 24px -32px -40px -32px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Card caratteristiche */
+    .igs-caratteristiche-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      padding: 24px 0;
+    }
+    .igs-caratteristica-card {
+      background: #fff;
+      border-radius: var(--igs-radius);
+      padding: 28px 24px;
+      min-width: 150px;
+      max-width: 200px;
+      text-align: center;
+      box-shadow: var(--igs-shadow);
+      border: 1px solid var(--igs-border);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s;
+    }
+    .igs-caratteristica-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(11,87,100,0.15);
+      border-color: rgba(11,87,100,0.2);
+    }
+    .igs-car-icon {
+      width: 60px; height: 60px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--igs-brand) 0%, var(--igs-brand-light) 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      transition: transform 0.3s ease;
+    }
+    .igs-caratteristica-card:hover .igs-car-icon { transform: scale(1.08); }
+    .igs-car-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; color: var(--igs-text); }
+    .igs-car-subtitle { font-size: 0.85rem; color: var(--igs-text-muted); }
+    .igs-car-rating { display: flex; gap: 5px; justify-content: center; margin-top: 8px; }
+    .igs-car-rating span { width: 8px; height: 8px; border-radius: 50%; background: var(--igs-brand); }
+
+    /* Loop card (shop) */
+    .products-demo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 48px auto;
+      padding: 0 24px;
+      list-style: none;
+      padding-left: 0;
+    }
+    .products-demo li.product {
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: box-shadow .3s ease, transform .3s ease;
+      background: #fff;
+      box-shadow: 0 3px 7px rgba(0,0,0,.07);
+    }
+    .products-demo li.product:hover {
+      box-shadow: 0 12px 32px rgba(11,87,100,.12);
+      transform: translateY(-4px);
+    }
+    .products-demo .product-img {
+      height: 200px;
+      background: linear-gradient(135deg, var(--igs-brand-bg) 0%, var(--igs-brand-bg-strong) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+    .products-demo .woocommerce-loop-product__title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 22px;
+      padding: 16px 12px 8px;
+      margin: 0;
+    }
+    .loop-tour-dates { font-size: 18px; color: #555; text-align: center; margin: 4px 0; }
+    .loop-tour-duration {
+      background: linear-gradient(135deg, #0b5764 0%, #0e6b7a 100%);
+      color: white;
+      padding: 8px;
+      text-align: center;
+      font-size: 16px;
+    }
+    .loop-tour-country {
+      background: linear-gradient(135deg, #7a9e4a 0%, #8fb159 100%);
+      color: white;
+      padding: 8px;
+      text-align: center;
+      font-size: 16px;
+    }
+    .products-demo .price { text-align: center; padding: 12px; font-size: 24px; font-weight: 600; color: var(--igs-brand); }
+    .full-card-link {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 10; text-indent: -9999px;
+    }
+
+    /* Modale */
+    #gs-tour-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(3px);
+      z-index: 100000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      font-family: var(--font-main);
+    }
+    #gs-tour-modal.is-visible {
+      display: flex;
+    }
+    .gs-modal-content {
+      background: #fff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 16px;
+      box-shadow: 0 24px 48px rgba(0,0,0,.18);
+      position: relative;
+      overflow: hidden;
+      transform: scale(.96);
+      opacity: 0;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+    }
+    #gs-tour-modal.is-visible .gs-modal-content {
+      transform: scale(1);
+      opacity: 1;
+    }
+    .gs-modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(180deg, #fff 0%, #fafbfc 100%);
+    }
+    .gs-modal-header h3 { margin: 0; font-size: 1.25rem; color: var(--text-color); font-weight: 600; }
+    .gs-close-modal {
+      font-size: 1.6rem;
+      line-height: 1;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: #888;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: background .2s, color .2s;
+    }
+    .gs-close-modal:hover { color: #000; background: rgba(0,0,0,.06); }
+    .gs-modal-body { padding: 20px; }
+    .gs-form-group { margin-bottom: 15px; }
+    .gs-form-group > label { margin-bottom: 8px; font-size: 1rem; font-weight: 500; color: #555; display: block; }
+    .gs-modal-footer {
+      padding: 15px 20px;
+      background: var(--background-light);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .gs-btn {
+      padding: 14px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: var(--font-main);
+      transition: all .25s ease;
+    }
+    .gs-btn-primary { background: var(--brand-color); color: #fff; }
+    .gs-btn-primary:hover { background: var(--brand-color-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(14,87,99,.3); }
+    .gs-btn-secondary { background: none; border: 1px solid var(--border-color); color: var(--text-color); }
+    .gs-btn-secondary:hover { background: rgba(0,0,0,.04); }
+    #gs-open-modal {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #fff;
+      background: var(--brand-color);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color .3s, transform .2s;
+    }
+    #gs-open-modal:hover { background: var(--brand-color-hover); transform: scale(1.02); }
+    #gs-fixed-cta {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 99999;
+      padding: 12px 16px;
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 -4px 24px rgba(0,0,0,.08);
+    }
+
+    /* Sezione descrizione */
+    .custom-tour-desc {
+      flex: 2;
+      min-width: 280px;
+      font-size: 1.1em;
+      line-height: 1.75;
+    }
+
+    /* Section labels */
+    .section-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--igs-text-muted);
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+  <header class="section-label" style="text-align:center; padding: 16px; background: #f8f9fa;">
+    Demo Preview – IGS Ecommerce Customizations
+  </header>
+
+  <!-- 1. Hero con animazione -->
+  <section class="custom-hero">
+    <div class="custom-hero-content">
+      <h1>Tour dei Giardini Segreti del Giappone</h1>
+      <div class="country">🇯🇵 Giappone</div>
+      <div class="dates">15/04/2025 → 28/04/2025</div>
+    </div>
+  </section>
+
+  <!-- 2. Trust badges con hover -->
+  <div class="igs-trust-badges">
+    <span class="igs-trust-badge"><span class="igs-badge-icon" aria-hidden="true">🔒</span><span>Pagamento sicuro</span></span>
+    <span class="igs-trust-badge"><span class="igs-badge-icon" aria-hidden="true">📅</span><span>Cancellazione flessibile</span></span>
+    <span class="igs-trust-badge"><span class="igs-badge-icon" aria-hidden="true">💰</span><span>Miglior prezzo garantito</span></span>
+    <span class="igs-trust-badge"><span class="igs-badge-icon" aria-hidden="true">⭐</span><span>Recensioni verificate</span></span>
+    <span class="igs-trust-badge"><span class="igs-badge-icon" aria-hidden="true">🛟</span><span>Assistenza 24/7</span></span>
+  </div>
+
+  <!-- 3. Sidebar prezzo + descrizione -->
+  <div class="custom-tour-wrapper">
+    <div class="custom-tour-columns">
+      <div class="custom-tour-desc">
+        <p class="section-label">Descrizione</p>
+        <p>Un viaggio indimenticabile attraverso i più bei giardini del Giappone. Visiterete Kyoto, Tokyo e le regioni rurali, con pernottamenti in ryokan e pasti tradizionali.</p>
+      </div>
+      <div class="custom-tour-sidebar">
+        <div class="price">da € 2.490</div>
+        <div class="installment">Pagamento a rate disponibile</div>
+        <div class="duration"><strong>14 giorni</strong></div>
+        <div class="tour-services">
+          <span>🪷 Ingressi ai siti e giardini</span>
+          <span>🏨 Pernottamento incluso</span>
+          <span>🚌 Trasferimenti in loco</span>
+          <span>🍽️ Pasti da itinerario</span>
+          <span>🗺️ Guida locale</span>
+        </div>
+        <div class="country-band">🇯🇵 Giappone</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Card caratteristiche -->
+  <div class="custom-tour-wrapper">
+    <p class="section-label" style="text-align:center;">Caratteristiche del Tour</p>
+    <div class="igs-caratteristiche-cards">
+      <div class="igs-caratteristica-card">
+        <div class="igs-car-icon">🌿</div>
+        <div class="igs-car-title">Giardini curati</div>
+        <div class="igs-car-subtitle">Esperienza premium</div>
+        <div class="igs-car-rating"><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="igs-caratteristica-card">
+        <div class="igs-car-icon">🏯</div>
+        <div class="igs-car-title">Patrimonio Unesco</div>
+        <div class="igs-car-subtitle">Siti protetti</div>
+        <div class="igs-car-rating"><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="igs-caratteristica-card">
+        <div class="igs-car-icon">📷</div>
+        <div class="igs-car-title">Fotografia</div>
+        <div class="igs-car-subtitle">Momenti unici</div>
+        <div class="igs-car-rating"><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Loop card (shop) -->
+  <p class="section-label" style="text-align:center; margin-top: 48px;">Loop prodotti (shop)</p>
+  <ul class="products-demo">
+    <li class="product">
+      <a href="#product-1" class="full-card-link">Vai al tour</a>
+      <div class="product-img">🌸</div>
+      <h2 class="woocommerce-loop-product__title">Tour Giappone Primavera</h2>
+      <div class="loop-tour-dates">15/04/2025 → 28/04/2025</div>
+      <div class="loop-tour-duration">14 giorni</div>
+      <div class="loop-tour-country">🇯🇵 Giappone</div>
+      <span class="price">da € 2.490</span>
+    </li>
+    <li class="product">
+      <a href="#product-2" class="full-card-link">Vai al tour</a>
+      <div class="product-img">🌺</div>
+      <h2 class="woocommerce-loop-product__title">Tour Italia dei Giardini</h2>
+      <div class="loop-tour-dates">20/05/2025 → 27/05/2025</div>
+      <div class="loop-tour-duration">8 giorni</div>
+      <div class="loop-tour-country">🇮🇹 Italia</div>
+      <span class="price">da € 1.890</span>
+    </li>
+    <li class="product">
+      <a href="#product-3" class="full-card-link">Vai al tour</a>
+      <div class="product-img">🪷</div>
+      <h2 class="woocommerce-loop-product__title">Tour Inghilterra Estate</h2>
+      <div class="loop-tour-dates">10/07/2025 → 18/07/2025</div>
+      <div class="loop-tour-duration">9 giorni</div>
+      <div class="loop-tour-country">🇬🇧 Regno Unito</div>
+      <span class="price">da € 2.150</span>
+    </li>
+  </ul>
+
+  <!-- 6. CTA e Modale -->
+  <div id="gs-fixed-cta">
+    <button id="gs-open-modal" type="button">Scopri e Prenota</button>
+  </div>
+
+  <div id="gs-tour-modal" aria-hidden="true">
+    <div class="gs-modal-content" role="dialog">
+      <div class="gs-modal-header">
+        <h3>Tour dei Giardini Segreti del Giappone</h3>
+        <button type="button" class="gs-close-modal" aria-label="Chiudi">×</button>
+      </div>
+      <div class="gs-modal-body">
+        <p>Questa è un’anteprima del modale di prenotazione. Nel sito reale qui appariranno le opzioni, quantità e checkout.</p>
+      </div>
+      <div class="gs-modal-footer">
+        <button type="button" class="gs-btn gs-btn-primary">Procedi al Checkout</button>
+        <button type="button" class="gs-btn gs-btn-secondary">Richiedi Informazioni</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var openBtn = document.getElementById('gs-open-modal');
+      var modal = document.getElementById('gs-tour-modal');
+      var closeBtn = modal && modal.querySelector('.gs-close-modal');
+
+      function openModal() {
+        if (modal) {
+          modal.classList.add('is-visible');
+          modal.setAttribute('aria-hidden', 'false');
+        }
+      }
+      function closeModal() {
+        if (modal) {
+          modal.classList.remove('is-visible');
+          modal.setAttribute('aria-hidden', 'true');
+        }
+      }
+
+      if (openBtn) openBtn.addEventListener('click', openModal);
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      if (modal) {
+        modal.addEventListener('click', function(e) {
+          if (e.target === modal) closeModal();
+        });
+      }
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal && modal.classList.contains('is-visible')) closeModal();
+      });
+    })();
+  </script>
+
+  <footer style="text-align:center; padding: 24px; color: var(--igs-text-muted); font-size: 0.9rem;">
+    Demo Preview – apribile in browser senza WordPress
+  </footer>
+</body>
+</html>
