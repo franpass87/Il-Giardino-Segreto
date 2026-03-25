@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.2] - 2026-03-25
+
+### Fixed
+
+- **WP 6.7+ / WooCommerce**: notice `_load_textdomain_just_in_time` per il dominio `woocommerce` (bootstrap WC prima di `after_setup_theme`). Precaricamento `load_textdomain` da `wp-content/languages` quando esiste il `.mo` e, in fallback, filtro mirato su `doing_it_wrong_trigger_error` solo per quel dominio.
+
 ## [2.3.1] - 2026-03-09
 
 ### Changed
