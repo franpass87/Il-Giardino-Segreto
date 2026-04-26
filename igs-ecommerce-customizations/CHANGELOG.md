@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.3.3] - 2026-04-26
+
+### Added
+
+- **FP Marketing Tracking Layer**: emissione `do_action( 'fp_tracking_event', … )` dopo aggiunta al carrello da modale tour (`add_to_cart`) e dopo invio riuscito richiesta informazioni tour (`generate_lead`, `lead_type` = `info_request`).
+
+### Changed
+
+- Admin lista prodotti: colonna date tour con freccia ASCII e trattino se vuoto; stile colonna emesso via `echo` unico.
+- `ReturnToShop`: `unset()` su parametri filtro non usati per compatibilità analisi statica.
+
 ## [2.3.2] - 2026-03-25
 
 ### Fixed

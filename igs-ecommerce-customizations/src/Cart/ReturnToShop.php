@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace IGS\Ecommerce\Cart;
@@ -14,11 +13,13 @@ class ReturnToShop
 
     public function redirectToHome(string $url): string
     {
+        unset($url);
         return home_url();
     }
 
     public function filterText(string $text): string
     {
+        unset($text);
         return __('Ritorna al sito web', 'igs-ecommerce');
     }
 }

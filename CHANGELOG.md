@@ -2,6 +2,10 @@
 
 Tutte le modifiche rilevanti del plugin **IGS Ecommerce Customizations** sono documentate in questo file.
 
+## [2.3.3] - 2026-04-26
+
+Dettaglio in `igs-ecommerce-customizations/CHANGELOG.md`: eventi `fp_tracking_event` (carrello e richiesta info tour), piccoli aggiustamenti admin colonne date e `ReturnToShop`.
+
 ## [2.1.0] - 2025-03-09
 
 ### Added

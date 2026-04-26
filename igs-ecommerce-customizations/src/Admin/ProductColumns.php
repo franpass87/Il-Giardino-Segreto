@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace IGS\Ecommerce\Admin;
@@ -24,6 +23,7 @@ class ProductColumns
                 $new['tour_dates'] = $label;
             }
         }
+
         return $new;
     }
 
@@ -37,11 +37,11 @@ class ProductColumns
         if (is_array($ranges) && !empty($ranges[0]['start'])) {
             echo '<span class="tour-date-cell">'
                 . esc_html($ranges[0]['start'])
-                . ' → '
+                . ' -> '
                 . esc_html($ranges[0]['end'] ?? '')
                 . '</span>';
         } else {
-            echo '—';
+            echo '-';
         }
     }
 
@@ -51,11 +51,10 @@ class ProductColumns
         if (!$screen || $screen->id !== 'edit-product') {
             return;
         }
-        ?>
-        <style>
-          .widefat .column-tour_dates { white-space: nowrap; width: 140px; }
-          .widefat .column-tour_dates .tour-date-cell { display: inline-block; min-width: 120px; overflow: hidden; text-overflow: ellipsis; }
-        </style>
-        <?php
+
+        echo '<style>'
+            . '.widefat .column-tour_dates { white-space: nowrap; width: 140px; }'
+            . '.widefat .column-tour_dates .tour-date-cell { display: inline-block; min-width: 120px; overflow: hidden; text-overflow: ellipsis; }'
+            . '</style>';
     }
 }

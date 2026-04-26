@@ -50,15 +50,18 @@ class GardenMetabox
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
         }
+
         foreach (self::FIELDS as $key => $field) {
             if (!isset($_POST[$key])) {
                 continue;
             }
+
             $value = sanitize_text_field(wp_unslash($_POST[$key]));
             if ($field['type'] === 'number' && $value !== '') {
                 $num = absint($value);
                 $value = (string) max(1, min(5, $num ?: 1));
             }
+
             update_post_meta($postId, '_' . $key, $value);
         }
     }

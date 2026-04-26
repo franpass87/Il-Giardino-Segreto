@@ -343,6 +343,21 @@ class BookingModal
             : WC()->cart->add_to_cart($productId, $quantity);
 
         if ($added) {
+            $product = wc_get_product($variationId > 0 ? $variationId : $productId);
+            $unitPrice = $product instanceof WC_Product ? (float) $product->get_price() : 0.0;
+            $currency = function_exists('get_woocommerce_currency') ? (string) get_woocommerce_currency() : 'EUR';
+
+            do_action('fp_tracking_event', 'add_to_cart', [
+                'item_id' => (string) ($variationId > 0 ? $variationId : $productId),
+                'item_name' => $product instanceof WC_Product ? (string) $product->get_name() : '',
+                'quantity' => $quantity,
+                'price' => $unitPrice,
+                'value' => $unitPrice * $quantity,
+                'currency' => $currency,
+                'source_plugin' => 'igs-ecommerce-customizations',
+                'event_id' => 'igs_add_to_cart_' . $productId . '_' . time(),
+            ]);
+
             wp_send_json_success(['message' => __('Prodotto aggiunto al carrello.', 'igs-ecommerce')]);
         } else {
             wp_send_json_error(['message' => __('Impossibile aggiungere il prodotto al carrello. Potrebbe non essere disponibile.', 'igs-ecommerce')]);
@@ -385,9 +400,24 @@ class BookingModal
         ]);
 
         if (wp_mail($recipients, $subject, $body, $headers)) {
+            do_action('fp_tracking_event', 'generate_lead', [
+                'lead_type' => 'info_request',
+                'tour_id' => $tourId,
+                'tour_title' => (string) $tourTitle,
+                'source_plugin' => 'igs-ecommerce-customizations',
+                'event_id' => 'igs_info_request_' . $tourId . '_' . time(),
+                'user_data' => [
+                    'em' => $email,
+                    'fn' => $name,
+                ],
+            ]);
+
             wp_send_json_success(['message' => __('Email inviata con successo.', 'igs-ecommerce')]);
-        } else {
-            wp_send_json_error(['message' => __("Impossibile inviare l'email. Riprova più tardi.", 'igs-ecommerce')]);
+            return;
         }
+
+        wp_send_json_error([
+            'message' => __('Impossibile inviare l\'email. Riprova più tardi.', 'igs-ecommerce'),
+        ]);
     }
 }
