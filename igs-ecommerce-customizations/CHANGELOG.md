@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.8] - 2026-05-31
+
+### Changed
+
+- **Ripristinata l'integrazione git-updater** nell'header (`GitHub Plugin URI` + `Primary Branch`): il plugin è ora gestito dal Master FP Updater (aggiunto alla config del Master), quindi torna a essere tracciato per gli aggiornamenti automatici.
+
 ## [2.3.7] - 2026-05-31
 
 ### Changed
