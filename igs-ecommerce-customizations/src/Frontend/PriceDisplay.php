@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace IGS\Ecommerce\Frontend;
 
 use WC_Product;
+use IGS\Ecommerce\Helper\Locale;
 
 class PriceDisplay
 {
@@ -15,10 +16,15 @@ class PriceDisplay
 
     public function filterPriceHtml(string $price, WC_Product $product): string
     {
+        // Prefisso/etichette in base alla lingua del percorso (IT default, /en/ ecc. = target),
+        // non via gettext: il .mo non viene caricato per la lingua corrente su questo sito.
+        $isIt = Locale::isIt();
+
         if ($product->is_type('variable')) {
             $minPrice = $product->get_variation_price('min', true);
             if (is_numeric($minPrice) && $minPrice > 0) {
-                return _x('da ', 'price prefix', 'igs-ecommerce') . wc_price($minPrice, ['decimals' => 0]);
+                $prefix = $isIt ? 'da ' : 'from ';
+                return $prefix . wc_price($minPrice, ['decimals' => 0]);
             }
             return '<span class="no-price"></span>';
         }
@@ -28,6 +34,7 @@ class PriceDisplay
             return wc_price((float) $val, ['decimals' => 0]);
         }
 
-        return '<span class="no-price">' . esc_html__('info in arrivo', 'igs-ecommerce') . '</span>';
+        $soon = $isIt ? 'info in arrivo' : 'coming soon';
+        return '<span class="no-price">' . esc_html($soon) . '</span>';
     }
 }

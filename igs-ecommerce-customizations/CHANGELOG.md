@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.15] - 2026-05-31
+
+### Fixed
+
+- Su pagine in lingua target (/en/) comparivano in italiano le etichette delle "Tour Features" (Pianta/Cultura/Passeggiata/Comfort/Esclusivita) e il prefisso prezzo ("da" invece di "from"). Causa: Locale::isIt() si fidava prima dell'API fpml_get_language()->get_current_language(), che su questo sito non distingue IT/EN al render. Ora Locale::isIt() usa PRIMA il prefisso URL (segnale affidabile del routing a segmento FP-ML), poi l'API e infine il locale WP. Le Tour Features sono gia bilingui nel dato (campi it/en) quindi ora escono nella lingua giusta.
+- PriceDisplay non dipende piu dal gettext (.mo non caricato per lingua su questo sito): il prefisso "da "/"from " e "info in arrivo"/"coming soon" sono scelti via Locale::isIt().
+
 ## [2.3.14] - 2026-05-31
 
 ### Added
