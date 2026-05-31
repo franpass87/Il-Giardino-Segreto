@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace IGS\Ecommerce\Frontend;
 
-use IGS\Ecommerce\Helper\Locale;
-
 /**
  * Forza in italiano alcune stringhe core di WooCommerce sulle pagine in lingua
  * italiana, quando il locale a runtime non le applica (su questo sito alcune
@@ -43,7 +41,11 @@ class WooStrings
         if (!isset(self::IT[$text])) {
             return $translated;
         }
-        if (!Locale::isIt()) {
+        // Rilevamento via URL (affidabile anche quando il filtro gettext scatta presto):
+        // sui percorsi di lingua target (/en/ ecc.) lascia l'inglese; altrimenti (IT default)
+        // forza l'italiano.
+        $path = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH);
+        if ($path !== '' && preg_match('#^/(en|de|fr|es|pt|nl|pl|ru|zh|ja|ar)(/|$)#i', $path)) {
             return $translated;
         }
         return self::IT[$text];
