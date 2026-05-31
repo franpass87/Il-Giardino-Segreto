@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.4] - 2026-05-31
+
+### Fixed
+
+- **i18n EN**: aggiunto il file `.mo` compilato (`languages/igs-ecommerce-en_US.mo`), mancante in repo: senza di esso WordPress non caricava le traduzioni inglesi e su locale EN tutte le stringhe ricadevano in italiano.
+- **Durata tour nel loop**: allineato il placeholder di `_n()` in `ProductLoop` da `%s` a `%d` (`%d giorno`/`%d giorni`), così combacia con il `msgid` del `.po` e con `TourLayout`; in precedenza la durata nel loop non veniva mai tradotta in inglese.
+
 ## [2.3.3] - 2026-04-26
 
 ### Added

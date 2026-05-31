@@ -170,8 +170,8 @@ class ProductLoop
                 echo '<div class="loop-tour-dates">' . esc_html($r['start']) . ' → ' . esc_html($r['end']) . '</div>';
                 $days = $start->diff($end)->days + 1;
                 $label = sprintf(
-                    _n('%s giorno', '%s giorni', $days, 'igs-ecommerce'),
-                    number_format_i18n($days)
+                    _n('%d giorno', '%d giorni', $days, 'igs-ecommerce'),
+                    $days
                 );
                 echo '<div class="loop-tour-duration">' . esc_html($label) . '</div>';
                 $valid = true;
