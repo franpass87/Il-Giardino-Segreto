@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.17] - 2026-05-31
+
+### Fixed
+
+- Date dei post in inglese sulle pagine italiane ("May 7, 2026") nonostante WPLANG=it_IT: il tema rende la data senza applicare il locale italiano. Nuovo `Frontend\DateLocalizer`: sulle pagine IT (Locale::isIt) converte i nomi dei mesi inglesi in italiano e riordina "Mese G, AAAA" → "G mese AAAA" (es. "7 maggio 2026"). Mappa mesi autosufficiente (non dipende dal file di lingua); agisce solo se la stringa contiene un mese inglese, quindi innocuo sugli orari.
+
 ## [2.3.16] - 2026-05-31
 
 ### Fixed

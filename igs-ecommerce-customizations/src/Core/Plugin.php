@@ -13,6 +13,7 @@ use IGS\Ecommerce\Admin\ProductColumns;
 use IGS\Ecommerce\Admin\TourProductMetabox;
 use IGS\Ecommerce\Booking\BookingModal;
 use IGS\Ecommerce\Cart\ReturnToShop;
+use IGS\Ecommerce\Frontend\DateLocalizer;
 use IGS\Ecommerce\Frontend\PriceDisplay;
 use IGS\Ecommerce\Frontend\ProductLoop;
 use IGS\Ecommerce\Frontend\ShopCustomizations;
@@ -51,6 +52,7 @@ final class Plugin
         (new EmailSettings())->register();
 
         (new PriceDisplay())->register();
+        (new DateLocalizer())->register();
         (new TourLayout())->register();
         (new TourProductTabs())->register();
         (new ProductLoop())->register();
