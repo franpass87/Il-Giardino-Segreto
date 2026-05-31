@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.7] - 2026-05-31
+
+### Changed
+
+- **Rimossa l'integrazione GitHub/git-updater** dall'header del plugin (direttive `GitHub Plugin URI` e `Primary Branch`): IGS è ora disaccoppiato dal git-updater e si installa/aggiorna manualmente via zip. Il client del sito non è gestito dal Master per questo plugin.
+
 ## [2.3.6] - 2026-05-31
 
 ### Changed

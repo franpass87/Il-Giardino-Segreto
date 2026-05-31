@@ -3,20 +3,18 @@
  * Plugin Name:       IGS Ecommerce Customizations
  * Plugin URI:        https://github.com/franpass87/Il-Giardino-Segreto
  * Description:       Personalizzazioni WooCommerce per Il Giardino Segreto: tour, date, prenotazioni, mappa.
- * Version:           2.3.6
+ * Version:           2.3.7
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Francesco Passeri
  * Author URI:        https://francescopasseri.com
  * License:           Proprietary
  * Text Domain:       igs-ecommerce
- * GitHub Plugin URI: franpass87/Il-Giardino-Segreto
- * Primary Branch:    main
  */
 
 defined('ABSPATH') || exit;
 
-define('IGS_VERSION', '2.3.6');
+define('IGS_VERSION', '2.3.7');
 define('IGS_FILE', __FILE__);
 define('IGS_DIR', plugin_dir_path(__FILE__));
 define('IGS_URL', plugin_dir_url(__FILE__));
