@@ -86,9 +86,15 @@ class ProductLoop
                 font-size: 20px !important;
             }
             .woocommerce ul.products li.product {
-                border-radius: 10px;
+                border-radius: 12px;
                 overflow: hidden;
                 position: relative;
+                cursor: pointer;
+                transition: box-shadow .3s ease, transform .3s ease;
+            }
+            .woocommerce ul.products li.product:hover {
+                box-shadow: 0 12px 32px rgba(11,87,100,.12);
+                transform: translateY(-4px);
             }
             .woocommerce ul.products li.product a { display: block; border-radius: 10px; }
             .woocommerce ul.products li.product .full-card-link {

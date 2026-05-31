@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.6] - 2026-05-31
+
+### Changed
+
+- **Ripristinate le migliorie UX/estetiche** rimosse in 2.3.5: hover card del loop (ombra + sollevamento), pin mappa 38px con bordo bianco e ombra, box mappa con angoli arrotondati e ombra, spinner di caricamento mappa, tile CARTO light, hero desktop 65vh. Scelta deliberata: il plugin porta una resa più curata rispetto ai code snippet originali, accettando un cambio visivo (in meglio) allo switch. Restano invariati il fix i18n del placeholder durata (`%d`) e il `.mo` EN.
+
 ## [2.3.5] - 2026-05-31
 
 ### Changed
