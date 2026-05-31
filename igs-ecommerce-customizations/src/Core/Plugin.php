@@ -15,6 +15,7 @@ use IGS\Ecommerce\Booking\BookingModal;
 use IGS\Ecommerce\Cart\ReturnToShop;
 use IGS\Ecommerce\Frontend\DateLocalizer;
 use IGS\Ecommerce\Frontend\PriceDisplay;
+use IGS\Ecommerce\Frontend\WooStrings;
 use IGS\Ecommerce\Frontend\ProductLoop;
 use IGS\Ecommerce\Frontend\ShopCustomizations;
 use IGS\Ecommerce\Frontend\TourLayout;
@@ -53,6 +54,7 @@ final class Plugin
 
         (new PriceDisplay())->register();
         (new DateLocalizer())->register();
+        (new WooStrings())->register();
         (new TourLayout())->register();
         (new TourProductTabs())->register();
         (new ProductLoop())->register();

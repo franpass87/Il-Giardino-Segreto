@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.18] - 2026-05-31
+
+### Fixed
+
+- Stringa WooCommerce "This product has multiple variants..." mostrata in inglese sulle pagine prodotto/shop italiane (il .mo it_IT non veniva applicato a quella stringa). Nuovo `Frontend\WooStrings`: filtro gettext che sulle pagine IT (Locale::isIt, dominio woocommerce) la forza in italiano; su /en/ resta inglese. Mappa puntuale, nessun impatto su altre stringhe.
+
 ## [2.3.17] - 2026-05-31
 
 ### Fixed
