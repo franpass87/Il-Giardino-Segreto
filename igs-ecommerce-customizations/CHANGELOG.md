@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.9] - 2026-05-31
+
+### Fixed
+
+- **`vendor/` ora versionato** (rimosso da `.gitignore`): senza la cartella `vendor/` nel repo, l'installazione via Master/git-updater da GitHub non includeva `vendor/autoload.php`, quindi il plugin si attivava ma rientrava subito (autoload mancante) senza registrare alcun modulo. Committando `vendor/` il deploy da GitHub è ora completo e funzionante.
+
 ## [2.3.8] - 2026-05-31
 
 ### Changed
