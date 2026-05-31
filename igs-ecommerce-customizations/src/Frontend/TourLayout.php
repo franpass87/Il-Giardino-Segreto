@@ -125,7 +125,7 @@ class TourLayout
                 color: var(--igs-brand);
             }
             .custom-tour-sidebar .installment {
-                font-size: 1rem;
+                font-size: 1.1rem;
                 color: var(--igs-text);
                 margin-bottom: 24px;
                 font-weight: 600;
@@ -144,7 +144,7 @@ class TourLayout
                 text-align: left;
             }
             .custom-tour-sidebar .tour-services span {
-                font-size: 0.95rem;
+                font-size: 1.05rem;
                 color: var(--igs-text);
                 font-weight: 500;
                 display: flex;

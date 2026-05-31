@@ -25,7 +25,7 @@ class ProductLoop
 
     public function enqueueStyles(): void
     {
-        $shopPages = is_shop() || is_product_taxonomy() || is_product_category() || is_product_tag();
+        $shopPages = is_shop() || is_product_taxonomy() || is_product_category() || is_product_tag() || is_product();
 
         $cssShop = $shopPages ? '
             .woocommerce ul.products li.product .woocommerce-loop-product__title {

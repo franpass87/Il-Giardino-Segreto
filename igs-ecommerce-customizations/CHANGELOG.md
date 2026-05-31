@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.3.12] - 2026-05-31
+
+### Fixed
+
+- **Card "Related products" disallineate** sulle pagine prodotto: la normalizzazione dell'altezza del titolo del loop (3 righe) ora si applica anche su `is_product()`, non solo su shop/categoria, così prezzo, date e bande (giorni/paese) sono allineati tra le card.
+
+### Changed
+
+- **Sidebar prodotto più leggibile**: testo "pagamento a rate" a 1.1rem e voci servizi a 1.05rem.
+
 ## [2.3.11] - 2026-05-31
 
 ### Fixed
