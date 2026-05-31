@@ -61,52 +61,105 @@ class BookingModal
             'tabInfo' => __('Richiedi info', 'igs-ecommerce'),
         ];
         $cartCount = function_exists('WC') && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+
+        // Prezzo "da €X" mostrato nel banner (desktop).
+        $ctaPriceHtml = '';
+        if ($product->is_type('variable')) {
+            $minPrice = $product->get_variation_price('min', true);
+            if (is_numeric($minPrice) && (float) $minPrice > 0) {
+                $ctaPriceHtml = sprintf(
+                    /* translators: %s: prezzo minimo formattato */
+                    esc_html__('da %s', 'igs-ecommerce'),
+                    wc_price((float) $minPrice, ['decimals' => 0])
+                );
+            }
+        } else {
+            $simplePrice = (float) $product->get_price();
+            if ($simplePrice > 0) {
+                $ctaPriceHtml = wc_price($simplePrice, ['decimals' => 0]);
+            }
+        }
         ?>
         <style>
-        :root{--brand-color:#0e5763;--brand-color-hover:#0a434c;--background-light:#f8f9fa;--text-color:#333;--border-color:#dee2e6;--font-main:'foundersgrotesk',sans-serif}
-        #gs-fixed-cta{position:fixed;bottom:0;left:0;width:100%;z-index:99999;padding:12px 16px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 -4px 24px rgba(0,0,0,.08)}
-        #gs-open-modal{width:100%;padding:16px;font-family:var(--font-main);font-size:1.1rem;font-weight:500;color:#fff;background:var(--brand-color);border:none;border-radius:10px;cursor:pointer;transition:background-color .3s,transform .2s,box-shadow .2s}
-        #gs-open-modal:hover{background:var(--brand-color-hover);transform:scale(1.02);box-shadow:0 4px 16px rgba(14,87,99,.35)}
-        #gs-tour-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);z-index:100000;justify-content:center;align-items:center;padding:15px;font-family:var(--font-main)}
-        .gs-modal-content{background:#fff;width:100%;max-width:480px;border-radius:16px;box-shadow:0 24px 48px rgba(0,0,0,.18);position:relative;overflow:hidden;transform:scale(.96);opacity:0;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s}
-        #gs-tour-modal.is-visible .gs-modal-content{transform:scale(1);opacity:1}
-        .gs-modal-header{padding:18px 24px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,#fff 0%,#fafbfc 100%)}
-        .gs-modal-header h3{margin:0;font-size:1.25rem;color:var(--text-color);font-weight:600}
-        .gs-close-modal{font-size:1.6rem;line-height:1;border:none;background:none;cursor:pointer;color:#888;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;transition:background .2s,color .2s}
-        .gs-close-modal:hover{color:#000;background:rgba(0,0,0,.06)}
-        .gs-modal-body{padding:20px}
+        :root{--brand-color:#0e5763;--brand-color-hover:#0a434c;--brand-accent:#8fb159;--background-light:#f6f8f8;--text-color:#2d3748;--text-muted:#64748b;--border-color:#e2e8f0;--font-main:'foundersgrotesk',sans-serif}
+        /* ===== Banner ===== */
+        #gs-fixed-cta{position:fixed;bottom:0;left:0;width:100%;z-index:99999;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 -6px 28px rgba(0,0,0,.10);border-top:3px solid var(--brand-accent);animation:gs-cta-up .5s cubic-bezier(.16,1,.3,1)}
+        @keyframes gs-cta-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+        .gs-cta-inner{max-width:1100px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+        .gs-cta-info{display:flex;flex-direction:column;line-height:1.15}
+        .gs-cta-price{font-size:1.5rem;font-weight:700;color:var(--brand-color)}
+        .gs-cta-sub{font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}
+        #gs-open-modal{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 34px;font-family:var(--font-main);font-size:1.12rem;font-weight:600;color:#fff;background:linear-gradient(135deg,var(--brand-color) 0%,#13707f 100%);border:none;border-radius:999px;cursor:pointer;box-shadow:0 6px 18px rgba(14,87,99,.30);transition:transform .2s,box-shadow .25s,filter .2s;white-space:nowrap}
+        #gs-open-modal:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(14,87,99,.42);filter:brightness(1.06)}
+        #gs-open-modal:active{transform:translateY(0)}
+        #gs-open-modal svg{width:18px;height:18px;flex:0 0 auto;transition:transform .2s}
+        #gs-open-modal:hover svg{transform:translateX(4px)}
+        /* ===== Modal ===== */
+        #gs-tour-modal{display:none;position:fixed;inset:0;width:100%;height:100%;background:rgba(15,30,33,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:100000;justify-content:center;align-items:center;padding:16px;font-family:var(--font-main)}
+        .gs-modal-content{background:#fff;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,.28);position:relative;border-top:5px solid var(--brand-accent);transform:scale(.95) translateY(12px);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s}
+        #gs-tour-modal.is-visible .gs-modal-content{transform:scale(1) translateY(0);opacity:1}
+        .gs-modal-header{padding:22px 24px 6px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+        .gs-modal-header h3{margin:0;font-size:1.35rem;color:var(--brand-color);font-weight:700;line-height:1.25}
+        .gs-close-modal{flex:0 0 auto;font-size:1.5rem;line-height:1;border:none;background:var(--background-light);cursor:pointer;color:#64748b;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .2s,color .2s,transform .25s}
+        .gs-close-modal:hover{color:#fff;background:var(--brand-color);transform:rotate(90deg)}
+        .gs-modal-body{padding:18px 24px}
         #gs-tour-modal .info-view,#gs-tour-modal.info-view-active .booking-view{display:none}
         #gs-tour-modal.info-view-active .info-view,#gs-tour-modal .booking-view{display:block}
-        .gs-form-group{margin-bottom:15px}
-        .gs-form-group>label{margin-bottom:8px;font-size:1rem;font-weight:500;color:#555;display:block}
-        .variation-label{display:block;font-size:1rem;margin-bottom:10px;cursor:pointer}
-        .qty-control{display:flex;align-items:center;gap:8px}
-        .qty-control button{background:var(--brand-color);color:#fff;border:none;width:35px;height:35px;font-size:1.5rem;border-radius:50%;cursor:pointer}
-        .qty-control button:hover{background:var(--brand-color-hover)}
-        .qty-control input{width:50px;height:35px;text-align:center;border:1px solid var(--border-color);border-radius:6px;font-size:1.1rem}
-        #tour-price-total{text-align:center;font-size:1.6rem;font-weight:bold;color:var(--brand-color);margin:20px 0;background:var(--background-light);padding:12px;border-radius:8px}
-        #info-form input[type="text"],#info-form input[type="email"],#info-form textarea{width:100%;padding:12px;border:1px solid var(--border-color);border-radius:8px;font-size:1rem;transition:border-color .2s,box-shadow .2s}
+        .gs-form-group{margin-bottom:18px}
+        .gs-form-group>label{margin-bottom:10px;font-size:.95rem;font-weight:600;color:var(--text-color);display:block}
+        .variation-label{display:flex;align-items:center;gap:10px;font-size:1rem;margin-bottom:10px;cursor:pointer;padding:14px 16px;border:2px solid var(--border-color);border-radius:12px;transition:border-color .2s,background .2s,box-shadow .2s}
+        .variation-label:hover{border-color:var(--brand-accent);background:var(--background-light)}
+        .variation-label:has(input:checked){border-color:var(--brand-color);background:rgba(14,87,99,.06);box-shadow:0 2px 10px rgba(14,87,99,.10)}
+        .variation-label .variation-price{margin-left:auto;font-weight:700;color:var(--brand-color)}
+        .qty-control{display:flex;align-items:center;gap:12px}
+        .qty-control button{background:var(--brand-color);color:#fff;border:none;width:42px;height:42px;font-size:1.4rem;line-height:1;border-radius:50%;cursor:pointer;transition:background .2s,transform .15s}
+        .qty-control button:hover{background:var(--brand-color-hover);transform:scale(1.08)}
+        .qty-control input{width:60px;height:42px;text-align:center;border:2px solid var(--border-color);border-radius:10px;font-size:1.15rem;font-weight:600;color:var(--text-color)}
+        #tour-price-total{text-align:center;font-size:1.8rem;font-weight:700;color:var(--brand-color);margin:22px 0 4px;background:linear-gradient(135deg,var(--background-light) 0%,#eef3f3 100%);padding:16px;border-radius:14px;border:1px solid var(--border-color)}
+        #info-form input[type="text"],#info-form input[type="email"],#info-form textarea{width:100%;padding:13px 14px;border:2px solid var(--border-color);border-radius:10px;font-size:1rem;font-family:var(--font-main);transition:border-color .2s,box-shadow .2s}
         #info-form input:focus,#info-form textarea:focus{outline:none;border-color:var(--brand-color);box-shadow:0 0 0 3px rgba(14,87,99,.15)}
-        #info-form textarea{min-height:100px}
-        #info-success-message{display:none;padding:24px;background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 100%);color:#1e6a3c;border-radius:10px;text-align:center;border:1px solid rgba(30,106,60,.2)}
-        .gs-modal-footer{padding:15px 20px;background:var(--background-light);border-top:1px solid var(--border-color);display:flex;flex-direction:column;gap:10px}
-        .gs-btn{padding:14px 20px;border:none;border-radius:10px;cursor:pointer;font-size:1rem;font-family:var(--font-main);transition:all .25s ease}
-        .gs-btn-primary{background:var(--brand-color);color:#fff}
-        .gs-btn-primary:hover{background:var(--brand-color-hover);transform:translateY(-1px);box-shadow:0 4px 12px rgba(14,87,99,.3)}
-        .gs-btn-secondary{background:none;border:1px solid var(--border-color);color:var(--text-color)}
-        .gs-btn-secondary:hover{background:rgba(0,0,0,.04);border-color:#ccc;color:#000}
-        .gs-modal-tabs{display:flex;border-bottom:1px solid var(--border-color);background:var(--background-light)}
-        .gs-tab{flex:1;padding:14px 16px;border:none;background:none;cursor:pointer;font-size:0.95rem;color:#666;transition:all .25s ease}
-        .gs-tab:hover{color:var(--brand-color);background:rgba(14,87,99,.05)}
-        .gs-tab.active{font-weight:600;color:var(--brand-color);border-bottom:3px solid var(--brand-color);margin-bottom:-1px;background:#fff}
-        .gs-cart-notice{padding:10px 20px;background:#fff3cd;color:#856404;font-size:0.9rem;border-bottom:1px solid #ffc107}
-        .gs-form-errors{padding:10px 20px;background:#f8d7da;color:#721c24;border-radius:6px;margin-bottom:15px;display:none}
+        #info-form textarea{min-height:110px;resize:vertical}
+        #info-success-message{display:none;padding:28px 24px;background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 100%);color:#1e6a3c;border-radius:14px;text-align:center;border:1px solid rgba(30,106,60,.2);font-size:1.05rem}
+        .gs-modal-footer{padding:16px 24px 24px;display:flex;flex-direction:column;gap:12px}
+        .gs-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 20px;border:none;border-radius:12px;cursor:pointer;font-size:1.05rem;font-weight:600;font-family:var(--font-main);transition:all .25s ease}
+        .gs-btn-primary{background:linear-gradient(135deg,var(--brand-color) 0%,#13707f 100%);color:#fff;box-shadow:0 6px 16px rgba(14,87,99,.28)}
+        .gs-btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(14,87,99,.40);filter:brightness(1.05)}
+        .gs-btn-secondary{background:none;border:2px solid var(--border-color);color:var(--text-color)}
+        .gs-btn-secondary:hover{background:var(--background-light);border-color:var(--brand-accent);color:var(--brand-color)}
+        .gs-modal-tabs{display:flex;gap:6px;padding:8px 24px 0}
+        .gs-tab{flex:1;padding:12px 16px;border:none;background:var(--background-light);cursor:pointer;font-size:.95rem;font-weight:500;color:#64748b;border-radius:12px 12px 0 0;transition:all .2s}
+        .gs-tab:hover{color:var(--brand-color)}
+        .gs-tab.active{font-weight:700;color:#fff;background:var(--brand-color)}
+        .gs-cart-notice{margin:8px 24px 0;padding:12px 16px;background:#fff8e6;color:#8a6d00;font-size:.9rem;border-radius:10px;border:1px solid #ffe08a}
+        .gs-form-errors{padding:12px 16px;background:#fdecee;color:#a3262f;border-radius:10px;margin-bottom:16px;display:none;border:1px solid #f5c2c7}
         .gs-form-errors:not(:empty){display:block}
         .required{color:#b32d2e}
-        @media(max-width:768px){#gs-fixed-cta{padding:0}#gs-open-modal{border-radius:0;min-height:48px}.gs-modal-header,.gs-modal-body,.gs-modal-footer{padding-left:15px;padding-right:15px}.gs-btn,.gs-tab{min-height:44px;padding:12px 16px}}
+        @media(max-width:768px){
+        .gs-cta-inner{padding:10px 14px;gap:12px}
+        .gs-cta-info{display:none}
+        #gs-open-modal{width:100%;padding:15px;border-radius:12px;font-size:1.1rem;min-height:50px}
+        #gs-tour-modal{align-items:flex-end;padding:0}
+        .gs-modal-content{max-width:100%;max-height:90vh;border-radius:20px 20px 0 0;border-top:none}
+        .gs-modal-header,.gs-modal-body,.gs-modal-footer{padding-left:18px;padding-right:18px}
+        .gs-modal-tabs{padding-left:18px;padding-right:18px}
+        .gs-btn,.gs-tab{min-height:46px}
+        }
         </style>
 
-        <div id="gs-fixed-cta"><button id="gs-open-modal"><?php echo esc_html($L['cta']); ?></button></div>
+        <div id="gs-fixed-cta">
+            <div class="gs-cta-inner">
+                <?php if ($ctaPriceHtml !== '') : ?>
+                <div class="gs-cta-info">
+                    <span class="gs-cta-price"><?php echo wp_kses_post($ctaPriceHtml); ?></span>
+                    <span class="gs-cta-sub"><?php echo esc_html(get_the_title($productId)); ?></span>
+                </div>
+                <?php endif; ?>
+                <button id="gs-open-modal">
+                    <span><?php echo esc_html($L['cta']); ?></span>
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+        </div>
 
         <div id="gs-tour-modal" aria-hidden="true" aria-live="polite" aria-atomic="true">
             <div class="gs-modal-content" role="dialog" aria-modal="true" aria-label="<?php echo esc_attr($productTitle); ?>">

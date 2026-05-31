@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.13] - 2026-05-31
+
+### Changed
+
+- **Restyling "Scopri e Prenota" (banner + modale)**: banner con bordo verde accento, prezzo "da €X" + nome tour a sinistra (desktop), pulsante a pillola con gradiente brand e freccia animata, slide-up all'ingresso. Modale con bordo accento superiore, opzioni di prenotazione come card selezionabili (stato hover/selezionato), quantità e totale più grandi, tab a pillola, campi e bottoni rifiniti, bottom-sheet su mobile. Nessuna modifica alla logica (AJAX, svuotamento carrello, nonce, tracking).
+
 ## [2.3.12] - 2026-05-31
 
 ### Fixed
