@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.11] - 2026-05-31
+
+### Fixed
+
+- **Rilevamento lingua (FP-Multilanguage)**: `Locale::isIt()` ora usa l'API di FP-Multilanguage (`fpml_get_language()` / `\FPML_Language::instance()->get_current_language()`) con fallback su prefisso URL; `determine_locale()` restituiva il locale base del sito, mostrando servizi/badge/sidebar in inglese su pagine italiane.
+- **Immagine singola "orfana" in fondo alla pagina prodotto**: la sezione Galleria viene mostrata solo se il prodotto ha vere immagini di galleria WooCommerce; con la sola immagine in evidenza (già nell'hero) non viene più generata.
+
 ## [2.3.10] - 2026-05-31
 
 ### Fixed

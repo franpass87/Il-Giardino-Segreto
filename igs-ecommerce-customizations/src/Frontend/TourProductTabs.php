@@ -89,9 +89,9 @@ class TourProductTabs
 
     private function hasGalleria(WC_Product $product): bool
     {
-        if ($product->get_image_id()) {
-            return true;
-        }
+        // Mostra la galleria SOLO se esistono vere immagini di galleria WooCommerce.
+        // Con la sola immagine in evidenza (già usata nell'hero) si avrebbe un'immagine
+        // singola "orfana" in fondo alla pagina.
         $galleryIds = $product->get_gallery_image_ids();
         return !empty($galleryIds);
     }
