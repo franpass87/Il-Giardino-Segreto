@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.16] - 2026-05-31
+
+### Fixed
+
+- Le etichette delle "Tour Features" generate dagli shortcode Garden (protagonista_tour, livello_culturale, livello_passeggiata, livello_piuma, livello_esclusivita) erano hardcoded in italiano (Pianta/Cultura/Passeggiata/Comfort/Esclusivita) e comparivano in IT anche su /en/. Ora sono bilingui via Locale::isIt(): Plant/Culture/Walking/Comfort/Exclusivity in inglese. (Le card "Tour Features" del sito usano questi shortcode, non il meta _igs_tour_caratteristiche, risultato vuoto sui prodotti.)
+
 ## [2.3.15] - 2026-05-31
 
 ### Fixed

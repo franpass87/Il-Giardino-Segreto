@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace IGS\Ecommerce\Shortcodes;
 
+use IGS\Ecommerce\Helper\Locale;
+
 class GardenShortcodes
 {
     public function register(): void
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueueStyles']);
         add_shortcode('protagonista_tour', [$this, 'protagonista']);
-        add_shortcode('livello_culturale', fn () => $this->barFeature('livello_culturale', 'Cultura'));
-        add_shortcode('livello_passeggiata', fn () => $this->barFeature('livello_passeggiata', 'Passeggiata'));
-        add_shortcode('livello_piuma', fn () => $this->barFeature('livello_piuma', 'Comfort'));
-        add_shortcode('livello_esclusivita', fn () => $this->barFeature('livello_esclusivita', 'Esclusività'));
+        add_shortcode('livello_culturale', fn () => $this->barFeature('livello_culturale', 'Cultura', 'Culture'));
+        add_shortcode('livello_passeggiata', fn () => $this->barFeature('livello_passeggiata', 'Passeggiata', 'Walking'));
+        add_shortcode('livello_piuma', fn () => $this->barFeature('livello_piuma', 'Comfort', 'Comfort'));
+        add_shortcode('livello_esclusivita', fn () => $this->barFeature('livello_esclusivita', 'Esclusività', 'Exclusivity'));
     }
 
     public function enqueueStyles(): void
@@ -34,15 +36,17 @@ class GardenShortcodes
         if (!$text) {
             return '';
         }
+        $label = Locale::isIt() ? 'Pianta' : 'Plant';
         return '<div class="garden-feature" style="margin-bottom:12px;">'
-            . '<div style="font-weight:bold; font-family:\'the-seasons-regular\'; margin-bottom:8px;">Pianta</div>'
+            . '<div style="font-weight:bold; font-family:\'the-seasons-regular\'; margin-bottom:8px;">' . esc_html($label) . '</div>'
             . '<div style="min-height:32px; display:flex; align-items:center; justify-content:center;">'
             . esc_html($text)
             . '</div></div>';
     }
 
-    public function barFeature(string $metaKey, string $label): string
+    public function barFeature(string $metaKey, string $labelIt, string $labelEn = ''): string
     {
+        $label = (Locale::isIt() || $labelEn === '') ? $labelIt : $labelEn;
         if (!is_singular('product')) {
             return '';
         }
