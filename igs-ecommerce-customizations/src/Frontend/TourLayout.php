@@ -125,13 +125,13 @@ class TourLayout
                 color: var(--igs-brand);
             }
             .custom-tour-sidebar .installment {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
                 color: var(--igs-text);
                 margin-bottom: 24px;
                 font-weight: 600;
             }
             .custom-tour-sidebar .duration {
-                font-size: 1.1rem;
+                font-size: 1.25rem;
                 margin-bottom: 20px;
                 color: var(--igs-text);
             }
@@ -144,9 +144,9 @@ class TourLayout
                 text-align: left;
             }
             .custom-tour-sidebar .tour-services span {
-                font-size: 1.05rem;
+                font-size: 1.2rem;
                 color: var(--igs-text);
-                font-weight: 500;
+                font-weight: 600;
                 display: flex;
                 align-items: center;
                 gap: 10px;
@@ -174,6 +174,8 @@ class TourLayout
                 letter-spacing: 0.08em;
             }
             .custom-hero.igs-hero-lazy { background-color: #e5e7eb; }
+            .custom-hero-content .country .igs-country, .country-band .igs-country { display:inline-flex; align-items:center; gap:.45em; }
+            .igs-flag { width:1.15em; height:auto; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.18); vertical-align:middle; }
             #gs-open-modal {
                 font-size: 1.8rem !important;
                 font-family: \'the-seasons-regular\' !important;
@@ -404,8 +406,8 @@ class TourLayout
         echo '<div class="custom-hero igs-hero-lazy" data-bg="' . esc_attr($imgUrl) . '">';
         echo '<div class="custom-hero-content">';
         echo '<h1>' . esc_html(get_the_title()) . '</h1>';
-        $countryDisplay = $paese ? CountryFlags::withFlag($paese) : __('Paese non specificato', 'igs-ecommerce');
-        echo '<div class="country">' . esc_html($countryDisplay) . '</div>';
+        $countryDisplay = $paese ? CountryFlags::withFlagHtml($paese) : esc_html__('Paese non specificato', 'igs-ecommerce');
+        echo '<div class="country">' . $countryDisplay . '</div>';
         if (is_array($ranges) && count($ranges) > 0) {
             echo '<div class="dates">' . esc_html($ranges[0]['start']) . ' → ' . esc_html($ranges[0]['end']) . '</div>';
         } else {
@@ -486,8 +488,8 @@ class TourLayout
         }
         echo '</div>';
 
-        $countryBandDisplay = $paese ? CountryFlags::withFlag($paese) : __('Paese non specificato', 'igs-ecommerce');
-        echo '<div class="country-band">' . esc_html($countryBandDisplay) . '</div>';
+        $countryBandDisplay = $paese ? CountryFlags::withFlagHtml($paese) : esc_html__('Paese non specificato', 'igs-ecommerce');
+        echo '<div class="country-band">' . $countryBandDisplay . '</div>';
         echo '</div></div></div>';
         $this->renderHeroLazyScript();
     }

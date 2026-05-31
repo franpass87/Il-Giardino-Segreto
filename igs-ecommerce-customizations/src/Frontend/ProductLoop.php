@@ -63,6 +63,8 @@ class ProductLoop
                 padding-bottom: 6px;
                 padding-top: 2px;
             }
+            .loop-tour-country .igs-country { display:inline-flex; align-items:center; gap:.4em; }
+            .loop-tour-country .igs-flag { width:1.05em; height:auto; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,.5); vertical-align:middle; }
             .tour-date-loop {
                 font-family: \'the-seasons-regular\';
                 font-weight: bold !important;
@@ -184,8 +186,7 @@ class ProductLoop
         }
 
         if (!empty($paese)) {
-            $display = CountryFlags::withFlag($paese);
-            echo '<div class="loop-tour-country">' . esc_html($display) . '</div>';
+            echo '<div class="loop-tour-country">' . CountryFlags::withFlagHtml($paese) . '</div>';
         } else {
             echo '<div class="loop-tour-country">' . esc_html__('Paese non specificato', 'igs-ecommerce') . '</div>';
         }

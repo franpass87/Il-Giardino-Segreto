@@ -164,8 +164,49 @@ final class CountryFlags
 
     public static function withFlag(string $name): string
     {
-        // Le flag-emoji non sono renderizzate su Windows (mostrerebbero "IE", "ES", ...):
-        // restituiamo il solo nome del paese per una resa uniforme su tutti i sistemi.
         return $name;
+    }
+
+    /**
+     * HTML "bandiera (SVG) + nome", pronto per l'output (stringa già sicura).
+     * Usa immagini SVG da flagcdn.com così le bandiere si vedono su TUTTI i sistemi
+     * (le flag-emoji non vengono disegnate su Windows). L'ISO del paese è ricavato
+     * dai codepoint dell'emoji già mappata.
+     */
+    public static function withFlagHtml(string $name): string
+    {
+        $img = self::flagImg($name);
+        $safe = esc_html($name);
+        if ($img === '') {
+            return $safe;
+        }
+        return '<span class="igs-country">' . $img . '<span class="igs-country-name">' . $safe . '</span></span>';
+    }
+
+    private static function flagImg(string $name): string
+    {
+        $emoji = self::forName($name);
+        if ($emoji === null) {
+            return '';
+        }
+        $iso = self::emojiToIso2($emoji);
+        if ($iso === '') {
+            return '';
+        }
+        $url = 'https://flagcdn.com/' . $iso . '.svg';
+        return '<img class="igs-flag" src="' . esc_url($url) . '" alt="" width="22" height="16" loading="lazy" decoding="async">';
+    }
+
+    private static function emojiToIso2(string $emoji): string
+    {
+        $iso = '';
+        $len = mb_strlen($emoji, 'UTF-8');
+        for ($i = 0; $i < $len; $i++) {
+            $cp = mb_ord(mb_substr($emoji, $i, 1, 'UTF-8'), 'UTF-8');
+            if ($cp !== false && $cp >= 0x1F1E6 && $cp <= 0x1F1FF) {
+                $iso .= chr(ord('A') + ($cp - 0x1F1E6));
+            }
+        }
+        return strtolower($iso);
     }
 }

@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.3.14] - 2026-05-31
+
+### Added
+
+- **Bandiere paese come immagini SVG** (flagcdn.com) accanto al nome: si vedono su tutti i sistemi, Windows incluso (le flag-emoji erano invisibili su Windows). Applicate a hero, country-band della sidebar e loop prodotti. L'ISO del paese è ricavato dai codepoint dell'emoji già mappata.
+
+### Changed
+
+- **Sidebar prodotto: testo più grande** — voci servizi e "pagamento a rate" a 1.2rem, durata a 1.25rem.
+
 ## [2.3.13] - 2026-05-31
 
 ### Changed
