@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.10] - 2026-05-31
+
+### Fixed
+
+- **Mappa duplicata / errore "Map container already initialized"**: rimossa la tab "Mappa" in `TourProductTabs` (lo shortcode `[mappa_viaggio]` è già nel contenuto della pagina); aggiunto guard anti-doppione in `MapShortcode` (una sola mappa per post per richiesta). Risolve sia l'errore di caricamento sia la sezione "spinner" infinita.
+- **Lingua errata (testi in inglese su pagine IT)**: `Locale::isIt()` ora rileva la lingua corrente da WPML (`wpml_current_language`) con fallback a `determine_locale()`; servizi, badge e testi sidebar tornano coerenti con la lingua della pagina.
+
+### Changed
+
+- **Bandierine paese rimosse**: le flag-emoji non vengono disegnate su Windows (apparivano come "IE", "ES", ...). Ora si mostra il solo nome del paese, uniforme su tutti i sistemi.
+- Sidebar prodotto: testo "pagamento a rate" leggermente più grande e più leggibile.
+
 ## [2.3.9] - 2026-05-31
 
 ### Fixed

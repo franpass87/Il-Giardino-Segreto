@@ -24,6 +24,13 @@ class MapShortcode
             return '';
         }
 
+        // Anti-doppione: una sola mappa per post per richiesta (id container univoco).
+        static $rendered = [];
+        if (isset($rendered[$postId])) {
+            return '';
+        }
+        $rendered[$postId] = true;
+
         $tappeForJs = [];
         foreach ($tappe as $t) {
             $tappeForJs[] = [

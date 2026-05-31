@@ -29,16 +29,11 @@ class TourProductTabs
         $hasProgramma = is_array($programma) && !empty($programma);
 
         $hasInfo = $this->hasStructuredInfo($id);
-        $hasMappa = $this->hasMappa($id);
         $hasGalleria = $this->hasGalleria($product);
 
-        if ($hasMappa) {
-            $tabs['igs_mappa'] = [
-                'title' => __('Mappa', 'igs-ecommerce'),
-                'callback' => [$this, 'renderMappa'],
-                'priority' => 10,
-            ];
-        }
+        // La mappa NON viene aggiunta come tab: lo shortcode [mappa_viaggio] è già
+        // inserito nel contenuto della pagina. Aggiungerla qui creerebbe un secondo
+        // container con lo stesso id (errore "Map container already initialized").
 
         if ($hasGalleria) {
             $tabs['igs_galleria'] = [

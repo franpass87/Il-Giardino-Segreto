@@ -164,7 +164,8 @@ final class CountryFlags
 
     public static function withFlag(string $name): string
     {
-        $flag = self::forName($name);
-        return $flag !== null ? $flag . ' ' . $name : $name;
+        // Le flag-emoji non sono renderizzate su Windows (mostrerebbero "IE", "ES", ...):
+        // restituiamo il solo nome del paese per una resa uniforme su tutti i sistemi.
+        return $name;
     }
 }

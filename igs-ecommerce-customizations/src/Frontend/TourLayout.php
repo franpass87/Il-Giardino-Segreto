@@ -125,8 +125,8 @@ class TourLayout
                 color: var(--igs-brand);
             }
             .custom-tour-sidebar .installment {
-                font-size: 0.9rem;
-                color: var(--igs-text-muted);
+                font-size: 1rem;
+                color: var(--igs-text);
                 margin-bottom: 24px;
                 font-weight: 600;
             }
