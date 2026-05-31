@@ -376,7 +376,7 @@ class TourLayout
                 .igs-caratteristica-card { min-width: 130px; max-width: 160px; padding: 20px 16px; }
                 .igs-tour-galleria { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             }
-            @media (min-width: 769px) { .custom-hero { height: 65vh; } }
+            @media (min-width: 769px) { .custom-hero { height: 70vh; } }
         ';
         wp_add_inline_style('woocommerce-general', $css);
     }

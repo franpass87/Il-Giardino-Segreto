@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.3.5] - 2026-05-31
+
+### Changed
+
+- **Resa visiva allineata 1:1 ai code snippet originali (pixel-perfect)**, in vista della sostituzione degli snippet sul sito live:
+  - Hero pagina prodotto: altezza desktop `65vh` → `70vh`.
+  - Loop prodotti: `border-radius` card `12px` → `10px`; rimossi `:hover` (ombra/translate), `cursor` e `transition` aggiuntivi non presenti negli snippet.
+  - Mappa itinerario: tile `OpenStreetMap` standard (al posto di CARTO), colore pin/polyline `#0c5764` (al posto di `#0e5763`), pin `36px` senza bordo/ombra, angoli netti (rimossi wrapper `border-radius`/`box-shadow`), popup di default Leaflet, rimosso overlay di caricamento. Mantenuti escaping `esc_html` dei popup e fallback d'errore (non visivi).
+
 ## [2.3.4] - 2026-05-31
 
 ### Fixed
