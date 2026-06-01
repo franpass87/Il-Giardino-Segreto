@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.21] - 2026-06-01
+
+### Fixed
+
+- Su mobile (e in generale nei caroselli prodotto Nectar flickity) la bandiera del paese si gonfiava a tutta larghezza della card — la SVG Spagna di flagcdn diventava una fascia rosso-giallo-rosso enorme. Causa: la regola che limita `.igs-flag` a ~1em vive nel CSS inline agganciato all'handle `woocommerce-general`, che il carosello flickity non sempre accoda; senza quel CSS vinceva la regola del tema `li.product img { width:100% }`. Fix: dimensione della bandiera forzata via attributo `style` inline sull'`<img>` stesso (in `CountryFlags`), così non dipende più dal caricamento di alcun foglio di stile e batte la regola del tema. Vale ovunque (loop, hero, country-band).
+
 ## [2.3.18] - 2026-05-31
 
 ### Fixed

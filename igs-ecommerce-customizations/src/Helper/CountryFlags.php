@@ -194,7 +194,11 @@ final class CountryFlags
             return '';
         }
         $url = 'https://flagcdn.com/' . $iso . '.svg';
-        return '<img class="igs-flag" src="' . esc_url($url) . '" alt="" width="22" height="16" loading="lazy" decoding="async">';
+        // Dimensione forzata via attributo style inline: vince sul tema (es. `li.product img { width:100% }`)
+        // anche quando il CSS inline del plugin non viene caricato (carosello Nectar flickity senza handle woocommerce-general),
+        // evitando che la bandiera SVG (es. Spagna) si gonfi a tutta larghezza nella card.
+        $style = 'width:1.1em;height:auto;max-width:none;display:inline-block;vertical-align:middle;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.18)';
+        return '<img class="igs-flag" src="' . esc_url($url) . '" alt="" width="22" height="16" style="' . esc_attr($style) . '" loading="lazy" decoding="async">';
     }
 
     private static function emojiToIso2(string $emoji): string
