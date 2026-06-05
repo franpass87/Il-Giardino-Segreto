@@ -79,16 +79,19 @@ class TourLayout
             }
             .custom-hero-content .country,
             .custom-hero-content .dates {
-                font-size: clamp(18px, 2.2vw, 24px);
-                margin-bottom: 0.35em;
-                background: rgba(11,87,100,0.88);
-                border-radius: var(--igs-radius-sm);
-                padding: 10px 20px;
+                font-size: clamp(16px, 2vw, 21px);
+                margin: 0 5px 10px;
+                background: rgba(11,87,100,0.82);
+                border: 1px solid rgba(255,255,255,0.20);
+                border-radius: 999px;
+                padding: 9px 22px;
                 font-weight: 600;
-                display: inline-block;
+                display: inline-flex;
+                align-items: center;
+                vertical-align: middle;
                 letter-spacing: 0.02em;
-                backdrop-filter: blur(4px);
-                box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+                backdrop-filter: blur(5px);
+                box-shadow: 0 4px 16px rgba(0,0,0,0.18);
             }
             .custom-hero-content ul,
             .custom-hero-content ol { list-style: none; margin: 0; padding: 0; }
@@ -132,15 +135,23 @@ class TourLayout
                 font-weight: 600;
             }
             .custom-tour-sidebar .duration {
-                font-size: 1.25rem;
-                margin-bottom: 20px;
-                color: var(--igs-text);
+                display: inline-block;
+                background: var(--igs-brand-bg);
+                color: var(--igs-brand);
+                font-size: 1rem;
+                font-weight: 700;
+                padding: 6px 18px;
+                border-radius: 999px;
+                margin-bottom: 22px;
+                letter-spacing: 0.02em;
             }
             .custom-tour-sidebar .tour-services {
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
-                margin: 8px 0 20px;
+                margin: 4px 0 20px;
+                padding-top: 18px;
+                border-top: 1px solid var(--igs-border);
                 width: 100%;
                 text-align: left;
             }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.3] - 2026-06-05
+
+### Changed — rifiniture hero e sidebar
+
+- Hero: le etichette paese e date sono ora pillole arrotondate con bordo sottile e spaziatura, più eleganti.
+- Sidebar prezzo: divisore prima dei servizi inclusi; la durata ("X giorni") è ora un badge a pillola in tinta brand.
+
 ## [2.6.2] - 2026-06-05
 
 ### Changed
