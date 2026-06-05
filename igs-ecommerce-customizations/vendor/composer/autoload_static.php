@@ -22,6 +22,31 @@ class ComposerStaticInitfc2af15cf8ee2d5b0b232291aefc9691
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'IGS\\Ecommerce\\Admin\\EmailSettings' => __DIR__ . '/../..' . '/src/Admin/EmailSettings.php',
+        'IGS\\Ecommerce\\Admin\\GardenMetabox' => __DIR__ . '/../..' . '/src/Admin/GardenMetabox.php',
+        'IGS\\Ecommerce\\Admin\\GlobalStringsSettings' => __DIR__ . '/../..' . '/src/Admin/GlobalStringsSettings.php',
+        'IGS\\Ecommerce\\Admin\\MapMetabox' => __DIR__ . '/../..' . '/src/Admin/MapMetabox.php',
+        'IGS\\Ecommerce\\Admin\\PortfolioDateMetabox' => __DIR__ . '/../..' . '/src/Admin/PortfolioDateMetabox.php',
+        'IGS\\Ecommerce\\Admin\\ProductColumns' => __DIR__ . '/../..' . '/src/Admin/ProductColumns.php',
+        'IGS\\Ecommerce\\Admin\\TourProductMetabox' => __DIR__ . '/../..' . '/src/Admin/TourProductMetabox.php',
+        'IGS\\Ecommerce\\Booking\\BookingModal' => __DIR__ . '/../..' . '/src/Booking/BookingModal.php',
+        'IGS\\Ecommerce\\Cart\\ReturnToShop' => __DIR__ . '/../..' . '/src/Cart/ReturnToShop.php',
+        'IGS\\Ecommerce\\Core\\Plugin' => __DIR__ . '/../..' . '/src/Core/Plugin.php',
+        'IGS\\Ecommerce\\Frontend\\DateLocalizer' => __DIR__ . '/../..' . '/src/Frontend/DateLocalizer.php',
+        'IGS\\Ecommerce\\Frontend\\PriceDisplay' => __DIR__ . '/../..' . '/src/Frontend/PriceDisplay.php',
+        'IGS\\Ecommerce\\Frontend\\ProductLoop' => __DIR__ . '/../..' . '/src/Frontend/ProductLoop.php',
+        'IGS\\Ecommerce\\Frontend\\ShopCustomizations' => __DIR__ . '/../..' . '/src/Frontend/ShopCustomizations.php',
+        'IGS\\Ecommerce\\Frontend\\TourLayout' => __DIR__ . '/../..' . '/src/Frontend/TourLayout.php',
+        'IGS\\Ecommerce\\Frontend\\TourProductTabs' => __DIR__ . '/../..' . '/src/Frontend/TourProductTabs.php',
+        'IGS\\Ecommerce\\Frontend\\WooCommerceDisabler' => __DIR__ . '/../..' . '/src/Frontend/WooCommerceDisabler.php',
+        'IGS\\Ecommerce\\Frontend\\WooStrings' => __DIR__ . '/../..' . '/src/Frontend/WooStrings.php',
+        'IGS\\Ecommerce\\Helper\\CountryFlags' => __DIR__ . '/../..' . '/src/Helper/CountryFlags.php',
+        'IGS\\Ecommerce\\Helper\\Locale' => __DIR__ . '/../..' . '/src/Helper/Locale.php',
+        'IGS\\Ecommerce\\Helper\\TrustBadges' => __DIR__ . '/../..' . '/src/Helper/TrustBadges.php',
+        'IGS\\Ecommerce\\Integration\\RemoteBridge' => __DIR__ . '/../..' . '/src/Integration/RemoteBridge.php',
+        'IGS\\Ecommerce\\Portfolio\\PortfolioTitleFilter' => __DIR__ . '/../..' . '/src/Portfolio/PortfolioTitleFilter.php',
+        'IGS\\Ecommerce\\Shortcodes\\GardenShortcodes' => __DIR__ . '/../..' . '/src/Shortcodes/GardenShortcodes.php',
+        'IGS\\Ecommerce\\Shortcodes\\MapShortcode' => __DIR__ . '/../..' . '/src/Shortcodes/MapShortcode.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

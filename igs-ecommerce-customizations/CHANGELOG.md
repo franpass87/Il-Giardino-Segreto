@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.0] - 2026-06-05
+
+### Added
+
+- Nuovo `Integration\RemoteBridge`: rende i meta dei prodotti-tour scrivibili da remoto via FP Remote Bridge (content-action `set_post_meta`), così date, itinerari e dettagli dei tour si possono aggiornare dal flusso MCP senza entrare in wp-admin. Si aggancia ai due hook generici del Bridge (≥ 1.169.0): `fp_remote_bridge_content_actions_meta_keys_for_post` (aggiunge le chiavi tour all'allowlist solo sui `product`) e `fp_remote_bridge_content_actions_sanitize_meta_value` (sanitizza ogni valore con le stesse regole delle metabox admin). Chiavi coperte: `_date_ranges` (date partenza, normalizzate gg/mm/aaaa), `_paese_tour`, `_protagonista_tour`, `_mappa_paese`, `_mappa_tappe` (tappe con coordinate validate), i livelli `_livello_*` (1–5), la sidebar (`_igs_sidebar_*`, `_igs_installment_*`, `_igs_tour_services`) e la struttura itinerario (`_igs_tour_programma`, `_igs_tour_caratteristiche`, `_igs_tour_cosa_portare`, `_igs_tour_documenti`, `_igs_tour_quota_comprende`, `_igs_tour_quota_non_comprende`, `_igs_tour_voli`) e `_igs_trust_badges`. La conoscenza dei campi resta nel plugin che li possiede; il Bridge rimane generico.
+
 ## [2.3.21] - 2026-06-01
 
 ### Fixed

@@ -21,6 +21,7 @@ use IGS\Ecommerce\Frontend\ShopCustomizations;
 use IGS\Ecommerce\Frontend\TourLayout;
 use IGS\Ecommerce\Frontend\TourProductTabs;
 use IGS\Ecommerce\Frontend\WooCommerceDisabler;
+use IGS\Ecommerce\Integration\RemoteBridge;
 use IGS\Ecommerce\Portfolio\PortfolioTitleFilter;
 use IGS\Ecommerce\Shortcodes\GardenShortcodes;
 use IGS\Ecommerce\Shortcodes\MapShortcode;
@@ -66,5 +67,7 @@ final class Plugin
         (new BookingModal())->register();
         (new PortfolioTitleFilter())->register();
         (new ReturnToShop())->register();
+
+        (new RemoteBridge())->register();
     }
 }
