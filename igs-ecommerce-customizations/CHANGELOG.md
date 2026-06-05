@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.1] - 2026-06-05
+
+### Fixed
+
+- Bandiera paese leggermente disallineata in verticale rispetto al nome (nella fascia paese delle card tour): la sola `vertical-align:middle` sull'`<img>` la centrava sull'altezza-x del font, lasciandola un po' bassa. Ora il contenitore `.igs-country` è un `inline-flex` con `align-items:center` (gap `.4em`), così bandiera e nome restano centrati come unità a prescindere dalle metriche del font.
+
 ## [2.4.0] - 2026-06-05
 
 ### Added

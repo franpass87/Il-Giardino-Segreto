@@ -180,7 +180,11 @@ final class CountryFlags
         if ($img === '') {
             return $safe;
         }
-        return '<span class="igs-country">' . $img . '<span class="igs-country-name">' . $safe . '</span></span>';
+        // Contenitore inline-flex centrato: bandiera e nome restano allineati
+        // verticalmente come unità, indipendentemente dalle metriche del font
+        // (la sola vertical-align:middle sull'img la lasciava leggermente bassa).
+        $wrapStyle = 'display:inline-flex;align-items:center;gap:.4em;vertical-align:middle;line-height:1';
+        return '<span class="igs-country" style="' . esc_attr($wrapStyle) . '">' . $img . '<span class="igs-country-name">' . $safe . '</span></span>';
     }
 
     private static function flagImg(string $name): string
