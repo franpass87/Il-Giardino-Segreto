@@ -49,6 +49,7 @@ final class RemoteBridge
         '_igs_tour_quota_comprende',
         '_igs_tour_quota_non_comprende',
         '_igs_tour_voli',
+        '_igs_tour_info',
     ];
 
     /** Chiavi con struttura ad array dedicata. */
@@ -72,7 +73,7 @@ final class RemoteBridge
      */
     private static function ownedKeys(): array
     {
-        return array_merge(self::TEXT_KEYS, self::LEVEL_KEYS, self::HTML_KEYS, self::ARRAY_KEYS);
+        return array_merge(self::TEXT_KEYS, self::LEVEL_KEYS, self::HTML_KEYS, self::ARRAY_KEYS, ['_product_image_gallery']);
     }
 
     /**
@@ -136,6 +137,8 @@ final class RemoteBridge
                 return $this->sanitizeCaratteristiche($value);
             case '_igs_trust_badges':
                 return $this->sanitizeTrustBadges($value);
+            case '_product_image_gallery':
+                return $this->sanitizeGalleryIds($value);
         }
 
         return $pre;
@@ -309,6 +312,34 @@ final class RemoteBridge
         $selected = array_intersect(array_map('sanitize_key', array_map('strval', $value)), $valid);
 
         return array_values($selected);
+    }
+
+    /**
+     * Galleria prodotto WooCommerce: lista di ID allegato come stringa
+     * separata da virgole (formato nativo di `_product_image_gallery`).
+     *
+     * @param mixed $value
+     */
+    private function sanitizeGalleryIds($value): string
+    {
+        $ids = [];
+        if (is_array($value)) {
+            foreach ($value as $v) {
+                $id = absint($v);
+                if ($id > 0) {
+                    $ids[] = $id;
+                }
+            }
+        } elseif (is_string($value)) {
+            foreach (explode(',', $value) as $v) {
+                $id = absint(trim($v));
+                if ($id > 0) {
+                    $ids[] = $id;
+                }
+            }
+        }
+
+        return implode(',', array_values(array_unique($ids)));
     }
 
     /**

@@ -13,7 +13,9 @@ class TourProductTabs
 {
     public function register(): void
     {
-        add_filter('woocommerce_product_tabs', [$this, 'addTabs'], 15);
+        // I contenuti del tour (galleria, programma, dettagli) non sono più tab
+        // WooCommerce: vengono resi inline da TourLayout::renderTourContent() in un
+        // unico contenitore coerente. I metodi render* qui restano usati da TourLayout.
     }
 
     /** @param array<string, array{title: string, callback: callable, priority: int}> $tabs */
@@ -301,6 +303,18 @@ class TourProductTabs
             echo '<section class="igs-voli">';
             echo '<h3>' . esc_html($lbl['voli']) . '</h3>';
             echo '<div class="igs-voli-content">' . wp_kses_post(wpautop($voli)) . '</div></section>';
+        }
+
+        $info = get_post_meta($id, '_igs_tour_info', true);
+        if (is_string($info) && trim($info) !== '') {
+            $items = $this->linesToArray($info);
+            echo '<section class="igs-info-generali">';
+            echo '<h3>' . esc_html__('Info generali', 'igs-ecommerce') . '</h3>';
+            echo '<ul>';
+            foreach ($items as $item) {
+                echo '<li>' . wp_kses_post($item) . '</li>';
+            }
+            echo '</ul></section>';
         }
 
         echo '</div>';

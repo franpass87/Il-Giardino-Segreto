@@ -15,6 +15,7 @@ class TourLayout
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueueStyles']);
         add_action('woocommerce_before_single_product_summary', [$this, 'render'], 1);
+        add_action('woocommerce_after_single_product_summary', [$this, 'renderTourContent'], 15);
     }
 
     public function enqueueStyles(): void
@@ -366,20 +367,24 @@ class TourLayout
                 box-shadow: 0 12px 32px rgba(0,0,0,0.12);
             }
             .igs-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-            /* Tutte le sezioni interne del tour condividono lo stesso contenitore
-               centrato della descrizione (.custom-tour-wrapper: 1200px + padding 24),
-               così i bordi sinistro/destro si allineano verticalmente lungo la pagina
-               invece di avere larghezze diverse (prima: 900px non centrati). */
-            .woocommerce .igs-tour-programma,
-            .woocommerce .igs-tour-dettagli,
-            .woocommerce .igs-tour-galleria {
-                max-width: 1200px;
-                margin-left: auto;
-                margin-right: auto;
-                padding-left: 24px;
-                padding-right: 24px;
-                box-sizing: border-box;
+            /* Contenitore unico di TUTTA la parte interna del tour: stessa larghezza
+               centrata della descrizione, così ogni sezione (galleria, caratteristiche,
+               itinerario, programma, info) è allineata lungo la pagina. */
+            .igs-tour-content { max-width: 1200px; margin: 0 auto; padding: 0 24px; box-sizing: border-box; }
+            .igs-tour-content > .igs-tour-section { margin: 56px 0; }
+            .igs-tour-content > .igs-tour-section:first-child { margin-top: 32px; }
+            .igs-tour-content .igs-tour-section > h2 {
+                text-align: center;
+                font-size: clamp(26px, 3.4vw, 34px);
+                color: var(--igs-brand);
+                margin-bottom: 28px;
+                letter-spacing: -0.01em;
             }
+            /* Le sezioni interne occupano tutto il contenitore (niente larghezze proprie). */
+            .igs-tour-content .igs-tour-programma,
+            .igs-tour-content .igs-tour-dettagli,
+            .igs-tour-content .igs-tour-galleria { max-width: none; margin: 0; padding: 0; }
+            .igs-tour-content .igs-tour-dettagli section > h3 { font-size: 1.2rem; }
             @media (max-width: 768px) {
                 .custom-hero { height: 50vh; min-height: 300px; }
                 .custom-tour-columns { flex-direction: column; }
@@ -503,6 +508,136 @@ class TourLayout
         echo '<div class="country-band">' . $countryBandDisplay . '</div>';
         echo '</div></div></div>';
         $this->renderHeroLazyScript();
+    }
+
+    /**
+     * Rende TUTTA la parte interna del tour (galleria, caratteristiche, itinerario,
+     * programma, "tutto quello che devi sapere") in un unico contenitore coerente,
+     * a partire dai meta del prodotto. Sostituisce il vecchio contenuto WPBakery e
+     * i tab WooCommerce, garantendo lo stesso allineamento per ogni tour.
+     */
+    public function renderTourContent(): void
+    {
+        if (!is_product()) {
+            return;
+        }
+        global $product;
+        if (!$product instanceof WC_Product) {
+            return;
+        }
+
+        $id = $product->get_id();
+        $tabs = new TourProductTabs();
+
+        echo '<div class="igs-tour-content">';
+
+        if (!empty($product->get_gallery_image_ids())) {
+            echo '<section class="igs-tour-section">';
+            echo '<h2>' . esc_html__('Galleria', 'igs-ecommerce') . '</h2>';
+            $tabs->renderGalleria();
+            echo '</section>';
+        }
+
+        $this->renderCaratteristicheLivelli($product);
+
+        $tappe = get_post_meta($id, '_mappa_tappe', true);
+        if (is_array($tappe) && !empty($tappe)) {
+            echo '<section class="igs-tour-section">';
+            echo '<h2>' . esc_html__('Itinerario di Viaggio', 'igs-ecommerce') . '</h2>';
+            echo do_shortcode('[mappa_viaggio id="' . (int) $id . '"]');
+            echo '</section>';
+        }
+
+        $programma = get_post_meta($id, '_igs_tour_programma', true);
+        if (is_array($programma) && !empty($programma)) {
+            echo '<section class="igs-tour-section">';
+            echo '<h2>' . esc_html__('Programma del Tour', 'igs-ecommerce') . '</h2>';
+            $tabs->renderProgramma();
+            echo '</section>';
+        }
+
+        if ($this->hasDettagli($id)) {
+            echo '<section class="igs-tour-section">';
+            echo '<h2>' . esc_html__('Tutto quello che devi sapere', 'igs-ecommerce') . '</h2>';
+            $tabs->renderDettagliViaggio();
+            echo '</section>';
+        }
+
+        echo '</div>';
+    }
+
+    private function hasDettagli(int $id): bool
+    {
+        $keys = [
+            '_igs_tour_cosa_portare',
+            '_igs_tour_documenti',
+            '_igs_tour_quota_comprende',
+            '_igs_tour_quota_non_comprende',
+            '_igs_tour_voli',
+            '_igs_tour_info',
+        ];
+        foreach ($keys as $k) {
+            $v = get_post_meta($id, $k, true);
+            if (is_string($v) && trim($v) !== '') {
+                return true;
+            }
+        }
+        $c = get_post_meta($id, '_igs_tour_caratteristiche', true);
+
+        return is_array($c) && !empty($c);
+    }
+
+    /**
+     * "Caratteristiche del Tour" generate dai meta livelli/protagonista (le stesse
+     * 5 card di prima, ma rese dal plugin e allineate al contenitore).
+     */
+    private function renderCaratteristicheLivelli(WC_Product $product): void
+    {
+        $id = $product->get_id();
+        $isIt = Locale::isIt();
+        $protagonista = get_post_meta($id, '_protagonista_tour', true);
+
+        $cards = [
+            ['icon_id' => 226, 'emoji' => '🌱', 'label_it' => 'Pianta', 'label_en' => 'Plant', 'kind' => 'text', 'value' => is_string($protagonista) ? $protagonista : ''],
+            ['icon_id' => 225, 'emoji' => '🏛️', 'label_it' => 'Cultura', 'label_en' => 'Culture', 'kind' => 'rating', 'value' => (int) get_post_meta($id, '_livello_culturale', true)],
+            ['icon_id' => 224, 'emoji' => '👟', 'label_it' => 'Passeggiata', 'label_en' => 'Walking', 'kind' => 'rating', 'value' => (int) get_post_meta($id, '_livello_passeggiata', true)],
+            ['icon_id' => 222, 'emoji' => '🪶', 'label_it' => 'Comfort', 'label_en' => 'Comfort', 'kind' => 'rating', 'value' => (int) get_post_meta($id, '_livello_piuma', true)],
+            ['icon_id' => 223, 'emoji' => '🗝️', 'label_it' => 'Esclusività', 'label_en' => 'Exclusivity', 'kind' => 'rating', 'value' => (int) get_post_meta($id, '_livello_esclusivita', true)],
+        ];
+
+        $renderable = array_filter($cards, static function (array $c): bool {
+            return $c['kind'] === 'text' ? ($c['value'] !== '') : ($c['value'] >= 1 && $c['value'] <= 5);
+        });
+        if (empty($renderable)) {
+            return;
+        }
+
+        echo '<section class="igs-tour-section">';
+        echo '<h2>' . esc_html__('Caratteristiche del Tour', 'igs-ecommerce') . '</h2>';
+        echo '<div class="igs-caratteristiche-cards">';
+        foreach ($renderable as $c) {
+            $label = $isIt ? $c['label_it'] : $c['label_en'];
+            echo '<div class="igs-caratteristica-card">';
+            echo '<div class="igs-car-icon">';
+            $img = $c['icon_id'] > 0
+                ? wp_get_attachment_image($c['icon_id'], 'thumbnail', false, ['style' => 'width:100%;height:100%;object-fit:contain;'])
+                : '';
+            echo $img !== '' ? wp_kses_post($img) : esc_html($c['emoji']);
+            echo '</div>';
+            echo '<div class="igs-car-title">' . esc_html__($label, 'igs-ecommerce') . '</div>';
+            if ($c['kind'] === 'text') {
+                echo '<div class="igs-car-subtitle">' . esc_html($c['value']) . '</div>';
+            } else {
+                echo '<div class="igs-car-rating">';
+                for ($i = 1; $i <= 5; $i++) {
+                    $fill = $i <= $c['value'] ? 'var(--igs-brand)' : '#e2e8f0';
+                    echo '<span style="background:' . esc_attr($fill) . ';"></span>';
+                }
+                echo '</div>';
+            }
+            echo '</div>';
+        }
+        echo '</div></section>';
     }
 
     private function renderHeroLazyScript(): void

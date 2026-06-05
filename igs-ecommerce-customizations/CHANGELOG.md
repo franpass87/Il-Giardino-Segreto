@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.5.0] - 2026-06-05
+
+### Added / Changed — la parte interna del tour è generata interamente dal plugin
+
+Tutta la parte interna della pagina tour (galleria, Caratteristiche del Tour, Itinerario/mappa, Programma, "Tutto quello che devi sapere") ora è renderizzata dal plugin in un unico contenitore coerente `.igs-tour-content` (stessa larghezza centrata della descrizione), invece di essere costruita a mano nel contenuto WPBakery di ogni prodotto con larghezze diverse. Risolve il disallineamento orizzontale e uniforma il layout su tutti i tour; i nuovi tour bastano i meta.
+
+- `TourLayout::renderTourContent()` agganciato a `woocommerce_after_single_product_summary`: rende le sezioni nell'ordine galleria → caratteristiche → itinerario → programma → info, ognuna in una `.igs-tour-section` con titolo centrato.
+- Nuovo `TourLayout::renderCaratteristicheLivelli()`: le 5 card "Caratteristiche del Tour" (Pianta + Cultura/Passeggiata/Comfort/Esclusività) sono generate dai meta livelli/protagonista (icone 226/225/224/222/223 con fallback emoji).
+- I contenuti galleria/programma/dettagli sono resi inline (riuso dei metodi di `TourProductTabs`); **rimossi i tab WooCommerce** (`TourProductTabs::register` non aggiunge più i tab) per evitare duplicazioni.
+- Nuova sezione "Info generali" da `_igs_tour_info`; le sezioni interne non hanno più larghezze proprie (occupano il contenitore).
+- `Integration\RemoteBridge`: aggiunte le chiavi scrivibili `_igs_tour_info` (HTML) e `_product_image_gallery` (galleria prodotto, lista ID separata da virgole) per la migrazione dei contenuti dai prodotti esistenti.
+
 ## [2.4.2] - 2026-06-05
 
 ### Fixed
