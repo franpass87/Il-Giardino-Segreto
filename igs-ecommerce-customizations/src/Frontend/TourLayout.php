@@ -527,6 +527,16 @@ class TourLayout
         }
 
         $id = $product->get_id();
+
+        // Render la parte interna SOLO per i tour "gestiti dal plugin", cioè quelli
+        // con il programma nei meta (migrati): così le pagine ancora costruite in
+        // WPBakery (es. versioni EN non ancora migrate) restano intatte e non si
+        // creano sezioni duplicate o vuote.
+        $programma = get_post_meta($id, '_igs_tour_programma', true);
+        if (!is_array($programma) || empty($programma)) {
+            return;
+        }
+
         $tabs = new TourProductTabs();
 
         echo '<div class="igs-tour-content">';

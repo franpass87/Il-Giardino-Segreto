@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.5.3] - 2026-06-05
+
+### Fixed
+
+- `renderTourContent()` ora rende la parte interna solo per i tour migrati (con `_igs_tour_programma` nei meta): le pagine ancora costruite in WPBakery (es. versioni EN non ancora migrate) restano intatte, niente sezioni duplicate o vuote.
+
 ## [2.5.2] - 2026-06-05
 
 ### Fixed
