@@ -74,10 +74,15 @@ class TourEditorial
 
         $coverId = $product->get_image_id();
         $coverUrl = $coverId ? wp_get_attachment_image_url($coverId, 'full') : wc_placeholder_img_src();
-        // Miniatura del rail: prima foto della galleria (così non ripete la copertina
-        // che è già grande accanto); fallback alla copertina se la galleria è vuota.
-        $galleryOnly = $product->get_gallery_image_ids();
-        $railThumbId = !empty($galleryOnly) ? (int) $galleryOnly[0] : (int) $coverId;
+        // Miniatura del rail: prima foto della galleria DIVERSA dalla copertina (che è
+        // già grande accanto); fallback alla copertina se non ce ne sono altre.
+        $railThumbId = (int) $coverId;
+        foreach ($product->get_gallery_image_ids() as $gid) {
+            if ((int) $gid !== (int) $coverId) {
+                $railThumbId = (int) $gid;
+                break;
+            }
+        }
         $thumbUrl = $railThumbId ? wp_get_attachment_image_url($railThumbId, 'large') : $coverUrl;
 
         $programma = get_post_meta($id, '_igs_tour_programma', true);
