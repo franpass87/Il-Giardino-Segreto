@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.4.2] - 2026-06-05
+
+### Fixed
+
+- Sezioni interne della pagina tour (galleria, programma, dettagli) disallineate orizzontalmente: erano vincolate a `max-width:900px` ma **non centrate**, quindi restavano allineate a sinistra e con larghezza diversa rispetto al blocco descrizione (1200px). Ora condividono lo stesso contenitore centrato della descrizione (`max-width:1200px; margin:auto; padding:0 24px`), così i bordi si allineano lungo la pagina e la galleria non sborda più. (Le sezioni costruite nel contenuto WPBakery del singolo prodotto restano a larghezza del tema: vanno allineate per prodotto.)
+
 ## [2.4.1] - 2026-06-05
 
 ### Fixed

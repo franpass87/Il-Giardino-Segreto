@@ -366,9 +366,20 @@ class TourLayout
                 box-shadow: 0 12px 32px rgba(0,0,0,0.12);
             }
             .igs-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-            .woocommerce .igs-tour-programma .igs-programma-day,
+            /* Tutte le sezioni interne del tour condividono lo stesso contenitore
+               centrato della descrizione (.custom-tour-wrapper: 1200px + padding 24),
+               così i bordi sinistro/destro si allineano verticalmente lungo la pagina
+               invece di avere larghezze diverse (prima: 900px non centrati). */
+            .woocommerce .igs-tour-programma,
             .woocommerce .igs-tour-dettagli,
-            .woocommerce .igs-tour-galleria { max-width: 900px; }
+            .woocommerce .igs-tour-galleria {
+                max-width: 1200px;
+                margin-left: auto;
+                margin-right: auto;
+                padding-left: 24px;
+                padding-right: 24px;
+                box-sizing: border-box;
+            }
             @media (max-width: 768px) {
                 .custom-hero { height: 50vh; min-height: 300px; }
                 .custom-tour-columns { flex-direction: column; }
