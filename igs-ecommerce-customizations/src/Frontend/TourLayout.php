@@ -711,39 +711,6 @@ class TourLayout
                 .igs-lb-prev { left: 8px; } .igs-lb-next { right: 8px; } .igs-lb-close { top: 12px; right: 12px; }
             }
 
-            /* --- Barra prenotazione sticky --- */
-            .igs-book-bar {
-                position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
-                background: rgba(20,53,42,0.97); backdrop-filter: blur(10px);
-                box-shadow: 0 -8px 30px rgba(0,0,0,0.22);
-                transform: translateY(120%); transition: transform .35s cubic-bezier(.16,.84,.44,1);
-            }
-            .igs-book-bar.is-visible { transform: translateY(0); }
-            .igs-book-bar-inner {
-                max-width: 1180px; margin: 0 auto; padding: 12px 24px;
-                display: flex; align-items: center; justify-content: space-between; gap: 18px;
-            }
-            .igs-book-bar-info { display: flex; flex-direction: column; min-width: 0; }
-            .igs-book-bar-title {
-                color: #fff; font-weight: 700; font-size: 1rem; line-height: 1.2;
-                white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60vw;
-            }
-            .igs-book-bar-price { color: var(--igs-gold); font-size: 0.95rem; font-weight: 600; }
-            .igs-book-bar-price .amount, .igs-book-bar-price bdi { color: var(--igs-gold); }
-            .igs-book-bar-btn {
-                flex-shrink: 0; cursor: pointer; border: 0;
-                background: var(--igs-gold); color: var(--igs-forest);
-                font-weight: 700; font-size: 1rem; letter-spacing: 0.02em;
-                padding: 13px 30px; border-radius: 999px;
-                box-shadow: 0 6px 18px rgba(200,155,84,0.35);
-                transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
-            }
-            .igs-book-bar-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(200,155,84,0.45); background: #d4a861; }
-            @media (max-width: 600px) {
-                .igs-book-bar-inner { padding: 10px 14px; gap: 12px; }
-                .igs-book-bar-btn { padding: 11px 20px; font-size: 0.92rem; }
-                .igs-book-bar-title { font-size: 0.92rem; max-width: 48vw; }
-            }
             @media (max-width: 768px) {
                 .igs-timeline-item { gap: 14px; }
                 .igs-timeline-marker { width: 38px; height: 38px; font-size: 1rem; box-shadow: 0 6px 16px rgba(20,53,42,0.25), 0 0 0 4px var(--igs-cream); }
@@ -956,8 +923,6 @@ class TourLayout
         }
 
         echo '</div>';
-
-        $this->renderBookBar($product);
     }
 
     /**
@@ -977,24 +942,6 @@ class TourLayout
             echo '<a href="#' . esc_attr($s['id']) . '">' . esc_html($s['label']) . '</a>';
         }
         echo '</div></nav>';
-    }
-
-    /**
-     * Barra di prenotazione sticky: compare allo scroll oltre l'hero (gestito da
-     * tour-experience.js) e riporta al form di acquisto.
-     */
-    private function renderBookBar(WC_Product $product): void
-    {
-        $priceHtml = apply_filters('woocommerce_get_price_html', '', $product);
-        echo '<div class="igs-book-bar" aria-hidden="true"><div class="igs-book-bar-inner">';
-        echo '<div class="igs-book-bar-info">';
-        echo '<span class="igs-book-bar-title">' . esc_html(get_the_title()) . '</span>';
-        if ($priceHtml !== '') {
-            echo '<span class="igs-book-bar-price">' . $priceHtml . '</span>';
-        }
-        echo '</div>';
-        echo '<button type="button" class="igs-book-bar-btn" data-igs-book>' . esc_html__('Prenota ora', 'igs-ecommerce') . '</button>';
-        echo '</div></div>';
     }
 
     /** Apre una fascia a tutta larghezza (variante colore) con contenuto centrato. */

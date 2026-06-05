@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.9.0] - 2026-06-05
+
+### Changed — template prodotto tour da zero (niente più ibrido col tema)
+
+La scheda tour non viene più "iniettata" dentro il template prodotto di Salient/WooCommerce: il plugin **prende il controllo dell'intera parte contenuto** e la genera in HTML pulito.
+
+- **Nuovo `Frontend\TourTemplate`**: sostituisce il template WooCommerce `content-single-product.php` con `templates/content-single-tour.php` (filtro `wc_get_template_part`) **solo per i tour gestiti** (con programma nei meta). Spariscono riassunto Woo, tab e qualsiasi contenuto WPBakery del prodotto; restano intatti header, footer e contenitore del tema. I tour non ancora migrati (EN/WPBakery) restano sul template standard, così non si svuotano.
+- **Nuovo `templates/content-single-tour.php`**: rende l'intera scheda via `TourLayout::render()` + `renderTourContent()` dentro un wrapper pulito `article.igs-tour-single`.
+- **Rimossa la barra di prenotazione doppia**: la 2.8.0 aggiungeva una seconda barra sticky (`.igs-book-bar`) sovrapposta a quella reale di `BookingModal` (`#gs-fixed-cta`). Tolta barra, relativo CSS e JS; resta solo il modal di prenotazione esistente (varianti, quantità, checkout, richiesta info).
+
 ## [2.8.0] - 2026-06-05
 
 ### Added — esperienza tour interattiva (PHP + JS + CSS)

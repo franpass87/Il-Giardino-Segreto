@@ -20,6 +20,7 @@ use IGS\Ecommerce\Frontend\ProductLoop;
 use IGS\Ecommerce\Frontend\ShopCustomizations;
 use IGS\Ecommerce\Frontend\TourLayout;
 use IGS\Ecommerce\Frontend\TourProductTabs;
+use IGS\Ecommerce\Frontend\TourTemplate;
 use IGS\Ecommerce\Frontend\WooCommerceDisabler;
 use IGS\Ecommerce\Integration\RemoteBridge;
 use IGS\Ecommerce\Portfolio\PortfolioTitleFilter;
@@ -58,6 +59,7 @@ final class Plugin
         (new WooStrings())->register();
         (new TourLayout())->register();
         (new TourProductTabs())->register();
+        (new TourTemplate())->register();
         (new ProductLoop())->register();
         (new ShopCustomizations())->register();
 

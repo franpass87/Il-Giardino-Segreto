@@ -123,28 +123,7 @@
             });
         });
 
-        /* 5) Barra prenotazione sticky ------------------------------------- */
-        var bar = document.querySelector('.igs-book-bar');
-        var hero = document.querySelector('.custom-hero');
-        if (bar) {
-            var threshold = hero ? hero.offsetHeight * 0.65 : 500;
-            var onScroll = function () { bar.classList.toggle('is-visible', window.pageYOffset > threshold); };
-            window.addEventListener('scroll', throttle(onScroll, 120), { passive: true });
-            window.addEventListener('resize', throttle(function () { threshold = hero ? hero.offsetHeight * 0.65 : 500; onScroll(); }, 200));
-            onScroll();
-            var btn = bar.querySelector('[data-igs-book]');
-            if (btn) {
-                btn.addEventListener('click', function (ev) {
-                    ev.preventDefault();
-                    var target = document.querySelector('form.cart') ||
-                        document.querySelector('.single_add_to_cart_button') ||
-                        document.querySelector('.summary');
-                    if (target) {
-                        var y = target.getBoundingClientRect().top + window.pageYOffset - 100;
-                        window.scrollTo({ top: y, behavior: 'smooth' });
-                    }
-                });
-            }
-        }
+        /* (La barra di prenotazione sticky è gestita da BookingModal — #gs-fixed-cta —
+           non da questo file: niente seconda barra.) */
     });
 })();
