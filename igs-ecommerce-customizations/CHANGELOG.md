@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.5.1] - 2026-06-05
+
+### Changed
+
+- Galleria del tour limitata a max 12 immagini (filtro `igs_tour_gallery_max_images`): griglia ordinata e pagina non eccessivamente lunga anche con gallerie prodotto molto numerose (es. 36 immagini).
+
 ## [2.5.0] - 2026-06-05
 
 ### Added / Changed — la parte interna del tour è generata interamente dal plugin

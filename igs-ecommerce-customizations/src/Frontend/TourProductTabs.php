@@ -117,10 +117,17 @@ class TourProductTabs
         $mainId = $product->get_image_id();
         $galleryIds = $product->get_gallery_image_ids();
         $allIds = $mainId ? array_merge([$mainId], $galleryIds) : $galleryIds;
-        $allIds = array_unique(array_filter(array_map('absint', $allIds)));
+        $allIds = array_values(array_unique(array_filter(array_map('absint', $allIds))));
 
         if (empty($allIds)) {
             return;
+        }
+
+        // Cap a 12 immagini: una griglia ordinata e una pagina non troppo lunga
+        // (anche con gallerie prodotto molto numerose). Filtrabile se serve.
+        $maxImages = (int) apply_filters('igs_tour_gallery_max_images', 12, $product);
+        if ($maxImages > 0 && count($allIds) > $maxImages) {
+            $allIds = array_slice($allIds, 0, $maxImages);
         }
         ?>
         <div class="igs-tour-galleria">
