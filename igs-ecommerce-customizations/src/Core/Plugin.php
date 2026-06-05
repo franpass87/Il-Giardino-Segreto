@@ -14,6 +14,7 @@ use IGS\Ecommerce\Admin\TourProductMetabox;
 use IGS\Ecommerce\Booking\BookingModal;
 use IGS\Ecommerce\Cart\ReturnToShop;
 use IGS\Ecommerce\Frontend\DateLocalizer;
+use IGS\Ecommerce\Frontend\TourEditorial;
 use IGS\Ecommerce\Frontend\PriceDisplay;
 use IGS\Ecommerce\Frontend\WooStrings;
 use IGS\Ecommerce\Frontend\ProductLoop;
@@ -60,6 +61,7 @@ final class Plugin
         (new TourLayout())->register();
         (new TourProductTabs())->register();
         (new TourTemplate())->register();
+        (new TourEditorial())->register();
         (new ProductLoop())->register();
         (new ShopCustomizations())->register();
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.10.0] - 2026-06-05
+
+### Changed — nuovo layout scheda tour "Editoriale a rail fisso"
+
+Forma di pagina completamente nuova (scelta per i garden tour), non un restyle: la vecchia impaginazione a fasce colorate impilate è sostituita da un layout editoriale a due colonne.
+
+- **Nuovo `Frontend\TourEditorial`**: render da zero del tour come **rail sinistro sticky** (kicker brand, titolo serif, paese+date, foto, dati chiave, prezzo, CTA *Scopri e Prenota*, indice sezioni con scroll-spy — sempre visibili mentre scorri) + **colonna racconto** a destra (copertina, descrizione con capolettera, livelli, programma numerato editoriale, galleria a mosaico con lightbox, info con quota comprende/non comprende a due colonne). Palette editoriale sabbia/terracotta/oliva. CSS dedicato, scoped `.igs-editorial`, responsive (rail in cima sotto i 1024px).
+- `templates/content-single-tour.php` ora rende `TourEditorial::render()` invece del vecchio `TourLayout::render()` + fasce.
+- **Prenotazione unificata**: il bottone del rail (`[data-igs-open-modal]`) apre lo stesso modal di `BookingModal` (varianti, quantità, checkout, richiesta info) — un solo sistema. Scroll-spy esteso al rail (`[data-igs-spy]`).
+- `TourLayout` (hero + fasce) resta come fallback per i prodotti non ancora migrati.
+
 ## [2.9.0] - 2026-06-05
 
 ### Changed — template prodotto tour da zero (niente più ibrido col tema)

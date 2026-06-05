@@ -43,7 +43,7 @@
         }
 
         /* 2) Nav interna: smooth scroll + scroll-spy ------------------------ */
-        var nav = document.querySelector('.igs-tour-nav');
+        var nav = document.querySelector('[data-igs-spy]') || document.querySelector('.igs-tour-nav');
         if (nav) {
             var links = Array.prototype.slice.call(nav.querySelectorAll('a[href^="#"]'));
             var sections = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); }).filter(Boolean);
@@ -123,7 +123,14 @@
             });
         });
 
-        /* (La barra di prenotazione sticky è gestita da BookingModal — #gs-fixed-cta —
-           non da questo file: niente seconda barra.) */
+        /* 5) Prenotazione: i pulsanti [data-igs-open-modal] aprono il modal di
+              BookingModal (riusa #gs-open-modal — un solo sistema di prenotazione). */
+        Array.prototype.slice.call(document.querySelectorAll('[data-igs-open-modal]')).forEach(function (btn) {
+            btn.addEventListener('click', function (ev) {
+                ev.preventDefault();
+                var trigger = document.getElementById('gs-open-modal');
+                if (trigger) { trigger.click(); }
+            });
+        });
     });
 })();

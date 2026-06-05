@@ -25,12 +25,9 @@ if (!$product instanceof WC_Product) {
 ?>
 <article class="igs-tour-single" id="igs-tour-<?php the_ID(); ?>">
     <?php
-    $layout = new \IGS\Ecommerce\Frontend\TourLayout();
-    // Parte alta: hero a tutta larghezza, trust badge, descrizione + box prezzo.
-    $layout->render();
-    // Parte interna: nav sticky + fasce (galleria, caratteristiche, itinerario,
-    // programma a timeline, info ad accordion).
-    $layout->renderTourContent();
+    // Layout "Editoriale a rail fisso": rail con prezzo/prenota sempre visibili +
+    // colonna racconto (copertina, descrizione, programma, galleria, info).
+    (new \IGS\Ecommerce\Frontend\TourEditorial())->render($product);
     ?>
 </article>
 <?php
