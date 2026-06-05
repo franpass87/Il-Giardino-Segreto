@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.11.0] - 2026-06-05
+
+### Changed — colori dal tema, punteggi uniti, testi più grandi, barra solo mobile
+
+- **Colori = accent di Salient**: nuovo `Helper\Theme` legge `salient_redux.accent-color` (fallback `#0b5764`); il layout editoriale e il pulsante della barra di prenotazione usano l'accent del tema invece di colori hardcoded. ✓/✕ delle liste restano verde/rosso per chiarezza semantica.
+- **Punteggi uniti in alto, una sola volta**: rimossa la riga "Esclusività" dal rail (era duplicata); i punteggi Cultura/Passeggiata/Comfort/Esclusività ora sono un'unica **card in cima** al contenuto.
+- **Testi più grandi**: corpo, descrizione (lead), programma, info, prezzo e titoli ingranditi per migliore leggibilità.
+- **Barra di prenotazione sticky solo su mobile**: su desktop è nascosta sulle pagine col rail (`body.igs-has-rail`), dato che prezzo + CTA sono già sempre visibili nel rail; su mobile resta (il rail scorre via).
+
 ## [2.10.2] - 2026-06-05
 
 ### Fixed

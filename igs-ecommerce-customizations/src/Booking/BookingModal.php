@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace IGS\Ecommerce\Booking;
 
 use IGS\Ecommerce\Admin\EmailSettings;
+use IGS\Ecommerce\Helper\Theme;
 use WC_Product;
 
 class BookingModal
@@ -31,6 +32,8 @@ class BookingModal
 
         $productId = $product->get_id();
         $productTitle = $product->get_title();
+        $accent = Theme::accent();
+        $accentRgb = Theme::accentRgb();
 
         $L = [
             'cta' => __('Scopri e Prenota', 'igs-ecommerce'),
@@ -90,8 +93,8 @@ class BookingModal
         .gs-cta-price{font-family:Georgia,"Times New Roman",serif;font-size:1.55rem;font-weight:700;color:#26241f}
         .gs-cta-price .amount,.gs-cta-price bdi{color:#26241f}
         .gs-cta-sub{font-size:.72rem;color:#7a7466;text-transform:uppercase;letter-spacing:.12em}
-        #gs-open-modal{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 34px;font-family:var(--font-main);font-size:1.12rem;font-weight:700;color:#fff;background:#b5532f;border:none;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px rgba(181,83,47,.30);transition:transform .2s,box-shadow .25s,filter .2s;white-space:nowrap;text-shadow:none}
-        #gs-open-modal:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(181,83,47,.42);filter:brightness(1.05)}
+        #gs-open-modal{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 34px;font-family:var(--font-main);font-size:1.12rem;font-weight:700;color:#fff;background:<?php echo esc_attr($accent); ?>;border:none;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px rgba(<?php echo esc_attr($accentRgb); ?>,.30);transition:transform .2s,box-shadow .25s,filter .2s;white-space:nowrap;text-shadow:none}
+        #gs-open-modal:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(<?php echo esc_attr($accentRgb); ?>,.42);filter:brightness(1.05)}
         #gs-open-modal:active{transform:translateY(0)}
         #gs-open-modal svg{width:18px;height:18px;flex:0 0 auto;transition:transform .2s}
         #gs-open-modal:hover svg{transform:translateX(4px)}

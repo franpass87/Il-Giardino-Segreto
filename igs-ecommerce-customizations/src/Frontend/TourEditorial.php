@@ -6,6 +6,7 @@ namespace IGS\Ecommerce\Frontend;
 
 use IGS\Ecommerce\Helper\CountryFlags;
 use IGS\Ecommerce\Helper\Locale;
+use IGS\Ecommerce\Helper\Theme;
 use WC_Product;
 
 /**
@@ -23,6 +24,23 @@ class TourEditorial
     public function register(): void
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueueStyles'], 20);
+        add_filter('body_class', [$this, 'bodyClass']);
+    }
+
+    /**
+     * Marca le pagine col rail editoriale: il CSS usa body.igs-has-rail per nascondere
+     * la barra di prenotazione in basso su desktop (il rail ha già prezzo + CTA).
+     *
+     * @param array<int, string> $classes
+     * @return array<int, string>
+     */
+    public function bodyClass(array $classes): array
+    {
+        if (is_product() && $this->currentIsManaged()) {
+            $classes[] = 'igs-has-rail';
+        }
+
+        return $classes;
     }
 
     public function enqueueStyles(): void
@@ -105,10 +123,8 @@ class TourEditorial
         if ($protagonista !== '') {
             echo '<li><span>' . esc_html__('Protagonista', 'igs-ecommerce') . '</span><span>' . esc_html($protagonista) . '</span></li>';
         }
-        $escl = (int) get_post_meta($id, '_livello_esclusivita', true);
-        if ($escl >= 1) {
-            echo '<li><span>' . esc_html__('Esclusività', 'igs-ecommerce') . '</span><span class="igs-ed-stars">' . $this->stars($escl) . '</span></li>';
-        }
+        // Esclusività NON qui: i punteggi (Cultura/Passeggiata/Comfort/Esclusività)
+        // sono raggruppati una sola volta in alto nel contenuto (no doppione).
         echo '</ul>';
 
         $priceHtml = apply_filters('woocommerce_get_price_html', '', $product);
@@ -143,12 +159,14 @@ class TourEditorial
 
         echo '<div class="igs-ed-pad">';
 
-        // Il viaggio: lead + caratteristiche.
+        // Punteggi tutti insieme in alto (una sola volta).
+        $this->renderLevels($id, $isIt);
+
+        // Il viaggio: descrizione.
         echo '<section id="ed-viaggio" class="igs-ed-sec">';
         if ($excerpt !== '') {
             echo '<div class="igs-ed-lead igs-reveal">' . wp_kses_post($excerpt) . '</div>';
         }
-        $this->renderLevels($id, $isIt);
         echo '</section>';
 
         // Programma.
@@ -354,59 +372,60 @@ class TourEditorial
 
     private function css(): string
     {
-        return '
-        .igs-editorial{--ed-bg:#f7f3ea;--ed-panel:#fffdf8;--ed-ink:#26241f;--ed-muted:#7a7466;--ed-line:#e4ddcd;--ed-accent:#b5532f;--ed-accent2:#7d7a45;
+        $css = '
+        .igs-editorial{--ed-bg:#f7f3ea;--ed-panel:#fffdf8;--ed-ink:#26241f;--ed-muted:#6f6a5d;--ed-line:#e4ddcd;--ed-accent:{{ACCENT}};--ed-accent2:{{ACCENT}};
             position:relative;left:50%;right:50%;width:100vw;margin-left:-50vw;margin-right:-50vw;background:var(--ed-bg);color:var(--ed-ink);
             display:flex;align-items:flex-start;font-family:inherit;line-height:1.65;}
         .igs-ed-serif{font-family:\'the-seasons-regular\',Georgia,serif;}
         /* RAIL */
-        .igs-ed-rail{width:400px;flex:0 0 400px;align-self:stretch;background:var(--ed-panel);border-right:1px solid var(--ed-line);}
-        .igs-ed-rail-inner{position:sticky;top:0;padding:46px 40px;display:flex;flex-direction:column;max-height:100vh;overflow:auto;}
-        .igs-ed-kicker{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--ed-accent);font-weight:700;}
-        .igs-ed-title{font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:38px;line-height:1.08;margin:14px 0 8px;color:var(--ed-ink);}
-        .igs-ed-where{color:var(--ed-muted);font-size:15px;margin-bottom:22px;display:flex;align-items:center;flex-wrap:wrap;}
+        .igs-ed-rail{width:404px;flex:0 0 404px;align-self:stretch;background:var(--ed-panel);border-right:1px solid var(--ed-line);}
+        .igs-ed-rail-inner{position:sticky;top:0;padding:48px 42px;display:flex;flex-direction:column;max-height:100vh;overflow:auto;}
+        .igs-ed-kicker{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ed-accent);font-weight:700;}
+        .igs-ed-title{font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:42px;line-height:1.07;margin:14px 0 8px;color:var(--ed-ink);}
+        .igs-ed-where{color:var(--ed-muted);font-size:16px;margin-bottom:24px;display:flex;align-items:center;flex-wrap:wrap;}
         .igs-ed-where .igs-country{display:inline-flex;align-items:center;gap:.4em;}
         .igs-ed-where .igs-flag{width:1.1em;height:auto;border-radius:2px;}
-        .igs-ed-thumb{height:172px;border-radius:14px;background-size:cover;background-position:center;margin-bottom:22px;box-shadow:0 12px 26px rgba(38,36,31,.12);}
-        .igs-ed-facts{list-style:none;margin:0 0 22px;padding:16px 0 0;border-top:1px solid var(--ed-line);}
-        .igs-ed-facts li{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--ed-line);font-size:15px;}
+        .igs-ed-thumb{height:178px;border-radius:14px;background-size:cover;background-position:center;margin-bottom:24px;box-shadow:0 12px 26px rgba(38,36,31,.12);}
+        .igs-ed-facts{list-style:none;margin:0 0 24px;padding:16px 0 0;border-top:1px solid var(--ed-line);}
+        .igs-ed-facts li{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--ed-line);font-size:16px;}
         .igs-ed-facts li span:first-child{color:var(--ed-muted);}
         .igs-ed-facts li span:last-child{font-weight:600;text-align:right;}
-        .igs-ed-stars{color:var(--ed-accent2);letter-spacing:1px;}
+        .igs-ed-stars{color:var(--ed-accent);letter-spacing:1px;}
         .igs-ed-price{margin-bottom:8px;}
-        .igs-ed-amount{font-family:\'the-seasons-regular\',Georgia,serif;font-size:30px;font-weight:700;color:var(--ed-ink);}
+        .igs-ed-amount{font-family:\'the-seasons-regular\',Georgia,serif;font-size:34px;font-weight:700;color:var(--ed-ink);}
         .igs-ed-amount .woocommerce-Price-amount,.igs-ed-amount bdi{color:var(--ed-ink);}
-        .igs-ed-install{font-size:13.5px;color:var(--ed-muted);margin-top:2px;}
-        .igs-ed-book{margin-top:16px;border:0;cursor:pointer;background:var(--ed-accent);color:#fff;padding:16px 22px;border-radius:999px;
-            font-family:inherit;font-weight:700;font-size:16.5px;letter-spacing:.01em;box-shadow:0 10px 24px rgba(181,83,47,.28);
+        .igs-ed-install{font-size:14px;color:var(--ed-muted);margin-top:2px;}
+        .igs-ed-book{margin-top:18px;border:0;cursor:pointer;background:var(--ed-accent);color:#fff;padding:17px 24px;border-radius:999px;
+            font-family:inherit;font-weight:700;font-size:17px;letter-spacing:.01em;box-shadow:0 10px 24px rgba({{ACCENT_RGB}},.28);
             transition:transform .2s ease,box-shadow .25s ease,filter .2s ease;}
-        .igs-ed-book:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(181,83,47,.4);filter:brightness(1.04);}
-        .igs-ed-nav{margin-top:26px;padding-top:22px;border-top:1px solid var(--ed-line);display:flex;flex-direction:column;gap:3px;}
-        .igs-ed-nav a{color:var(--ed-muted);text-decoration:none;font-size:14.5px;border-left:2px solid var(--ed-line);padding:6px 0 6px 14px;transition:color .2s,border-color .2s;}
+        .igs-ed-book:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba({{ACCENT_RGB}},.42);filter:brightness(1.06);}
+        .igs-ed-nav{margin-top:28px;padding-top:24px;border-top:1px solid var(--ed-line);display:flex;flex-direction:column;gap:3px;}
+        .igs-ed-nav a{color:var(--ed-muted);text-decoration:none;font-size:15.5px;border-left:2px solid var(--ed-line);padding:7px 0 7px 14px;transition:color .2s,border-color .2s;}
         .igs-ed-nav a:hover{color:var(--ed-ink);}
         .igs-ed-nav a.is-active{color:var(--ed-ink);border-color:var(--ed-accent);font-weight:600;}
         /* CONTENT */
-        .igs-ed-content{flex:1;min-width:0;padding-bottom:80px;}
-        .igs-ed-cover{height:460px;background-size:cover;background-position:center;}
-        .igs-ed-pad{padding:54px clamp(28px,5vw,72px);max-width:920px;}
+        .igs-ed-content{flex:1;min-width:0;padding-bottom:80px;font-size:17px;}
+        .igs-ed-cover{height:470px;background-size:cover;background-position:center;}
+        .igs-ed-pad{padding:48px clamp(28px,5vw,76px) 56px;max-width:940px;}
         .igs-ed-sec{scroll-margin-top:24px;}
         .igs-ed-sec+.igs-ed-sec{margin-top:8px;}
-        .igs-ed-lead{font-size:21px;line-height:1.7;color:#3a372f;}
+        .igs-ed-lead{font-size:23px;line-height:1.72;color:#3a372f;}
         .igs-ed-lead p{margin:0 0 .8em;}
-        .igs-ed-lead>:first-child::first-letter,.igs-ed-lead::first-letter{font-family:\'the-seasons-regular\',Georgia,serif;font-size:62px;float:left;line-height:.8;margin:6px 14px 0 0;color:var(--ed-accent);}
-        .igs-ed-levels{display:flex;flex-wrap:wrap;gap:10px 26px;margin-top:26px;padding-top:22px;border-top:1px solid var(--ed-line);}
-        .igs-ed-level{display:flex;align-items:center;gap:10px;}
-        .igs-ed-level-l{font-size:14px;color:var(--ed-muted);}
-        .igs-ed-dots{display:inline-flex;gap:4px;}
-        .igs-ed-dot{width:8px;height:8px;border-radius:50%;background:var(--ed-line);}
-        .igs-ed-dot.on{background:var(--ed-accent2);}
-        .igs-ed-h2{font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:30px;margin:56px 0 24px;padding-bottom:12px;border-bottom:1px solid var(--ed-line);color:var(--ed-ink);}
+        .igs-ed-lead>:first-child::first-letter,.igs-ed-lead::first-letter{font-family:\'the-seasons-regular\',Georgia,serif;font-size:66px;float:left;line-height:.8;margin:6px 16px 0 0;color:var(--ed-accent);}
+        /* Punteggi (tutti insieme in alto, una sola volta) */
+        .igs-ed-levels{display:flex;flex-wrap:wrap;gap:20px 44px;margin:0 0 8px;padding:22px 26px;background:var(--ed-panel);border:1px solid var(--ed-line);border-radius:14px;box-shadow:0 8px 22px rgba(38,36,31,.05);}
+        .igs-ed-level{display:flex;flex-direction:column;gap:9px;}
+        .igs-ed-level-l{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ed-muted);font-weight:600;}
+        .igs-ed-dots{display:inline-flex;gap:5px;}
+        .igs-ed-dot{width:9px;height:9px;border-radius:50%;background:var(--ed-line);}
+        .igs-ed-dot.on{background:var(--ed-accent);}
+        .igs-ed-h2{font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:33px;margin:58px 0 26px;padding-bottom:12px;border-bottom:1px solid var(--ed-line);color:var(--ed-ink);}
         /* Programma editoriale */
-        .igs-ed-day{display:grid;grid-template-columns:84px 1fr;gap:22px;padding:22px 0;border-bottom:1px solid var(--ed-line);}
+        .igs-ed-day{display:grid;grid-template-columns:84px 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--ed-line);}
         .igs-ed-day:last-child{border-bottom:none;}
-        .igs-ed-day-n{font-family:\'the-seasons-regular\',Georgia,serif;font-size:52px;line-height:1;color:var(--ed-accent2);}
-        .igs-ed-day-b h3{font-size:20px;font-weight:600;margin:4px 0 8px;color:var(--ed-ink);}
-        .igs-ed-day-text{color:var(--ed-muted);line-height:1.7;}
+        .igs-ed-day-n{font-family:\'the-seasons-regular\',Georgia,serif;font-size:54px;line-height:1;color:var(--ed-accent);}
+        .igs-ed-day-b h3{font-size:22px;font-weight:600;margin:4px 0 9px;color:var(--ed-ink);}
+        .igs-ed-day-text{color:#4a463d;line-height:1.72;font-size:16.5px;}
         .igs-ed-day-text p{margin:0 0 .7em;}
         /* Galleria mosaico */
         .igs-ed-gallery{columns:3;column-gap:14px;}
@@ -415,22 +434,24 @@ class TourEditorial
         .igs-ed-gallery .igs-gallery-item img{width:100%!important;height:auto!important;max-width:none!important;display:block;margin:0;}
         /* Info */
         .igs-ed-quota{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-bottom:8px;}
-        .igs-ed-quota h4,.igs-ed-block h4{font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--ed-accent);margin:0 0 12px;}
+        .igs-ed-quota h4,.igs-ed-block h4{font-size:14.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ed-accent);margin:0 0 12px;}
         /* Un solo pallino: niente bullet nativo del tema (!important) né doppioni; il
            segno è sempre lo ::before. Vale anche per le liste HTML dentro .igs-ed-prose. */
         .igs-ed-quota ul,.igs-ed-bullets,.igs-ed-prose ul{list-style:none !important;margin:0;padding:0;}
-        .igs-ed-quota li,.igs-ed-bullets li,.igs-ed-prose ul li{position:relative;list-style:none !important;padding:6px 0 6px 26px;color:#3a372f;line-height:1.55;}
+        .igs-ed-quota li,.igs-ed-bullets li,.igs-ed-prose ul li{position:relative;list-style:none !important;padding:7px 0 7px 28px;color:#3a372f;line-height:1.6;font-size:16px;}
         .igs-ed-quota li::marker,.igs-ed-bullets li::marker,.igs-ed-prose ul li::marker{content:"";}
-        .igs-ed-quota li::before,.igs-ed-bullets li::before,.igs-ed-prose ul li::before{position:absolute;left:0;top:6px;font-weight:700;content:"\2022";color:var(--ed-accent2);}
-        .igs-ed-yes li::before{content:"\2713";color:var(--ed-accent2);}
-        .igs-ed-no li::before{content:"\2715";color:var(--ed-accent);}
+        .igs-ed-quota li::before,.igs-ed-bullets li::before,.igs-ed-prose ul li::before{position:absolute;left:0;top:7px;font-weight:700;content:"\2022";color:var(--ed-accent);}
+        .igs-ed-yes li::before{content:"\2713";color:#5a8a3c;}
+        .igs-ed-no li::before{content:"\2715";color:#c0563f;}
         .igs-ed-block{margin-top:34px;}
-        .igs-ed-prose{color:#3a372f;line-height:1.7;}
+        .igs-ed-prose{color:#3a372f;line-height:1.72;font-size:16.5px;}
         .igs-ed-prose p{margin:0 0 .7em;}
         /* Reveal scoped (oltre alle regole globali di TourLayout) */
         .igs-editorial .igs-reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,.84,.44,1);}
         .igs-editorial .igs-reveal.igs-in{opacity:1;transform:none;}
         @media (prefers-reduced-motion: reduce){.igs-editorial .igs-reveal{opacity:1!important;transform:none!important;}}
+        /* Su desktop il rail mostra già prezzo + CTA: nascondi la barra sticky in basso. */
+        @media (min-width:1025px){body.igs-has-rail #gs-fixed-cta{display:none !important;}}
         /* Responsive: rail in cima, niente sticky */
         @media (max-width: 1024px){
             .igs-editorial{flex-direction:column;}
@@ -443,13 +464,20 @@ class TourEditorial
             .igs-ed-gallery{columns:2;}
         }
         @media (max-width: 560px){
-            .igs-ed-pad{padding:36px 20px;}
+            .igs-ed-pad{padding:34px 20px 44px;}
+            .igs-ed-levels{gap:16px 28px;padding:18px 20px;}
             .igs-ed-quota{grid-template-columns:1fr;gap:22px;}
             .igs-ed-gallery{columns:1;}
-            .igs-ed-day{grid-template-columns:54px 1fr;gap:14px;}
-            .igs-ed-day-n{font-size:38px;}
-            .igs-ed-title{font-size:32px;}
+            .igs-ed-day{grid-template-columns:50px 1fr;gap:14px;}
+            .igs-ed-day-n{font-size:40px;}
+            .igs-ed-title{font-size:34px;}
+            .igs-ed-lead{font-size:21px;}
         }
         ';
+
+        return strtr($css, [
+            '{{ACCENT}}' => Theme::accent(),
+            '{{ACCENT_RGB}}' => Theme::accentRgb(),
+        ]);
     }
 }
