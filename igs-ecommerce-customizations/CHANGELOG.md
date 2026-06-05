@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.7.0] - 2026-06-05
+
+### Changed — restyling immersivo botanico della pagina tour
+
+Redesign drastico della scheda tour: palette botanica (verde foresta, verde botanico, crema, accento oro), sezioni interne ora rese come **fasce alternate a tutta larghezza** (galleria su verde foresta, caratteristiche su crema, itinerario su verde, programma su crema, info su verde tenue) con contenuto centrato. Titoli di sezione serif grandi con accento a foglia. Box prezzo trasformato in card verde profondo con accenti oro. Galleria con immagini più grandi e protagoniste su fondo scuro; mappa incorniciata; schede programma organiche con accento oro. Struttura: `TourLayout::renderTourContent()` usa fasce (`openBand`/`closeBand`/`bandTitle`).
+
 ## [2.6.3] - 2026-06-05
 
 ### Changed — rifiniture hero e sidebar

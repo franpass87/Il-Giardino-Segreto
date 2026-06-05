@@ -472,6 +472,89 @@ class TourLayout
                 .igs-tour-galleria { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             }
             @media (min-width: 769px) { .custom-hero { height: 65vh; } }
+
+            /* ===================================================================
+               RESTYLING IMMERSIVO BOTANICO (pagina tour)
+               =================================================================== */
+            :root {
+                --igs-forest: #14352a;
+                --igs-green: #2c5a44;
+                --igs-green-soft: #edf2ea;
+                --igs-cream: #f7f3ea;
+                --igs-gold: #c89b54;
+                --igs-ink: #22302a;
+                --igs-on-dark: #f3efe3;
+            }
+            /* La descrizione + box prezzo su fondo crema a tutta larghezza */
+            .custom-tour-wrapper { position: relative; max-width: none; margin: 0; padding: 72px 24px; }
+            .custom-tour-wrapper::before {
+                content: ""; position: absolute; top: 0; bottom: 0; left: 50%;
+                width: 100vw; margin-left: -50vw; background: var(--igs-cream); z-index: 0;
+            }
+            .custom-tour-columns { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; }
+            .custom-tour-desc { color: var(--igs-ink); }
+            /* Box prezzo: card verde profondo con accenti oro (lusso botanico) */
+            .custom-tour-sidebar {
+                background: linear-gradient(165deg, var(--igs-green) 0%, var(--igs-forest) 100%);
+                color: var(--igs-on-dark);
+                border: 1px solid rgba(255,255,255,0.10);
+                box-shadow: 0 18px 45px rgba(20,53,42,0.22);
+            }
+            .custom-tour-sidebar:hover { box-shadow: 0 22px 55px rgba(20,53,42,0.30); }
+            .custom-tour-sidebar .price { color: #ffffff; }
+            .custom-tour-sidebar .installment { color: rgba(243,239,227,0.85); }
+            .custom-tour-sidebar .duration { background: rgba(255,255,255,0.12); color: #fff; }
+            .custom-tour-sidebar .sidebar-section-title { color: rgba(243,239,227,0.9); }
+            .custom-tour-sidebar .tour-services { border-top-color: rgba(255,255,255,0.16); }
+            .custom-tour-sidebar .tour-services span { color: var(--igs-on-dark); border-bottom-color: rgba(255,255,255,0.14); }
+            .custom-tour-sidebar .tour-services .igs-service-svg { color: var(--igs-gold); }
+            .custom-tour-sidebar .country-band { background: var(--igs-gold); color: var(--igs-forest); }
+            /* Pillole hero in tinta */
+            .custom-hero-content .country, .custom-hero-content .dates {
+                background: rgba(20,53,42,0.78); border-color: rgba(200,155,84,0.55);
+            }
+            /* Contenitore: le fasce gestiscono la larghezza */
+            .igs-tour-content { max-width: none; margin: 0; padding: 0; }
+            .igs-band {
+                position: relative; left: 50%; right: 50%; width: 100vw;
+                margin-left: -50vw; margin-right: -50vw; padding: 84px 24px;
+            }
+            .igs-band-inner { max-width: 1180px; margin: 0 auto; }
+            .igs-band--cream { background: var(--igs-cream); color: var(--igs-ink); }
+            .igs-band--sage { background: var(--igs-green-soft); color: var(--igs-ink); }
+            .igs-band--green { background: var(--igs-green); color: var(--igs-on-dark); }
+            .igs-band--forest { background: var(--igs-forest); color: var(--igs-on-dark); }
+            .igs-band-title {
+                display: flex; align-items: center; justify-content: center; gap: 14px;
+                font-family: \'the-seasons-regular\', Georgia, serif;
+                font-size: clamp(30px, 4.2vw, 46px); line-height: 1.1; text-align: center;
+                margin: 0 0 46px; letter-spacing: -0.01em; font-weight: 400;
+            }
+            .igs-band-title .igs-leaf { width: 0.8em; height: 0.8em; flex-shrink: 0; color: var(--igs-gold); }
+            .igs-band--cream .igs-band-title, .igs-band--sage .igs-band-title { color: var(--igs-green); }
+            .igs-band--green .igs-band-title, .igs-band--forest .igs-band-title { color: var(--igs-on-dark); }
+            /* Sezioni interne occupano la fascia */
+            .igs-band .igs-tour-programma, .igs-band .igs-tour-dettagli, .igs-band .igs-tour-galleria { max-width: none; margin: 0; padding: 0; }
+            /* Galleria su foresta: immagini grandi protagoniste */
+            .igs-band--forest .igs-tour-galleria { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+            .igs-band--forest .igs-gallery-item { height: 230px; box-shadow: 0 12px 32px rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.08); }
+            /* Caratteristiche */
+            .igs-band .igs-caratteristica-card { background: #fff; border: 1px solid rgba(20,53,42,0.08); box-shadow: 0 12px 30px rgba(20,53,42,0.07); }
+            .igs-band .igs-car-title { color: var(--igs-ink); }
+            .igs-band .igs-car-subtitle { color: var(--igs-gold); font-style: italic; }
+            /* Itinerario su verde: mappa incorniciata */
+            .igs-band--green .mappa-viaggio-wrapper { border: 5px solid rgba(255,255,255,0.14); box-shadow: 0 16px 42px rgba(0,0,0,0.30); }
+            /* Programma su crema: schede organiche con accento oro */
+            .igs-band--cream .igs-programma-day { background: #fff; border: 1px solid rgba(20,53,42,0.08); border-left: 4px solid var(--igs-gold); box-shadow: 0 10px 26px rgba(20,53,42,0.06); }
+            .igs-band .igs-programma-day h3 { color: var(--igs-green); font-family: \'the-seasons-regular\', Georgia, serif; font-size: 1.4rem; }
+            .igs-band .igs-programma-content { color: var(--igs-ink); }
+            /* Devi sapere su sage */
+            .igs-band--sage .igs-tour-dettagli section > h3 { color: var(--igs-green); border-bottom-color: rgba(20,53,42,0.14); }
+            .igs-band--sage .igs-tour-dettagli, .igs-band--sage .igs-tour-dettagli li { color: var(--igs-ink); }
+            @media (max-width: 768px) {
+                .igs-band { padding: 56px 18px; }
+                .custom-tour-wrapper { padding: 48px 18px; }
+            }
         ';
         wp_add_inline_style('woocommerce-general', $css);
     }
@@ -620,38 +703,75 @@ class TourLayout
         echo '<div class="igs-tour-content">';
 
         if (!empty($product->get_gallery_image_ids())) {
-            echo '<section class="igs-tour-section">';
-            echo '<h2>' . esc_html__('Galleria', 'igs-ecommerce') . '</h2>';
+            $this->openBand('forest');
+            $this->bandTitle(__('Galleria', 'igs-ecommerce'));
             $tabs->renderGalleria();
-            echo '</section>';
+            $this->closeBand();
         }
 
-        $this->renderCaratteristicheLivelli($product);
+        if ($this->hasLevels($product)) {
+            $this->openBand('cream');
+            $this->bandTitle(__('Caratteristiche del Tour', 'igs-ecommerce'));
+            $this->renderCaratteristicheLivelli($product);
+            $this->closeBand();
+        }
 
         $tappe = get_post_meta($id, '_mappa_tappe', true);
         if (is_array($tappe) && !empty($tappe)) {
-            echo '<section class="igs-tour-section">';
-            echo '<h2>' . esc_html__('Itinerario di Viaggio', 'igs-ecommerce') . '</h2>';
+            $this->openBand('green');
+            $this->bandTitle(__('Itinerario di Viaggio', 'igs-ecommerce'));
             echo do_shortcode('[mappa_viaggio id="' . (int) $id . '"]');
-            echo '</section>';
+            $this->closeBand();
         }
 
-        $programma = get_post_meta($id, '_igs_tour_programma', true);
         if (is_array($programma) && !empty($programma)) {
-            echo '<section class="igs-tour-section">';
-            echo '<h2>' . esc_html__('Programma del Tour', 'igs-ecommerce') . '</h2>';
+            $this->openBand('cream');
+            $this->bandTitle(__('Programma del Tour', 'igs-ecommerce'));
             $tabs->renderProgramma();
-            echo '</section>';
+            $this->closeBand();
         }
 
         if ($this->hasDettagli($id)) {
-            echo '<section class="igs-tour-section">';
-            echo '<h2>' . esc_html__('Tutto quello che devi sapere', 'igs-ecommerce') . '</h2>';
+            $this->openBand('sage');
+            $this->bandTitle(__('Tutto quello che devi sapere', 'igs-ecommerce'));
             $tabs->renderDettagliViaggio();
-            echo '</section>';
+            $this->closeBand();
         }
 
         echo '</div>';
+    }
+
+    /** Apre una fascia a tutta larghezza (variante colore) con contenuto centrato. */
+    private function openBand(string $variant): void
+    {
+        echo '<section class="igs-band igs-band--' . esc_attr($variant) . '"><div class="igs-band-inner">';
+    }
+
+    private function closeBand(): void
+    {
+        echo '</div></section>';
+    }
+
+    /** Titolo di fascia con piccolo accento botanico (foglia). */
+    private function bandTitle(string $text): void
+    {
+        $leaf = '<svg class="igs-leaf" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C7 4 4 8 4 13c0 4 3 8 8 9 0-5 1-8 4-11-2 1-4 2-5 4 0-5 1-9 1-13z"/></svg>';
+        echo '<h2 class="igs-band-title">' . $leaf . '<span>' . esc_html($text) . '</span></h2>';
+    }
+
+    private function hasLevels(WC_Product $product): bool
+    {
+        $id = $product->get_id();
+        if (trim((string) get_post_meta($id, '_protagonista_tour', true)) !== '') {
+            return true;
+        }
+        foreach (['_livello_culturale', '_livello_passeggiata', '_livello_piuma', '_livello_esclusivita'] as $k) {
+            if ((int) get_post_meta($id, $k, true) >= 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function hasDettagli(int $id): bool
@@ -719,8 +839,6 @@ class TourLayout
             return;
         }
 
-        echo '<section class="igs-tour-section">';
-        echo '<h2>' . esc_html__('Caratteristiche del Tour', 'igs-ecommerce') . '</h2>';
         echo '<div class="igs-caratteristiche-cards">';
         foreach ($renderable as $c) {
             $label = $isIt ? $c['label_it'] : $c['label_en'];
@@ -746,7 +864,7 @@ class TourLayout
             }
             echo '</div>';
         }
-        echo '</div></section>';
+        echo '</div>';
     }
 
     private function renderHeroLazyScript(): void
