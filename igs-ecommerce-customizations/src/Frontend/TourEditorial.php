@@ -416,12 +416,14 @@ class TourEditorial
         /* Info */
         .igs-ed-quota{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-bottom:8px;}
         .igs-ed-quota h4,.igs-ed-block h4{font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--ed-accent);margin:0 0 12px;}
-        .igs-ed-quota ul,.igs-ed-bullets{list-style:none;margin:0;padding:0;}
-        .igs-ed-quota li,.igs-ed-bullets li{position:relative;padding:6px 0 6px 26px;color:#3a372f;line-height:1.55;}
-        .igs-ed-quota li::before,.igs-ed-bullets li::before{position:absolute;left:0;top:6px;font-weight:700;}
+        /* Un solo pallino: niente bullet nativo del tema (!important) né doppioni; il
+           segno è sempre lo ::before. Vale anche per le liste HTML dentro .igs-ed-prose. */
+        .igs-ed-quota ul,.igs-ed-bullets,.igs-ed-prose ul{list-style:none !important;margin:0;padding:0;}
+        .igs-ed-quota li,.igs-ed-bullets li,.igs-ed-prose ul li{position:relative;list-style:none !important;padding:6px 0 6px 26px;color:#3a372f;line-height:1.55;}
+        .igs-ed-quota li::marker,.igs-ed-bullets li::marker,.igs-ed-prose ul li::marker{content:"";}
+        .igs-ed-quota li::before,.igs-ed-bullets li::before,.igs-ed-prose ul li::before{position:absolute;left:0;top:6px;font-weight:700;content:"\2022";color:var(--ed-accent2);}
         .igs-ed-yes li::before{content:"\2713";color:var(--ed-accent2);}
         .igs-ed-no li::before{content:"\2715";color:var(--ed-accent);}
-        .igs-ed-bullets li::before{content:"\2022";color:var(--ed-accent2);}
         .igs-ed-block{margin-top:34px;}
         .igs-ed-prose{color:#3a372f;line-height:1.7;}
         .igs-ed-prose p{margin:0 0 .7em;}

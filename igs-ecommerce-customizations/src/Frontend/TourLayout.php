@@ -210,12 +210,8 @@ class TourLayout
             .custom-hero.igs-hero-lazy { background-color: #e5e7eb; }
             .custom-hero-content .country .igs-country, .country-band .igs-country { display:inline-flex; align-items:center; gap:.45em; }
             .igs-flag { width:1.15em; height:auto; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.18); vertical-align:middle; }
-            #gs-open-modal {
-                font-size: 1.8rem !important;
-                font-family: \'the-seasons-regular\' !important;
-                background-color: #8fb159 !important;
-                text-shadow: 2px 2px 8px black !important;
-            }
+            /* Lo stile del pulsante #gs-open-modal è definito in BookingModal
+               (palette editoriale). Niente più override !important qui. */
             body[data-header-resize="1"] .container-wrap,
             body[data-header-resize="1"] .project-title { margin-top: 0; padding-top: 0; }
             body[data-slide-out-widget-area-style=slide-out-from-right] .nectar-social.fixed,

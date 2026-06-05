@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.10.2] - 2026-06-05
+
+### Fixed
+
+- **Doppio elenco puntato** nelle info del tour: le liste ereditavano il bullet nativo del tema oltre al `::before` personalizzato (e le liste HTML dentro `.igs-ed-prose`, es. "Documenti necessari", mostravano il disco del tema). Ora `list-style:none !important` + `::marker` svuotato + un unico pallino `::before` coerente anche per le liste in prosa.
+
+### Changed
+
+- **Restyling barra di prenotazione sticky** (`#gs-fixed-cta`) in linea col layout editoriale: fondo crema, bordo sabbia, prezzo serif color inchiostro, sottotitolo in maiuscoletto, **pulsante terracotta** allineato. Rimossa la vecchia regola `!important` di `TourLayout` che forzava il pulsante a verde, font 1.8rem e ombra nera (causa del disallineamento).
+
 ## [2.10.1] - 2026-06-05
 
 ### Fixed

@@ -83,14 +83,15 @@ class BookingModal
         <style>
         :root{--brand-color:#0e5763;--brand-color-hover:#0a434c;--brand-accent:#8fb159;--background-light:#f6f8f8;--text-color:#2d3748;--text-muted:#64748b;--border-color:#e2e8f0;--font-main:'foundersgrotesk',sans-serif}
         /* ===== Banner ===== */
-        #gs-fixed-cta{position:fixed;bottom:0;left:0;width:100%;z-index:99999;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 -6px 28px rgba(0,0,0,.10);border-top:3px solid var(--brand-accent);animation:gs-cta-up .5s cubic-bezier(.16,1,.3,1)}
+        #gs-fixed-cta{position:fixed;bottom:0;left:0;width:100%;z-index:99999;background:rgba(255,253,248,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 -8px 30px rgba(38,36,31,.12);border-top:1px solid #e4ddcd;animation:gs-cta-up .5s cubic-bezier(.16,1,.3,1)}
         @keyframes gs-cta-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
-        .gs-cta-inner{max-width:1100px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-        .gs-cta-info{display:flex;flex-direction:column;line-height:1.15}
-        .gs-cta-price{font-size:1.5rem;font-weight:700;color:var(--brand-color)}
-        .gs-cta-sub{font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}
-        #gs-open-modal{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 34px;font-family:var(--font-main);font-size:1.12rem;font-weight:600;color:#fff;background:linear-gradient(135deg,var(--brand-color) 0%,#13707f 100%);border:none;border-radius:999px;cursor:pointer;box-shadow:0 6px 18px rgba(14,87,99,.30);transition:transform .2s,box-shadow .25s,filter .2s;white-space:nowrap}
-        #gs-open-modal:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(14,87,99,.42);filter:brightness(1.06)}
+        .gs-cta-inner{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+        .gs-cta-info{display:flex;flex-direction:column;justify-content:center;line-height:1.12;gap:3px}
+        .gs-cta-price{font-family:Georgia,"Times New Roman",serif;font-size:1.55rem;font-weight:700;color:#26241f}
+        .gs-cta-price .amount,.gs-cta-price bdi{color:#26241f}
+        .gs-cta-sub{font-size:.72rem;color:#7a7466;text-transform:uppercase;letter-spacing:.12em}
+        #gs-open-modal{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 34px;font-family:var(--font-main);font-size:1.12rem;font-weight:700;color:#fff;background:#b5532f;border:none;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px rgba(181,83,47,.30);transition:transform .2s,box-shadow .25s,filter .2s;white-space:nowrap;text-shadow:none}
+        #gs-open-modal:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(181,83,47,.42);filter:brightness(1.05)}
         #gs-open-modal:active{transform:translateY(0)}
         #gs-open-modal svg{width:18px;height:18px;flex:0 0 auto;transition:transform .2s}
         #gs-open-modal:hover svg{transform:translateX(4px)}
