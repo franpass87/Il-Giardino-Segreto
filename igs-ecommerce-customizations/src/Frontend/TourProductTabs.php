@@ -188,7 +188,7 @@ class TourProductTabs
             }
             echo '<section class="igs-programma-day">';
             echo '<h3>' . esc_html($heading) . '</h3>';
-            echo '<div class="igs-programma-content">' . wp_kses_post($contenuto) . '</div>';
+            echo '<div class="igs-programma-content">' . wp_kses_post(wpautop($contenuto)) . '</div>';
             echo '</section>';
         }
         echo '</div>';

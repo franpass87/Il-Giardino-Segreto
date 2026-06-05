@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.5.2] - 2026-06-05
+
+### Fixed
+
+- Programma del Tour: il contenuto di ogni giorno passa ora da `wpautop`, così i paragrafi multipli vengono resi correttamente (prima il testo con interruzioni di riga collassava in un unico blocco).
+
 ## [2.5.1] - 2026-06-05
 
 ### Changed
