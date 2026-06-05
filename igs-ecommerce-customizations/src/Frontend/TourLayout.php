@@ -351,6 +351,46 @@ class TourLayout
                 box-shadow: none !important;
             }
             .igs-car-badge-emoji { font-size: 60px; line-height: 1; }
+            /* ===================== Rifiniture grafiche tour ===================== */
+            /* Accento decorativo sotto i titoli di sezione */
+            .igs-tour-content .igs-tour-section > h2 { position: relative; padding-bottom: 18px; }
+            .igs-tour-content .igs-tour-section > h2::after {
+                content: "";
+                position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+                width: 58px; height: 3px; border-radius: 3px;
+                background: linear-gradient(90deg, var(--igs-brand) 0%, var(--igs-brand-light) 100%);
+            }
+            /* Programma: ogni giorno è una scheda con accento a sinistra */
+            .igs-tour-content .igs-tour-programma { padding: 0; }
+            .igs-tour-content .igs-programma-day {
+                border-bottom: none;
+                background: #fff;
+                border: 1px solid var(--igs-border);
+                border-left: 4px solid var(--igs-brand);
+                border-radius: var(--igs-radius);
+                padding: 22px 26px;
+                margin-bottom: 16px;
+                box-shadow: var(--igs-shadow);
+                transition: box-shadow 0.25s ease, transform 0.25s ease;
+            }
+            .igs-tour-content .igs-programma-day:last-child { margin-bottom: 0; }
+            .igs-tour-content .igs-programma-day:hover { box-shadow: var(--igs-shadow-hover); transform: translateX(4px); }
+            .igs-tour-content .igs-programma-day h3 { margin: 0 0 12px; }
+            /* Liste "devi sapere" con icone tonde: • generico, ✓ incluso, ✕ escluso */
+            .igs-tour-dettagli section ul { list-style: none; margin: 0; padding: 0; }
+            .igs-tour-dettagli section ul li {
+                position: relative; padding-left: 32px; margin-bottom: 11px;
+                line-height: 1.6; color: var(--igs-text);
+            }
+            .igs-tour-dettagli section ul li::before {
+                position: absolute; left: 0; top: 1px;
+                width: 21px; height: 21px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 12px; font-weight: 700; line-height: 1;
+                content: "\2022"; color: var(--igs-brand); background: var(--igs-brand-bg);
+            }
+            .igs-tour-dettagli .igs-quota-comprende ul li::before { content: "\2713"; color: #fff; background: #5a8a3c; }
+            .igs-tour-dettagli .igs-quota-non-comprende ul li::before { content: "\2715"; color: #fff; background: #c0563f; }
             .igs-car-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; color: var(--igs-text); }
             .igs-car-subtitle { font-size: 0.85rem; color: var(--igs-text-muted); margin-bottom: 10px; }
             .igs-car-rating { display: flex; gap: 5px; justify-content: center; }

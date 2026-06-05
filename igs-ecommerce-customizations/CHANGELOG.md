@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.1] - 2026-06-05
+
+### Changed — raffinamento grafico pagina tour
+
+- Titoli di sezione con accento decorativo centrato (linea brand sotto il titolo).
+- Programma del Tour: ogni giorno è ora una scheda con accento laterale, ombra e hover, invece di semplici blocchi separati da linea.
+- Sezioni "Tutto quello che devi sapere": liste con icone tonde — pallino brand generico, spunta verde ✓ per "La quota comprende", crocetta rossa ✕ per "La quota non comprende".
+
 ## [2.6.0] - 2026-06-05
 
 ### Changed — rifiniture UI tour
