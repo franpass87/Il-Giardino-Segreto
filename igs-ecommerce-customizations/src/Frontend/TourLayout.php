@@ -155,6 +155,8 @@ class TourLayout
                 border-bottom: 1px solid var(--igs-border);
             }
             .custom-tour-sidebar .tour-services span:last-child { border-bottom: none; }
+            .custom-tour-sidebar .tour-services .igs-service-svg { width: 22px; height: 22px; color: var(--igs-brand); flex-shrink: 0; }
+            .custom-tour-sidebar .tour-services .igs-service-text { line-height: 1.3; text-align: left; }
             .custom-tour-sidebar .sidebar-section-title {
                 font-size: 1rem;
                 font-weight: 700;
@@ -401,7 +403,7 @@ class TourLayout
             .igs-voli-content { color: var(--igs-text); line-height: 1.7; }
             .igs-documenti-content p,
             .igs-voli-content p { margin-bottom: 0.8em; }
-            .mappa-viaggio-wrapper { margin: 24px 0; border-radius: var(--igs-radius); overflow: hidden; box-shadow: var(--igs-shadow); }
+            .mappa-viaggio-wrapper { margin: 0; border-radius: var(--igs-radius); overflow: hidden; box-shadow: var(--igs-shadow); border: 1px solid var(--igs-border); }
             .igs-tour-galleria {
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -545,11 +547,11 @@ class TourLayout
         }
 
         $defaultServices = [
-            ['icon' => '🪷', 'it' => __('Ingressi ai siti e giardini', 'igs-ecommerce'), 'en' => __('Entrance to sites and gardens', 'igs-ecommerce')],
-            ['icon' => '🏨', 'it' => __('Pernottamento incluso', 'igs-ecommerce'), 'en' => __('Overnight stay included', 'igs-ecommerce')],
-            ['icon' => '🚌', 'it' => __('Trasferimenti in loco', 'igs-ecommerce'), 'en' => __('Local transfers', 'igs-ecommerce')],
-            ['icon' => '🍽️', 'it' => __('Pasti da itinerario', 'igs-ecommerce'), 'en' => __('Meals as per itinerary', 'igs-ecommerce')],
-            ['icon' => '🗺️', 'it' => __('Guida locale', 'igs-ecommerce'), 'en' => __('Local guide', 'igs-ecommerce')],
+            ['svg' => 'ticket', 'it' => __('Ingressi ai siti e giardini', 'igs-ecommerce'), 'en' => __('Entrance to sites and gardens', 'igs-ecommerce')],
+            ['svg' => 'bed', 'it' => __('Pernottamento incluso', 'igs-ecommerce'), 'en' => __('Overnight stay included', 'igs-ecommerce')],
+            ['svg' => 'bus', 'it' => __('Trasferimenti in loco', 'igs-ecommerce'), 'en' => __('Local transfers', 'igs-ecommerce')],
+            ['svg' => 'meal', 'it' => __('Pasti da itinerario', 'igs-ecommerce'), 'en' => __('Meals as per itinerary', 'igs-ecommerce')],
+            ['svg' => 'guide', 'it' => __('Guida locale', 'igs-ecommerce'), 'en' => __('Local guide', 'igs-ecommerce')],
         ];
         $customServices = get_post_meta($id, '_igs_tour_services', true);
         $services = is_array($customServices) && !empty($customServices) ? $customServices : $defaultServices;
@@ -557,14 +559,15 @@ class TourLayout
         echo '<div class="tour-services">';
         foreach ((array) $services as $s) {
             if (is_string($s)) {
-                echo '<span>' . esc_html($s) . '</span>';
+                echo '<span>' . $this->serviceIcon('check') . '<span class="igs-service-text">' . esc_html($s) . '</span></span>';
                 continue;
             }
             $text = $isIt ? ($s['it'] ?? $s['en'] ?? '') : ($s['en'] ?? $s['it'] ?? '');
-            $icon = $s['icon'] ?? '';
-            if ($text !== '') {
-                echo '<span>' . esc_html($icon . ' ' . $text) . '</span>';
+            if ($text === '') {
+                continue;
             }
+            $svgKey = isset($s['svg']) ? (string) $s['svg'] : 'check';
+            echo '<span>' . $this->serviceIcon($svgKey) . '<span class="igs-service-text">' . esc_html($text) . '</span></span>';
         }
         echo '</div>';
 
@@ -665,6 +668,25 @@ class TourLayout
      * "Caratteristiche del Tour" generate dai meta livelli/protagonista (le stesse
      * 5 card di prima, ma rese dal plugin e allineate al contenitore).
      */
+    /**
+     * Icona SVG a linee per un servizio incluso nella sidebar. Colore via CSS
+     * (currentColor): coerente e affidabile su tutti i sistemi (a differenza delle emoji).
+     */
+    private function serviceIcon(string $key): string
+    {
+        $paths = [
+            'ticket' => '<path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z"/><path d="M10 6v12"/>',
+            'bed' => '<path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6"/><path d="M3 14h18"/><path d="M7 10V8a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v2"/>',
+            'bus' => '<rect x="4" y="5" width="16" height="11" rx="2"/><path d="M4 11h16"/><circle cx="8" cy="18" r="1.4"/><circle cx="16" cy="18" r="1.4"/>',
+            'meal' => '<path d="M7 3v7a2 2 0 0 0 4 0V3"/><path d="M9 10v11"/><path d="M17 3c-1.4 0-2.4 1.6-2.4 4s1 4 2.4 4v10"/>',
+            'guide' => '<path d="M20 10c0 5.5-8 11-8 11s-8-5.5-8-11a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.4"/>',
+            'check' => '<path d="M20 6 9 17l-5-5"/>',
+        ];
+        $p = $paths[$key] ?? $paths['check'];
+
+        return '<svg class="igs-service-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $p . '</svg>';
+    }
+
     private function renderCaratteristicheLivelli(WC_Product $product): void
     {
         $id = $product->get_id();

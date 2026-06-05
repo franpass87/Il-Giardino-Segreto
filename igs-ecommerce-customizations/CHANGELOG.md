@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.2] - 2026-06-05
+
+### Changed
+
+- Sidebar prezzo: i servizi inclusi usano ora icone SVG a linee coerenti (biglietto, pernottamento, transfer, pasti, guida) al posto delle emoji — affidabili su tutti i sistemi e in tinta col brand.
+- Mappa itinerario: aggiunta una cornice sottile per uniformità con le altre sezioni.
+
 ## [2.6.1] - 2026-06-05
 
 ### Changed — raffinamento grafico pagina tour
