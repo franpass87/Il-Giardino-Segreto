@@ -74,7 +74,11 @@ class TourEditorial
 
         $coverId = $product->get_image_id();
         $coverUrl = $coverId ? wp_get_attachment_image_url($coverId, 'full') : wc_placeholder_img_src();
-        $thumbUrl = $coverId ? wp_get_attachment_image_url($coverId, 'large') : $coverUrl;
+        // Miniatura del rail: prima foto della galleria (così non ripete la copertina
+        // che è già grande accanto); fallback alla copertina se la galleria è vuota.
+        $galleryOnly = $product->get_gallery_image_ids();
+        $railThumbId = !empty($galleryOnly) ? (int) $galleryOnly[0] : (int) $coverId;
+        $thumbUrl = $railThumbId ? wp_get_attachment_image_url($railThumbId, 'large') : $coverUrl;
 
         $programma = get_post_meta($id, '_igs_tour_programma', true);
         $programma = is_array($programma) ? $programma : [];
@@ -104,7 +108,7 @@ class TourEditorial
         echo '<h1 class="igs-ed-title">' . esc_html(get_the_title()) . '</h1>';
 
         $where = $paese !== '' ? CountryFlags::withFlagHtml($paese) : esc_html__('Italia', 'igs-ecommerce');
-        $dateLabel = $first ? esc_html($first['start'] . ' – ' . $first['end']) : esc_html__('Date in definizione', 'igs-ecommerce');
+        $dateLabel = $first ? esc_html($this->formatRange($first, $isIt)) : esc_html__('Date in definizione', 'igs-ecommerce');
         echo '<div class="igs-ed-where">' . $where . ' &nbsp;·&nbsp; ' . $dateLabel . '</div>';
 
         if ($thumbUrl) {
@@ -116,9 +120,7 @@ class TourEditorial
         if ($duration !== '') {
             echo '<li><span>' . esc_html__('Durata', 'igs-ecommerce') . '</span><span>' . esc_html($duration) . '</span></li>';
         }
-        if ($first) {
-            echo '<li><span>' . esc_html__('Partenza', 'igs-ecommerce') . '</span><span>' . esc_html($first['start']) . '</span></li>';
-        }
+        // "Partenza" non qui: la data è già nel sottotitolo (no doppione).
         $protagonista = trim((string) get_post_meta($id, '_protagonista_tour', true));
         if ($protagonista !== '') {
             echo '<li><span>' . esc_html__('Protagonista', 'igs-ecommerce') . '</span><span>' . esc_html($protagonista) . '</span></li>';
@@ -338,6 +340,44 @@ class TourEditorial
         return $out;
     }
 
+    /** @var array<string, array<int, string>> Nomi mesi IT/EN per le date leggibili. */
+    private const MONTHS = [
+        'it' => [1 => 'gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'],
+        'en' => [1 => 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    ];
+
+    /**
+     * Formatta una data di intervallo in forma leggibile e bilingue, comprimendo le
+     * parti comuni: "3 – 6 settembre 2026", "30 settembre – 2 ottobre 2026",
+     * "3 September 2026". Fallback alla stringa grezza se il parsing fallisce.
+     *
+     * @param array{start?: string, end?: string} $range
+     */
+    private function formatRange(array $range, bool $isIt): string
+    {
+        $start = (string) ($range['start'] ?? '');
+        $end = (string) ($range['end'] ?? '');
+        $s = \DateTime::createFromFormat('d/m/Y', $start);
+        $e = \DateTime::createFromFormat('d/m/Y', $end);
+        if (!$s) {
+            return trim($start . ' – ' . $end, ' –');
+        }
+        $months = self::MONTHS[$isIt ? 'it' : 'en'];
+        $full = static fn (\DateTime $d): string => (int) $d->format('j') . ' ' . $months[(int) $d->format('n')] . ' ' . $d->format('Y');
+
+        if (!$e || $s->format('Y-m-d') === $e->format('Y-m-d')) {
+            return $full($s);
+        }
+        if ($s->format('n-Y') === $e->format('n-Y')) {
+            return (int) $s->format('j') . ' – ' . (int) $e->format('j') . ' ' . $months[(int) $e->format('n')] . ' ' . $e->format('Y');
+        }
+        if ($s->format('Y') === $e->format('Y')) {
+            return (int) $s->format('j') . ' ' . $months[(int) $s->format('n')] . ' – ' . $full($e);
+        }
+
+        return $full($s) . ' – ' . $full($e);
+    }
+
     private function durationLabel(?array $range): string
     {
         if (!$range) {
@@ -399,6 +439,7 @@ class TourEditorial
             font-family:inherit;font-weight:700;font-size:17px;letter-spacing:.01em;box-shadow:0 10px 24px rgba({{ACCENT_RGB}},.28);
             transition:transform .2s ease,box-shadow .25s ease,filter .2s ease;}
         .igs-ed-book:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba({{ACCENT_RGB}},.42);filter:brightness(1.06);}
+        .igs-ed-book:focus-visible,.igs-ed-nav a:focus-visible,.igs-ed-gallery .igs-gallery-item:focus-visible{outline:2px solid var(--ed-accent);outline-offset:3px;border-radius:6px;}
         .igs-ed-nav{margin-top:28px;padding-top:24px;border-top:1px solid var(--ed-line);display:flex;flex-direction:column;gap:3px;}
         .igs-ed-nav a{color:var(--ed-muted);text-decoration:none;font-size:15.5px;border-left:2px solid var(--ed-line);padding:7px 0 7px 14px;transition:color .2s,border-color .2s;}
         .igs-ed-nav a:hover{color:var(--ed-ink);}
@@ -413,7 +454,7 @@ class TourEditorial
         .igs-ed-lead p{margin:0 0 .8em;}
         .igs-ed-lead>:first-child::first-letter,.igs-ed-lead::first-letter{font-family:\'the-seasons-regular\',Georgia,serif;font-size:66px;float:left;line-height:.8;margin:6px 16px 0 0;color:var(--ed-accent);}
         /* Punteggi (tutti insieme in alto, una sola volta) */
-        .igs-ed-levels{display:flex;flex-wrap:wrap;gap:20px 44px;margin:0 0 8px;padding:22px 26px;background:var(--ed-panel);border:1px solid var(--ed-line);border-radius:14px;box-shadow:0 8px 22px rgba(38,36,31,.05);}
+        .igs-ed-levels{display:flex;flex-wrap:wrap;gap:20px 44px;margin:0 0 38px;padding:22px 26px;background:var(--ed-panel);border:1px solid var(--ed-line);border-radius:14px;box-shadow:0 8px 22px rgba(38,36,31,.05);}
         .igs-ed-level{display:flex;flex-direction:column;gap:9px;}
         .igs-ed-level-l{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ed-muted);font-weight:600;}
         .igs-ed-dots{display:inline-flex;gap:5px;}
@@ -421,8 +462,9 @@ class TourEditorial
         .igs-ed-dot.on{background:var(--ed-accent);}
         .igs-ed-h2{font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:33px;margin:58px 0 26px;padding-bottom:12px;border-bottom:1px solid var(--ed-line);color:var(--ed-ink);}
         /* Programma editoriale */
-        .igs-ed-day{display:grid;grid-template-columns:84px 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--ed-line);}
+        .igs-ed-day{display:grid;grid-template-columns:84px 1fr;gap:24px;padding:24px 16px 24px 14px;margin:0 -16px;border-bottom:1px solid var(--ed-line);border-radius:12px;transition:background .25s ease;}
         .igs-ed-day:last-child{border-bottom:none;}
+        .igs-ed-day:hover{background:var(--ed-panel);}
         .igs-ed-day-n{font-family:\'the-seasons-regular\',Georgia,serif;font-size:54px;line-height:1;color:var(--ed-accent);}
         .igs-ed-day-b h3{font-size:22px;font-weight:600;margin:4px 0 9px;color:var(--ed-ink);}
         .igs-ed-day-text{color:#4a463d;line-height:1.72;font-size:16.5px;}

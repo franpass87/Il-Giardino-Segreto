@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.11.1] - 2026-06-05
+
+### Changed — rifiniture layout editoriale
+
+- **Date leggibili e bilingue** nel sottotitolo del rail: "3 – 6 settembre 2026" (IT) / "3 – 6 September 2026" (EN), con compressione delle parti comuni (mese/anno). Rimosso il fatto "Partenza" dal rail (la data è già nel sottotitolo, niente doppione).
+- **Miniatura del rail** ora usa la prima foto della galleria invece di ripetere la copertina che le sta accanto (fallback alla copertina se la galleria è vuota).
+- Più respiro sotto la card dei punteggi; **hover** morbido sulle tappe del programma; **focus-visible** accessibile su CTA, voci di nav e foto galleria.
+
 ## [2.11.0] - 2026-06-05
 
 ### Changed — colori dal tema, punteggi uniti, testi più grandi, barra solo mobile
