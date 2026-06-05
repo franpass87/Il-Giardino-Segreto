@@ -76,6 +76,8 @@ class TourEditorial
         }
 
         echo '<div class="igs-editorial">';
+        // Safety net: senza JS gli elementi .igs-reveal resterebbero a opacity:0.
+        echo '<noscript><style>.igs-editorial .igs-reveal{opacity:1 !important;transform:none !important;}</style></noscript>';
 
         /* ---------- RAIL ---------- */
         echo '<aside class="igs-ed-rail">';

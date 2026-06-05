@@ -23,7 +23,9 @@
     }
 
     ready(function () {
-        if (!document.querySelector('.igs-tour-content') && !document.querySelector('.custom-hero')) {
+        if (!document.querySelector('.igs-tour-content') &&
+            !document.querySelector('.custom-hero') &&
+            !document.querySelector('.igs-editorial')) {
             return;
         }
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.1] - 2026-06-05
+
+### Fixed
+
+- **Contenuto invisibile nel nuovo layout**: la guardia iniziale di `tour-experience.js` usciva se non trovava `.igs-tour-content`/`.custom-hero` (classi del vecchio layout), così nel layout editoriale il JS non partiva e gli elementi `.igs-reveal` (copertina, descrizione, giorni, galleria, info) restavano a `opacity:0`. Guardia estesa a `.igs-editorial`.
+- Aggiunto fallback `<noscript>` che mostra comunque i contenuti `.igs-reveal` con JS disattivato.
+
 ## [2.10.0] - 2026-06-05
 
 ### Changed — nuovo layout scheda tour "Editoriale a rail fisso"
