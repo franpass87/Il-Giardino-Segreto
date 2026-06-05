@@ -14,8 +14,28 @@ class TourLayout
     public function register(): void
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueueStyles']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueScripts']);
         add_action('woocommerce_before_single_product_summary', [$this, 'render'], 1);
         add_action('woocommerce_after_single_product_summary', [$this, 'renderTourContent'], 15);
+    }
+
+    /**
+     * JS dell'esperienza tour interattiva (vanilla, nessuna dipendenza): scroll-reveal,
+     * nav interna con scroll-spy, lightbox galleria, accordion info, barra prenotazione
+     * sticky. Caricato solo sulle schede prodotto.
+     */
+    public function enqueueScripts(): void
+    {
+        if (!is_product()) {
+            return;
+        }
+        wp_enqueue_script(
+            'igs-tour-experience',
+            IGS_URL . 'assets/js/tour-experience.js',
+            [],
+            IGS_VERSION,
+            true
+        );
     }
 
     public function enqueueStyles(): void
@@ -555,6 +575,182 @@ class TourLayout
                 .igs-band { padding: 56px 18px; }
                 .custom-tour-wrapper { padding: 48px 18px; }
             }
+
+            /* ===================================================================
+               ESPERIENZA TOUR INTERATTIVA (JS: tour-experience.js)
+               =================================================================== */
+            /* Scroll-reveal: entra dal basso quando intersecato (igs-in da JS).
+               Senza JS / con reduce-motion resta tutto visibile. */
+            .igs-reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.16,.84,.44,1); will-change: opacity, transform; }
+            .igs-reveal.igs-in { opacity: 1; transform: none; }
+            @media (prefers-reduced-motion: reduce) {
+                .igs-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+            }
+
+            /* --- Nav interna sticky con scroll-spy --- */
+            .igs-tour-nav {
+                position: sticky; top: 0; z-index: 30;
+                background: rgba(20,53,42,0.96);
+                backdrop-filter: blur(8px);
+                box-shadow: 0 6px 22px rgba(20,53,42,0.18);
+            }
+            .igs-tour-nav-inner {
+                max-width: 1180px; margin: 0 auto;
+                display: flex; gap: 6px; flex-wrap: nowrap;
+                overflow-x: auto; -webkit-overflow-scrolling: touch;
+                padding: 4px 16px; scrollbar-width: none;
+            }
+            .igs-tour-nav-inner::-webkit-scrollbar { display: none; }
+            .igs-tour-nav a {
+                position: relative; white-space: nowrap;
+                padding: 16px 18px; font-size: 0.95rem; font-weight: 600;
+                color: rgba(243,239,227,0.72); text-decoration: none;
+                letter-spacing: 0.01em; transition: color .2s ease;
+            }
+            .igs-tour-nav a::after {
+                content: ""; position: absolute; left: 18px; right: 18px; bottom: 10px;
+                height: 2px; border-radius: 2px; background: var(--igs-gold);
+                transform: scaleX(0); transform-origin: left; transition: transform .25s ease;
+            }
+            .igs-tour-nav a:hover { color: #fff; }
+            .igs-tour-nav a.is-active { color: #fff; }
+            .igs-tour-nav a.is-active::after { transform: scaleX(1); }
+
+            /* --- Programma come timeline verticale --- */
+            .igs-timeline { position: relative; padding-left: 6px; }
+            .igs-timeline::before {
+                content: ""; position: absolute; left: 21px; top: 8px; bottom: 8px;
+                width: 2px; background: linear-gradient(180deg, var(--igs-gold) 0%, rgba(200,155,84,0.25) 100%);
+            }
+            .igs-timeline-item { position: relative; display: flex; gap: 24px; padding: 0 0 26px 0; }
+            .igs-timeline-item:last-child { padding-bottom: 0; }
+            .igs-timeline-marker {
+                position: relative; z-index: 1; flex-shrink: 0;
+                width: 44px; height: 44px; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                font-family: \'the-seasons-regular\', Georgia, serif;
+                font-size: 1.15rem; font-weight: 400; color: #fff;
+                background: linear-gradient(135deg, var(--igs-green) 0%, var(--igs-forest) 100%);
+                box-shadow: 0 6px 16px rgba(20,53,42,0.25), 0 0 0 5px var(--igs-cream);
+            }
+            .igs-timeline-body {
+                flex: 1; min-width: 0; background: #fff;
+                border: 1px solid rgba(20,53,42,0.08); border-radius: var(--igs-radius);
+                padding: 20px 24px; box-shadow: 0 10px 26px rgba(20,53,42,0.06);
+                transition: box-shadow .25s ease, transform .25s ease;
+            }
+            .igs-timeline-body:hover { box-shadow: 0 16px 38px rgba(20,53,42,0.12); transform: translateY(-2px); }
+            .igs-timeline-body h3 {
+                margin: 0 0 10px; color: var(--igs-green);
+                font-family: \'the-seasons-regular\', Georgia, serif; font-size: 1.35rem; font-weight: 400;
+            }
+            .igs-timeline-body .igs-programma-content { color: var(--igs-ink); line-height: 1.7; }
+            .igs-timeline-body .igs-programma-content p { margin-bottom: 0.8em; }
+            .igs-timeline-body .igs-programma-content p:last-child { margin-bottom: 0; }
+
+            /* --- Accordion "tutto quello che devi sapere" --- */
+            .igs-accordion { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+            .igs-acc-item {
+                background: #fff; border: 1px solid rgba(20,53,42,0.10);
+                border-radius: var(--igs-radius); overflow: hidden;
+                box-shadow: 0 8px 22px rgba(20,53,42,0.05); transition: box-shadow .25s ease;
+            }
+            .igs-acc-item.is-open { box-shadow: 0 14px 34px rgba(20,53,42,0.10); }
+            .igs-acc-head {
+                width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+                background: none; border: 0; cursor: pointer; text-align: left;
+                padding: 20px 24px; font-size: 1.1rem; font-weight: 700; color: var(--igs-green);
+                font-family: inherit;
+            }
+            .igs-acc-head:hover { color: var(--igs-forest); }
+            .igs-acc-chevron { width: 22px; height: 22px; flex-shrink: 0; color: var(--igs-gold); transition: transform .3s ease; }
+            .igs-acc-item.is-open .igs-acc-chevron { transform: rotate(180deg); }
+            .igs-acc-panel { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.4,0,.2,1); }
+            .igs-acc-item.is-open .igs-acc-panel { max-height: 2400px; }
+            .igs-acc-panel-inner { padding: 0 24px 24px; color: var(--igs-ink); line-height: 1.7; }
+            .igs-acc-panel-inner ul { list-style: none; margin: 0; padding: 0; }
+            .igs-acc-panel-inner ul li {
+                position: relative; padding-left: 30px; margin-bottom: 10px; line-height: 1.6; color: var(--igs-ink);
+            }
+            .igs-acc-panel-inner ul li::before {
+                position: absolute; left: 0; top: 2px; width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 11px; font-weight: 700; line-height: 1;
+                content: "\2022"; color: var(--igs-green); background: var(--igs-green-soft);
+            }
+            .igs-acc-item.igs-quota-comprende .igs-acc-panel-inner ul li::before { content: "\2713"; color: #fff; background: #5a8a3c; }
+            .igs-acc-item.igs-quota-non-comprende .igs-acc-panel-inner ul li::before { content: "\2715"; color: #fff; background: #c0563f; }
+            .igs-acc-panel-inner .igs-caratteristiche-cards { margin-top: 4px; }
+
+            /* --- Lightbox galleria --- */
+            body.igs-lb-lock { overflow: hidden; }
+            .igs-lb {
+                position: fixed; inset: 0; z-index: 100000;
+                display: none; align-items: center; justify-content: center;
+                background: rgba(12,24,18,0.92); backdrop-filter: blur(4px);
+                opacity: 0; transition: opacity .25s ease;
+            }
+            .igs-lb.is-open { display: flex; opacity: 1; }
+            .igs-lb-stage { margin: 0; max-width: 90vw; max-height: 86vh; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+            .igs-lb-img { max-width: 90vw; max-height: 80vh; border-radius: 6px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); object-fit: contain; }
+            .igs-lb-count { color: rgba(243,239,227,0.8); font-size: 0.95rem; letter-spacing: 0.05em; }
+            .igs-lb-btn {
+                position: absolute; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.2);
+                color: #fff; cursor: pointer; border-radius: 50%;
+                width: 52px; height: 52px; font-size: 30px; line-height: 1;
+                display: flex; align-items: center; justify-content: center;
+                transition: background .2s ease, transform .2s ease;
+            }
+            .igs-lb-btn:hover { background: rgba(255,255,255,0.22); transform: scale(1.06); }
+            .igs-lb-close { top: 22px; right: 22px; font-size: 26px; }
+            .igs-lb-prev { left: 22px; top: 50%; transform: translateY(-50%); }
+            .igs-lb-next { right: 22px; top: 50%; transform: translateY(-50%); }
+            .igs-lb-prev:hover, .igs-lb-next:hover { transform: translateY(-50%) scale(1.06); }
+            @media (max-width: 768px) {
+                .igs-lb-btn { width: 42px; height: 42px; font-size: 24px; }
+                .igs-lb-prev { left: 8px; } .igs-lb-next { right: 8px; } .igs-lb-close { top: 12px; right: 12px; }
+            }
+
+            /* --- Barra prenotazione sticky --- */
+            .igs-book-bar {
+                position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+                background: rgba(20,53,42,0.97); backdrop-filter: blur(10px);
+                box-shadow: 0 -8px 30px rgba(0,0,0,0.22);
+                transform: translateY(120%); transition: transform .35s cubic-bezier(.16,.84,.44,1);
+            }
+            .igs-book-bar.is-visible { transform: translateY(0); }
+            .igs-book-bar-inner {
+                max-width: 1180px; margin: 0 auto; padding: 12px 24px;
+                display: flex; align-items: center; justify-content: space-between; gap: 18px;
+            }
+            .igs-book-bar-info { display: flex; flex-direction: column; min-width: 0; }
+            .igs-book-bar-title {
+                color: #fff; font-weight: 700; font-size: 1rem; line-height: 1.2;
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60vw;
+            }
+            .igs-book-bar-price { color: var(--igs-gold); font-size: 0.95rem; font-weight: 600; }
+            .igs-book-bar-price .amount, .igs-book-bar-price bdi { color: var(--igs-gold); }
+            .igs-book-bar-btn {
+                flex-shrink: 0; cursor: pointer; border: 0;
+                background: var(--igs-gold); color: var(--igs-forest);
+                font-weight: 700; font-size: 1rem; letter-spacing: 0.02em;
+                padding: 13px 30px; border-radius: 999px;
+                box-shadow: 0 6px 18px rgba(200,155,84,0.35);
+                transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+            }
+            .igs-book-bar-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(200,155,84,0.45); background: #d4a861; }
+            @media (max-width: 600px) {
+                .igs-book-bar-inner { padding: 10px 14px; gap: 12px; }
+                .igs-book-bar-btn { padding: 11px 20px; font-size: 0.92rem; }
+                .igs-book-bar-title { font-size: 0.92rem; max-width: 48vw; }
+            }
+            @media (max-width: 768px) {
+                .igs-timeline-item { gap: 14px; }
+                .igs-timeline-marker { width: 38px; height: 38px; font-size: 1rem; box-shadow: 0 6px 16px rgba(20,53,42,0.25), 0 0 0 4px var(--igs-cream); }
+                .igs-timeline::before { left: 18px; }
+                .igs-acc-head { padding: 16px 18px; font-size: 1rem; }
+                .igs-acc-panel-inner { padding: 0 18px 18px; }
+            }
         ';
         wp_add_inline_style('woocommerce-general', $css);
     }
@@ -700,51 +896,112 @@ class TourLayout
 
         $tabs = new TourProductTabs();
 
+        // Quali sezioni esistono → serve sia per la nav interna sia per decidere cosa rendere.
+        $hasGalleria = !empty($product->get_gallery_image_ids());
+        $hasLevels = $this->hasLevels($product);
+        $tappe = get_post_meta($id, '_mappa_tappe', true);
+        $hasItinerario = is_array($tappe) && !empty($tappe);
+        $hasInfo = $this->hasDettagli($id);
+
+        $sections = [];
+        if ($hasGalleria) {
+            $sections[] = ['id' => 'igs-sec-galleria', 'label' => __('Galleria', 'igs-ecommerce')];
+        }
+        if ($hasLevels) {
+            $sections[] = ['id' => 'igs-sec-caratteristiche', 'label' => __('Caratteristiche', 'igs-ecommerce')];
+        }
+        if ($hasItinerario) {
+            $sections[] = ['id' => 'igs-sec-itinerario', 'label' => __('Itinerario', 'igs-ecommerce')];
+        }
+        $sections[] = ['id' => 'igs-sec-programma', 'label' => __('Programma', 'igs-ecommerce')];
+        if ($hasInfo) {
+            $sections[] = ['id' => 'igs-sec-info', 'label' => __('Info utili', 'igs-ecommerce')];
+        }
+
         echo '<div class="igs-tour-content">';
 
-        if (!empty($product->get_gallery_image_ids())) {
-            $this->openBand('forest');
+        $this->renderTourNav($sections);
+
+        if ($hasGalleria) {
+            $this->openBand('forest', 'igs-sec-galleria');
             $this->bandTitle(__('Galleria', 'igs-ecommerce'));
             $tabs->renderGalleria();
             $this->closeBand();
         }
 
-        if ($this->hasLevels($product)) {
-            $this->openBand('cream');
+        if ($hasLevels) {
+            $this->openBand('cream', 'igs-sec-caratteristiche');
             $this->bandTitle(__('Caratteristiche del Tour', 'igs-ecommerce'));
             $this->renderCaratteristicheLivelli($product);
             $this->closeBand();
         }
 
-        $tappe = get_post_meta($id, '_mappa_tappe', true);
-        if (is_array($tappe) && !empty($tappe)) {
-            $this->openBand('green');
+        if ($hasItinerario) {
+            $this->openBand('green', 'igs-sec-itinerario');
             $this->bandTitle(__('Itinerario di Viaggio', 'igs-ecommerce'));
-            echo do_shortcode('[mappa_viaggio id="' . (int) $id . '"]');
+            echo '<div class="igs-reveal">' . do_shortcode('[mappa_viaggio id="' . (int) $id . '"]') . '</div>';
             $this->closeBand();
         }
 
-        if (is_array($programma) && !empty($programma)) {
-            $this->openBand('cream');
-            $this->bandTitle(__('Programma del Tour', 'igs-ecommerce'));
-            $tabs->renderProgramma();
-            $this->closeBand();
-        }
+        $this->openBand('cream', 'igs-sec-programma');
+        $this->bandTitle(__('Programma del Tour', 'igs-ecommerce'));
+        $tabs->renderProgramma();
+        $this->closeBand();
 
-        if ($this->hasDettagli($id)) {
-            $this->openBand('sage');
+        if ($hasInfo) {
+            $this->openBand('sage', 'igs-sec-info');
             $this->bandTitle(__('Tutto quello che devi sapere', 'igs-ecommerce'));
             $tabs->renderDettagliViaggio();
             $this->closeBand();
         }
 
         echo '</div>';
+
+        $this->renderBookBar($product);
+    }
+
+    /**
+     * Nav interna sticky: àncore alle sezioni del tour. Lo scroll fluido e lo
+     * scroll-spy (link attivo) sono gestiti da tour-experience.js.
+     *
+     * @param array<int, array{id: string, label: string}> $sections
+     */
+    private function renderTourNav(array $sections): void
+    {
+        if (count($sections) < 2) {
+            return;
+        }
+        echo '<nav class="igs-tour-nav" aria-label="' . esc_attr__('Sezioni del tour', 'igs-ecommerce') . '">';
+        echo '<div class="igs-tour-nav-inner">';
+        foreach ($sections as $s) {
+            echo '<a href="#' . esc_attr($s['id']) . '">' . esc_html($s['label']) . '</a>';
+        }
+        echo '</div></nav>';
+    }
+
+    /**
+     * Barra di prenotazione sticky: compare allo scroll oltre l'hero (gestito da
+     * tour-experience.js) e riporta al form di acquisto.
+     */
+    private function renderBookBar(WC_Product $product): void
+    {
+        $priceHtml = apply_filters('woocommerce_get_price_html', '', $product);
+        echo '<div class="igs-book-bar" aria-hidden="true"><div class="igs-book-bar-inner">';
+        echo '<div class="igs-book-bar-info">';
+        echo '<span class="igs-book-bar-title">' . esc_html(get_the_title()) . '</span>';
+        if ($priceHtml !== '') {
+            echo '<span class="igs-book-bar-price">' . $priceHtml . '</span>';
+        }
+        echo '</div>';
+        echo '<button type="button" class="igs-book-bar-btn" data-igs-book>' . esc_html__('Prenota ora', 'igs-ecommerce') . '</button>';
+        echo '</div></div>';
     }
 
     /** Apre una fascia a tutta larghezza (variante colore) con contenuto centrato. */
-    private function openBand(string $variant): void
+    private function openBand(string $variant, string $id = ''): void
     {
-        echo '<section class="igs-band igs-band--' . esc_attr($variant) . '"><div class="igs-band-inner">';
+        $idAttr = $id !== '' ? ' id="' . esc_attr($id) . '"' : '';
+        echo '<section class="igs-band igs-band--' . esc_attr($variant) . '"' . $idAttr . '><div class="igs-band-inner">';
     }
 
     private function closeBand(): void
@@ -752,11 +1009,11 @@ class TourLayout
         echo '</div></section>';
     }
 
-    /** Titolo di fascia con piccolo accento botanico (foglia). */
+    /** Titolo di fascia con piccolo accento botanico (foglia). Animato allo scroll. */
     private function bandTitle(string $text): void
     {
         $leaf = '<svg class="igs-leaf" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C7 4 4 8 4 13c0 4 3 8 8 9 0-5 1-8 4-11-2 1-4 2-5 4 0-5 1-9 1-13z"/></svg>';
-        echo '<h2 class="igs-band-title">' . $leaf . '<span>' . esc_html($text) . '</span></h2>';
+        echo '<h2 class="igs-band-title igs-reveal">' . $leaf . '<span>' . esc_html($text) . '</span></h2>';
     }
 
     private function hasLevels(WC_Product $product): bool
@@ -839,7 +1096,7 @@ class TourLayout
             return;
         }
 
-        echo '<div class="igs-caratteristiche-cards">';
+        echo '<div class="igs-caratteristiche-cards igs-reveal">';
         foreach ($renderable as $c) {
             $label = $isIt ? $c['label_it'] : $c['label_en'];
             echo '<div class="igs-caratteristica-card">';

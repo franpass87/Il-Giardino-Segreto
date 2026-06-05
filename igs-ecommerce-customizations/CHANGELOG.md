@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.8.0] - 2026-06-05
+
+### Added — esperienza tour interattiva (PHP + JS + CSS)
+
+Ristrutturazione completa della scheda tour come esperienza interattiva, non solo estetica:
+
+- **Nuovo `assets/js/tour-experience.js`** (vanilla, zero dipendenze): scroll-reveal delle sezioni (IntersectionObserver), nav interna sticky con scroll-spy e smooth scroll, lightbox galleria (frecce/tastiera/contatore), accordion info (apri/chiudi), barra di prenotazione sticky che compare allo scroll. Enqueue solo su scheda prodotto (`TourLayout::enqueueScripts`).
+- **Nav interna sticky** (`renderTourNav`): àncore alle sezioni presenti (Galleria, Caratteristiche, Itinerario, Programma, Info), link attivo evidenziato durante lo scroll.
+- **Programma come timeline verticale**: ogni giorno è una tappa con marker numerato lungo una linea oro, schede animate allo scroll (`renderProgramma` → `.igs-timeline`).
+- **Info come accordion** (`renderDettagliViaggio` → `.igs-accordion`): ogni blocco (cosa portare, documenti, quota comprende/non comprende, voli, info) è una voce apri/chiudi; prima aperta. Nuovi helper `buildCaratteristicheHtml`/`buildListHtml`.
+- **Barra di prenotazione sticky** (`renderBookBar`): titolo + prezzo + CTA "Prenota ora" che riporta al form d'acquisto, compare oltre l'hero.
+- Scroll-reveal applicato a titoli di fascia, galleria, caratteristiche, timeline e accordion; rispetta `prefers-reduced-motion`.
+
 ## [2.7.0] - 2026-06-05
 
 ### Changed — restyling immersivo botanico della pagina tour

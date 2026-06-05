@@ -130,7 +130,7 @@ class TourProductTabs
             $allIds = array_slice($allIds, 0, $maxImages);
         }
         ?>
-        <div class="igs-tour-galleria">
+        <div class="igs-tour-galleria igs-reveal">
         <?php
         foreach ($allIds as $attachId) {
             $full = wp_get_attachment_image_url($attachId, 'large');
@@ -162,7 +162,9 @@ class TourProductTabs
             return;
         }
 
-        echo '<div class="igs-tour-programma">';
+        // Timeline verticale: ogni giorno è una tappa con marker numerato; l'animazione
+        // di comparsa allo scroll (igs-reveal → igs-in) è gestita da tour-experience.js.
+        echo '<div class="igs-tour-programma igs-timeline">';
         foreach ($programma as $day) {
             $num = (int) ($day['num'] ?? 0);
             $titolo = $day['titolo'] ?? '';
@@ -186,9 +188,13 @@ class TourProductTabs
             } else {
                 $heading = $titolo;
             }
-            echo '<section class="igs-programma-day">';
+            $marker = $num > 0 ? (string) $num : '·';
+            echo '<section class="igs-timeline-item igs-reveal">';
+            echo '<div class="igs-timeline-marker" aria-hidden="true">' . esc_html($marker) . '</div>';
+            echo '<div class="igs-timeline-body">';
             echo '<h3>' . esc_html($heading) . '</h3>';
             echo '<div class="igs-programma-content">' . wp_kses_post(wpautop($contenuto)) . '</div>';
+            echo '</div>';
             echo '</section>';
         }
         echo '</div>';
@@ -213,6 +219,9 @@ class TourProductTabs
         $quotaNonComprende = get_post_meta($id, '_igs_tour_quota_non_comprende', true);
         $voli = get_post_meta($id, '_igs_tour_voli', true);
 
+        $info = get_post_meta($id, '_igs_tour_info', true);
+        $info = is_string($info) ? $info : '';
+
         $lbl = [
             'caratteristiche' => __('Caratteristiche del Tour', 'igs-ecommerce'),
             'cosaPortare' => __('Cosa portare in valigia', 'igs-ecommerce'),
@@ -220,111 +229,115 @@ class TourProductTabs
             'quotaComprende' => __('La quota comprende', 'igs-ecommerce'),
             'quotaNonComprende' => __('La quota non comprende', 'igs-ecommerce'),
             'voli' => __('Voli aerei consigliati', 'igs-ecommerce'),
+            'info' => __('Info generali', 'igs-ecommerce'),
         ];
 
-        echo '<div class="igs-tour-dettagli">';
-
+        // Costruisce le voci dell'accordion (apri/chiudi in JS, prima aperta).
+        $items = [];
         if (!empty($caratteristiche)) {
-            echo '<section class="igs-caratteristiche">';
-            echo '<h3>' . esc_html($lbl['caratteristiche']) . '</h3>';
-            echo '<div class="igs-caratteristiche-cards">';
-            foreach ($caratteristiche as $c) {
-                $title = $isIt ? ($c['it'] ?? $c['en'] ?? '') : ($c['en'] ?? $c['it'] ?? '');
-                $subtitle = $isIt ? ($c['subtitle_it'] ?? $c['subtitle_en'] ?? '') : ($c['subtitle_en'] ?? $c['subtitle_it'] ?? '');
-                $icon = $c['icon'] ?? '🌱';
-                $iconImageId = isset($c['icon_image']) ? absint($c['icon_image']) : 0;
-                $rating = isset($c['rating']) ? (int) $c['rating'] : 0;
-                if ($title === '') {
-                    continue;
-                }
-                echo '<div class="igs-caratteristica-card">';
-                echo '<div class="igs-car-icon">';
-                if ($iconImageId > 0) {
-                    $img = wp_get_attachment_image($iconImageId, 'thumbnail', false, ['style' => 'width:100%;height:100%;object-fit:contain;']);
-                    if ($img !== '') {
-                        echo wp_kses_post($img);
-                    } else {
-                        echo esc_html($icon);
-                    }
-                } else {
-                    echo esc_html($icon);
-                }
-                echo '</div>';
-                echo '<div class="igs-car-title">' . esc_html($title) . '</div>';
-                if ($subtitle !== '') {
-                    echo '<div class="igs-car-subtitle">' . esc_html($subtitle) . '</div>';
-                }
-                if ($rating > 0) {
-                    echo '<div class="igs-car-rating">';
-                    for ($i = 1; $i <= 5; $i++) {
-                        $fill = $i <= $rating ? 'var(--igs-brand)' : '#e2e8f0';
-                        echo '<span style="background:' . esc_attr($fill) . ';"></span>';
-                    }
-                    echo '</div>';
-                }
-                echo '</div>';
+            $html = $this->buildCaratteristicheHtml($caratteristiche, $isIt);
+            if ($html !== '') {
+                $items[] = ['title' => $lbl['caratteristiche'], 'class' => 'igs-caratteristiche', 'html' => $html];
             }
-            echo '</div></section>';
+        }
+        if (trim($cosaPortare) !== '') {
+            $items[] = ['title' => $lbl['cosaPortare'], 'class' => 'igs-cosa-portare', 'html' => $this->buildListHtml($cosaPortare)];
+        }
+        if (trim($documenti) !== '') {
+            $items[] = ['title' => $lbl['documenti'], 'class' => 'igs-documenti', 'html' => '<div class="igs-documenti-content">' . wp_kses_post(wpautop($documenti)) . '</div>'];
+        }
+        if (trim($quotaComprende) !== '') {
+            $items[] = ['title' => $lbl['quotaComprende'], 'class' => 'igs-quota-comprende', 'html' => $this->buildListHtml($quotaComprende)];
+        }
+        if (trim($quotaNonComprende) !== '') {
+            $items[] = ['title' => $lbl['quotaNonComprende'], 'class' => 'igs-quota-non-comprende', 'html' => $this->buildListHtml($quotaNonComprende)];
+        }
+        if (trim($voli) !== '') {
+            $items[] = ['title' => $lbl['voli'], 'class' => 'igs-voli', 'html' => '<div class="igs-voli-content">' . wp_kses_post(wpautop($voli)) . '</div>'];
+        }
+        if (trim($info) !== '') {
+            $items[] = ['title' => $lbl['info'], 'class' => 'igs-info-generali', 'html' => $this->buildListHtml($info, true)];
         }
 
-        if ($cosaPortare !== '') {
-            $items = $this->linesToArray($cosaPortare);
-            echo '<section class="igs-cosa-portare">';
-            echo '<h3>' . esc_html($lbl['cosaPortare']) . '</h3>';
-            echo '<ul>';
-            foreach ($items as $item) {
-                echo '<li>' . esc_html($item) . '</li>';
-            }
-            echo '</ul></section>';
+        if (empty($items)) {
+            return;
         }
 
-        if ($documenti !== '') {
-            echo '<section class="igs-documenti">';
-            echo '<h3>' . esc_html($lbl['documenti']) . '</h3>';
-            echo '<div class="igs-documenti-content">' . wp_kses_post(wpautop($documenti)) . '</div></section>';
+        echo '<div class="igs-tour-dettagli igs-accordion igs-reveal">';
+        $chevron = '<svg class="igs-acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+        foreach ($items as $i => $it) {
+            $open = $i === 0;
+            echo '<div class="igs-acc-item ' . esc_attr($it['class']) . ($open ? ' is-open' : '') . '">';
+            echo '<button type="button" class="igs-acc-head" aria-expanded="' . ($open ? 'true' : 'false') . '">';
+            echo '<span class="igs-acc-title">' . esc_html($it['title']) . '</span>' . $chevron;
+            echo '</button>';
+            echo '<div class="igs-acc-panel"><div class="igs-acc-panel-inner">' . $it['html'] . '</div></div>';
+            echo '</div>';
         }
-
-        if ($quotaComprende !== '') {
-            $items = $this->linesToArray($quotaComprende);
-            echo '<section class="igs-quota-comprende">';
-            echo '<h3>' . esc_html($lbl['quotaComprende']) . '</h3>';
-            echo '<ul>';
-            foreach ($items as $item) {
-                echo '<li>' . esc_html($item) . '</li>';
-            }
-            echo '</ul></section>';
-        }
-
-        if ($quotaNonComprende !== '') {
-            $items = $this->linesToArray($quotaNonComprende);
-            echo '<section class="igs-quota-non-comprende">';
-            echo '<h3>' . esc_html($lbl['quotaNonComprende']) . '</h3>';
-            echo '<ul>';
-            foreach ($items as $item) {
-                echo '<li>' . esc_html($item) . '</li>';
-            }
-            echo '</ul></section>';
-        }
-
-        if ($voli !== '') {
-            echo '<section class="igs-voli">';
-            echo '<h3>' . esc_html($lbl['voli']) . '</h3>';
-            echo '<div class="igs-voli-content">' . wp_kses_post(wpautop($voli)) . '</div></section>';
-        }
-
-        $info = get_post_meta($id, '_igs_tour_info', true);
-        if (is_string($info) && trim($info) !== '') {
-            $items = $this->linesToArray($info);
-            echo '<section class="igs-info-generali">';
-            echo '<h3>' . esc_html__('Info generali', 'igs-ecommerce') . '</h3>';
-            echo '<ul>';
-            foreach ($items as $item) {
-                echo '<li>' . wp_kses_post($item) . '</li>';
-            }
-            echo '</ul></section>';
-        }
-
         echo '</div>';
+    }
+
+    /**
+     * Costruisce l'HTML (già escapato) delle card caratteristiche libere
+     * (_igs_tour_caratteristiche) per il pannello accordion.
+     *
+     * @param array<int, array<string, mixed>> $caratteristiche
+     */
+    private function buildCaratteristicheHtml(array $caratteristiche, bool $isIt): string
+    {
+        $out = '<div class="igs-caratteristiche-cards">';
+        $rendered = 0;
+        foreach ($caratteristiche as $c) {
+            $title = $isIt ? ($c['it'] ?? $c['en'] ?? '') : ($c['en'] ?? $c['it'] ?? '');
+            if ($title === '') {
+                continue;
+            }
+            $subtitle = $isIt ? ($c['subtitle_it'] ?? $c['subtitle_en'] ?? '') : ($c['subtitle_en'] ?? $c['subtitle_it'] ?? '');
+            $icon = $c['icon'] ?? '🌱';
+            $iconImageId = isset($c['icon_image']) ? absint($c['icon_image']) : 0;
+            $rating = isset($c['rating']) ? (int) $c['rating'] : 0;
+            $out .= '<div class="igs-caratteristica-card">';
+            $out .= '<div class="igs-car-icon">';
+            if ($iconImageId > 0) {
+                $img = wp_get_attachment_image($iconImageId, 'thumbnail', false, ['style' => 'width:100%;height:100%;object-fit:contain;']);
+                $out .= $img !== '' ? wp_kses_post($img) : esc_html((string) $icon);
+            } else {
+                $out .= esc_html((string) $icon);
+            }
+            $out .= '</div>';
+            $out .= '<div class="igs-car-title">' . esc_html((string) $title) . '</div>';
+            if ($subtitle !== '') {
+                $out .= '<div class="igs-car-subtitle">' . esc_html((string) $subtitle) . '</div>';
+            }
+            if ($rating > 0) {
+                $out .= '<div class="igs-car-rating">';
+                for ($i = 1; $i <= 5; $i++) {
+                    $fill = $i <= $rating ? 'var(--igs-brand)' : '#e2e8f0';
+                    $out .= '<span style="background:' . esc_attr($fill) . ';"></span>';
+                }
+                $out .= '</div>';
+            }
+            $out .= '</div>';
+            $rendered++;
+        }
+        $out .= '</div>';
+
+        return $rendered > 0 ? $out : '';
+    }
+
+    /** Costruisce una lista <ul> (già escapata) dalle righe di testo. */
+    private function buildListHtml(string $text, bool $allowHtml = false): string
+    {
+        $items = $this->linesToArray($text);
+        if (empty($items)) {
+            return '';
+        }
+        $out = '<ul>';
+        foreach ($items as $item) {
+            $out .= '<li>' . ($allowHtml ? wp_kses_post($item) : esc_html($item)) . '</li>';
+        }
+
+        return $out . '</ul>';
     }
 
     /** @return list<string> */
