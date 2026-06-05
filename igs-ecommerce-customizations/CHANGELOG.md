@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.0] - 2026-06-05
+
+### Changed — rifiniture UI tour
+
+- **Galleria**: immagini tutte della stessa dimensione (altezza fissa 200px + `object-fit:cover` con `!important` per battere la regola del tema `img{height:auto}` che lasciava spazi bianchi e altezze diverse).
+- **Caratteristiche del Tour**: le icone-badge (che hanno già il proprio cerchio) non vengono più racchiuse in un secondo cerchio del plugin e sono rese più grandi (96px); card leggermente più ampie.
+- **Card tour (shop/carosello home)**: le fasce "X giorni" e paese ora centrano verticalmente il contenuto (flex + padding simmetrico), così la bandiera e il nome non risultano più disallineati in alto.
+
 ## [2.5.3] - 2026-06-05
 
 ### Fixed

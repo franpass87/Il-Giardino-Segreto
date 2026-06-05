@@ -309,9 +309,9 @@ class TourLayout
             .igs-caratteristica-card {
                 background: #fff;
                 border-radius: var(--igs-radius);
-                padding: 28px 24px;
-                min-width: 150px;
-                max-width: 200px;
+                padding: 28px 22px;
+                min-width: 170px;
+                max-width: 220px;
                 text-align: center;
                 box-shadow: var(--igs-shadow);
                 border: 1px solid var(--igs-border);
@@ -337,6 +337,20 @@ class TourLayout
             }
             .igs-caratteristica-card:hover .igs-car-icon { transform: scale(1.08); }
             .igs-car-icon img { width: 100%; height: 100%; object-fit: contain; padding: 12px; }
+            /* Badge caratteristiche (icone che hanno già il proprio cerchio): nessun
+               cerchio aggiuntivo, immagine grande e centrata. */
+            .igs-car-badge { display: flex; align-items: center; justify-content: center; height: 96px; margin: 0 auto 14px; }
+            .igs-caratteristica-card .igs-car-badge img {
+                width: auto !important;
+                height: 96px !important;
+                max-width: 100% !important;
+                object-fit: contain !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+                background: none !important;
+                box-shadow: none !important;
+            }
+            .igs-car-badge-emoji { font-size: 60px; line-height: 1; }
             .igs-car-title { font-weight: 700; font-size: 1rem; margin-bottom: 4px; color: var(--igs-text); }
             .igs-car-subtitle { font-size: 0.85rem; color: var(--igs-text-muted); margin-bottom: 10px; }
             .igs-car-rating { display: flex; gap: 5px; justify-content: center; }
@@ -356,7 +370,7 @@ class TourLayout
             }
             .igs-gallery-item {
                 display: block;
-                aspect-ratio: 4/3;
+                height: 200px;
                 border-radius: var(--igs-radius-sm);
                 overflow: hidden;
                 box-shadow: var(--igs-shadow);
@@ -366,7 +380,17 @@ class TourLayout
                 transform: scale(1.03);
                 box-shadow: 0 12px 32px rgba(0,0,0,0.12);
             }
-            .igs-gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+            /* !important per battere la regola del tema (li.product img / images img { height:auto })
+               che lasciava le immagini di altezze diverse con spazio bianco sotto. */
+            .igs-tour-galleria .igs-gallery-item img {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                object-fit: cover !important;
+                display: block;
+                margin: 0;
+            }
+            @media (max-width: 768px) { .igs-gallery-item { height: 160px; } }
             /* Contenitore unico di TUTTA la parte interna del tour: stessa larghezza
                centrata della descrizione, così ogni sezione (galleria, caratteristiche,
                itinerario, programma, info) è allineata lungo la pagina. */
@@ -628,11 +652,13 @@ class TourLayout
         foreach ($renderable as $c) {
             $label = $isIt ? $c['label_it'] : $c['label_en'];
             echo '<div class="igs-caratteristica-card">';
-            echo '<div class="igs-car-icon">';
+            // Le icone-badge (226/225/...) hanno già il loro cerchio: niente cerchio
+            // aggiuntivo del plugin, solo l'immagine a dimensione piena.
+            echo '<div class="igs-car-badge">';
             $img = $c['icon_id'] > 0
-                ? wp_get_attachment_image($c['icon_id'], 'thumbnail', false, ['style' => 'width:100%;height:100%;object-fit:contain;'])
+                ? wp_get_attachment_image($c['icon_id'], 'medium', false, ['class' => 'igs-car-badge-img', 'alt' => ''])
                 : '';
-            echo $img !== '' ? wp_kses_post($img) : esc_html($c['emoji']);
+            echo $img !== '' ? wp_kses_post($img) : '<span class="igs-car-badge-emoji">' . esc_html($c['emoji']) . '</span>';
             echo '</div>';
             echo '<div class="igs-car-title">' . esc_html__($label, 'igs-ecommerce') . '</div>';
             if ($c['kind'] === 'text') {

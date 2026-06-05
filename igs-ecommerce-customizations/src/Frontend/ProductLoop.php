@@ -51,20 +51,27 @@ class ProductLoop
             .loop-tour-duration {
                 background: linear-gradient(135deg, #0b5764 0%, #0e6b7a 100%);
                 color: white;
-                padding-top: 6px;
-                padding-bottom: 2px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 40px;
+                padding-top: 4px;
+                padding-bottom: 4px;
             }
             .loop-tour-country {
                 font-size: 20px;
                 color: #ffffff;
                 margin-top: 0;
-                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 42px;
+                padding-top: 4px;
+                padding-bottom: 4px;
                 background: linear-gradient(135deg, #7a9e4a 0%, #8fb159 100%);
-                padding-bottom: 6px;
-                padding-top: 2px;
             }
-            .loop-tour-country .igs-country { display:inline-flex; align-items:center; gap:.4em; }
-            .loop-tour-country .igs-flag { width:1.05em; height:auto; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,.5); vertical-align:middle; }
+            .loop-tour-country .igs-country { display:inline-flex; align-items:center; gap:.4em; line-height:1; }
+            .loop-tour-country .igs-flag { width:1.05em; height:auto; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,.5); }
             .tour-date-loop {
                 font-family: \'the-seasons-regular\';
                 font-weight: bold !important;
