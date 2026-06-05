@@ -62,6 +62,16 @@ class TourEditorial
         return is_array($programma) && !empty($programma);
     }
 
+    /**
+     * Etichetta bilingue scelta dalla lingua della pagina (Locale::isIt). Su questo
+     * sito determine_locale() non distingue IT/EN, quindi gettext non basta: scegliamo
+     * la stringa esplicitamente come fa il plugin per servizi e livelli.
+     */
+    private function t(bool $isIt, string $it, string $en): string
+    {
+        return $isIt ? $it : $en;
+    }
+
     public function render(WC_Product $product): void
     {
         $isIt = Locale::isIt();
@@ -91,15 +101,15 @@ class TourEditorial
         $hasInfo = $this->hasInfo($id);
 
         // Voci di navigazione (solo sezioni presenti).
-        $sections = [['id' => 'ed-viaggio', 'label' => __('Il viaggio', 'igs-ecommerce')]];
+        $sections = [['id' => 'ed-viaggio', 'label' => $this->t($isIt, 'Il viaggio', 'The journey')]];
         if (!empty($programma)) {
-            $sections[] = ['id' => 'ed-programma', 'label' => __('Programma', 'igs-ecommerce')];
+            $sections[] = ['id' => 'ed-programma', 'label' => $this->t($isIt, 'Programma', 'Itinerary')];
         }
         if (!empty($galleryIds)) {
-            $sections[] = ['id' => 'ed-galleria', 'label' => __('Galleria', 'igs-ecommerce')];
+            $sections[] = ['id' => 'ed-galleria', 'label' => $this->t($isIt, 'Galleria', 'Gallery')];
         }
         if ($hasInfo) {
-            $sections[] = ['id' => 'ed-info', 'label' => __('Informazioni', 'igs-ecommerce')];
+            $sections[] = ['id' => 'ed-info', 'label' => $this->t($isIt, 'Informazioni', 'Information')];
         }
 
         echo '<div class="igs-editorial">';
@@ -112,8 +122,8 @@ class TourEditorial
         echo '<div class="igs-ed-kicker">' . esc_html__('Il Giardino Segreto · Garden Tour', 'igs-ecommerce') . '</div>';
         echo '<h1 class="igs-ed-title">' . esc_html(get_the_title()) . '</h1>';
 
-        $where = $paese !== '' ? CountryFlags::withFlagHtml($paese) : esc_html__('Italia', 'igs-ecommerce');
-        $dateLabel = $first ? esc_html($this->formatRange($first, $isIt)) : esc_html__('Date in definizione', 'igs-ecommerce');
+        $where = $paese !== '' ? CountryFlags::withFlagHtml($paese) : esc_html($this->t($isIt, 'Italia', 'Italy'));
+        $dateLabel = $first ? esc_html($this->formatRange($first, $isIt)) : esc_html($this->t($isIt, 'Date in definizione', 'Dates to be confirmed'));
         echo '<div class="igs-ed-where">' . $where . ' &nbsp;·&nbsp; ' . $dateLabel . '</div>';
 
         if ($thumbUrl) {
@@ -121,14 +131,14 @@ class TourEditorial
         }
 
         echo '<ul class="igs-ed-facts">';
-        $duration = $this->durationLabel($first);
+        $duration = $this->durationLabel($first, $isIt);
         if ($duration !== '') {
-            echo '<li><span>' . esc_html__('Durata', 'igs-ecommerce') . '</span><span>' . esc_html($duration) . '</span></li>';
+            echo '<li><span>' . esc_html($this->t($isIt, 'Durata', 'Duration')) . '</span><span>' . esc_html($duration) . '</span></li>';
         }
         // "Partenza" non qui: la data è già nel sottotitolo (no doppione).
         $protagonista = trim((string) get_post_meta($id, '_protagonista_tour', true));
         if ($protagonista !== '') {
-            echo '<li><span>' . esc_html__('Protagonista', 'igs-ecommerce') . '</span><span>' . esc_html($protagonista) . '</span></li>';
+            echo '<li><span>' . esc_html($this->t($isIt, 'Protagonista', 'Highlight')) . '</span><span>' . esc_html($protagonista) . '</span></li>';
         }
         // Esclusività NON qui: i punteggi (Cultura/Passeggiata/Comfort/Esclusività)
         // sono raggruppati una sola volta in alto nel contenuto (no doppione).
@@ -145,10 +155,10 @@ class TourEditorial
         echo '<div class="igs-ed-install">' . esc_html($install) . '</div>';
         echo '</div>';
 
-        echo '<button type="button" class="igs-ed-book" data-igs-open-modal>' . esc_html__('Scopri e Prenota', 'igs-ecommerce') . ' →</button>';
+        echo '<button type="button" class="igs-ed-book" data-igs-open-modal>' . esc_html($this->t($isIt, 'Scopri e Prenota', 'Discover & Book')) . ' →</button>';
 
         if (count($sections) > 1) {
-            echo '<nav class="igs-ed-nav" data-igs-spy aria-label="' . esc_attr__('Sezioni del tour', 'igs-ecommerce') . '">';
+            echo '<nav class="igs-ed-nav" data-igs-spy aria-label="' . esc_attr($this->t($isIt, 'Sezioni del tour', 'Tour sections')) . '">';
             foreach ($sections as $i => $s) {
                 $on = $i === 0 ? ' class="is-active"' : '';
                 echo '<a href="#' . esc_attr($s['id']) . '"' . $on . '>' . esc_html($s['label']) . '</a>';
@@ -179,7 +189,7 @@ class TourEditorial
         // Programma.
         if (!empty($programma)) {
             echo '<section id="ed-programma" class="igs-ed-sec">';
-            echo '<h2 class="igs-ed-h2">' . esc_html__('Il programma, giorno per giorno', 'igs-ecommerce') . '</h2>';
+            echo '<h2 class="igs-ed-h2">' . esc_html($this->t($isIt, 'Il programma, giorno per giorno', 'The itinerary, day by day')) . '</h2>';
             foreach ($programma as $day) {
                 $num = (int) ($day['num'] ?? 0);
                 $titolo = (string) ($day['titolo'] ?? '');
@@ -204,7 +214,7 @@ class TourEditorial
         // Galleria (mosaico, con lightbox via tour-experience.js).
         if (!empty($galleryIds)) {
             echo '<section id="ed-galleria" class="igs-ed-sec">';
-            echo '<h2 class="igs-ed-h2">' . esc_html__('Galleria', 'igs-ecommerce') . '</h2>';
+            echo '<h2 class="igs-ed-h2">' . esc_html($this->t($isIt, 'Galleria', 'Gallery')) . '</h2>';
             echo '<div class="igs-ed-gallery igs-reveal">';
             foreach ($galleryIds as $aid) {
                 $full = wp_get_attachment_image_url($aid, 'large');
@@ -222,8 +232,8 @@ class TourEditorial
         // Informazioni.
         if ($hasInfo) {
             echo '<section id="ed-info" class="igs-ed-sec">';
-            echo '<h2 class="igs-ed-h2">' . esc_html__('Tutto quello che devi sapere', 'igs-ecommerce') . '</h2>';
-            $this->renderInfo($id);
+            echo '<h2 class="igs-ed-h2">' . esc_html($this->t($isIt, 'Tutto quello che devi sapere', 'Everything you need to know')) . '</h2>';
+            $this->renderInfo($id, $isIt);
             echo '</section>';
         }
 
@@ -282,7 +292,7 @@ class TourEditorial
         echo '</div>';
     }
 
-    private function renderInfo(int $id): void
+    private function renderInfo(int $id, bool $isIt): void
     {
         $comprende = $this->lines((string) get_post_meta($id, '_igs_tour_quota_comprende', true));
         $nonComprende = $this->lines((string) get_post_meta($id, '_igs_tour_quota_non_comprende', true));
@@ -290,14 +300,14 @@ class TourEditorial
         if (!empty($comprende) || !empty($nonComprende)) {
             echo '<div class="igs-ed-quota igs-reveal">';
             if (!empty($comprende)) {
-                echo '<div class="igs-ed-quota-col"><h4>' . esc_html__('La quota comprende', 'igs-ecommerce') . '</h4><ul class="igs-ed-yes">';
+                echo '<div class="igs-ed-quota-col"><h4>' . esc_html($this->t($isIt, 'La quota comprende', 'What\'s included')) . '</h4><ul class="igs-ed-yes">';
                 foreach ($comprende as $i) {
                     echo '<li>' . esc_html($i) . '</li>';
                 }
                 echo '</ul></div>';
             }
             if (!empty($nonComprende)) {
-                echo '<div class="igs-ed-quota-col"><h4>' . esc_html__('La quota non comprende', 'igs-ecommerce') . '</h4><ul class="igs-ed-no">';
+                echo '<div class="igs-ed-quota-col"><h4>' . esc_html($this->t($isIt, 'La quota non comprende', 'What\'s not included')) . '</h4><ul class="igs-ed-no">';
                 foreach ($nonComprende as $i) {
                     echo '<li>' . esc_html($i) . '</li>';
                 }
@@ -307,10 +317,10 @@ class TourEditorial
         }
 
         $blocks = [
-            ['k' => '_igs_tour_cosa_portare', 'label' => __('Cosa portare in valigia', 'igs-ecommerce'), 'list' => true, 'html' => false],
-            ['k' => '_igs_tour_documenti', 'label' => __('Documenti necessari', 'igs-ecommerce'), 'list' => false, 'html' => true],
-            ['k' => '_igs_tour_voli', 'label' => __('Voli aerei consigliati', 'igs-ecommerce'), 'list' => false, 'html' => true],
-            ['k' => '_igs_tour_info', 'label' => __('Info generali', 'igs-ecommerce'), 'list' => true, 'html' => true],
+            ['k' => '_igs_tour_cosa_portare', 'label' => $this->t($isIt, 'Cosa portare in valigia', 'What to pack'), 'list' => true, 'html' => false],
+            ['k' => '_igs_tour_documenti', 'label' => $this->t($isIt, 'Documenti necessari', 'Required documents'), 'list' => false, 'html' => true],
+            ['k' => '_igs_tour_voli', 'label' => $this->t($isIt, 'Voli aerei consigliati', 'Recommended flights'), 'list' => false, 'html' => true],
+            ['k' => '_igs_tour_info', 'label' => $this->t($isIt, 'Info generali', 'General information'), 'list' => true, 'html' => true],
         ];
         foreach ($blocks as $b) {
             $raw = (string) get_post_meta($id, $b['k'], true);
@@ -383,7 +393,7 @@ class TourEditorial
         return $full($s) . ' – ' . $full($e);
     }
 
-    private function durationLabel(?array $range): string
+    private function durationLabel(?array $range, bool $isIt): string
     {
         if (!$range) {
             return '';
@@ -394,8 +404,11 @@ class TourEditorial
             return '';
         }
         $days = $d1->diff($d2)->days + 1;
+        if ($isIt) {
+            return $days . ' ' . ($days === 1 ? 'giorno' : 'giorni');
+        }
 
-        return sprintf(_n('%d giorno', '%d giorni', $days, 'igs-ecommerce'), $days);
+        return $days . ' ' . ($days === 1 ? 'day' : 'days');
     }
 
     private function dots(int $n): string

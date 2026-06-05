@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.12.0] - 2026-06-05
+
+### Added — interfaccia editoriale bilingue (IT/EN)
+
+Tutte le etichette del layout editoriale ora seguono la lingua della pagina via `Locale::isIt()` (su questo sito `determine_locale()` non distingue IT/EN, quindi gettext non basta): nav (Il viaggio/Programma/Galleria/Informazioni → The journey/Itinerary/Gallery/Information), titoli sezione, fatti (Durata/Protagonista → Duration/Highlight), CTA (Scopri e Prenota → Discover & Book), info (La quota comprende/non comprende, Cosa portare, Documenti, Voli, Info generali → versioni EN), durata e date già bilingui. Pronto per quando il layout sarà applicato ai tour EN.
+
+## [2.11.2] - 2026-06-05
+
+### Fixed
+
+- Miniatura del rail: ora sceglie la prima foto della galleria **diversa** dalla copertina (prima poteva coincidere se la copertina era anche prima in galleria).
+
 ## [2.11.1] - 2026-06-05
 
 ### Changed — rifiniture layout editoriale
