@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.13.0] - 2026-06-06
+
+### Changed — restyling card tour (carosello home + shop)
+
+Le card dei tour (carosello "Destinazioni fuori dai sentieri battuti" e shop) sono allineate al nuovo stile editoriale: card bianca arrotondata con ombra morbida e hover che solleva + zoom immagine; **bandiera/paese come chip sovrapposto** in alto a sinistra sull'immagine (al posto della barra verde a tutta larghezza); titolo serif `the-seasons-regular`, prezzo in accent; **date leggibili e bilingui** ("9 – 15 set 2026"); durata come **chip discreto** con icona orologio (al posto della barra teal a tutta larghezza). Colori dall'accent di Salient (`Helper\Theme`). Markup: nuovo `renderCardFlag` su `woocommerce_before_shop_loop_item_title`; `renderLoopMeta` rivisto.
+
 ## [2.12.1] - 2026-06-06
 
 ### Changed

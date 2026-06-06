@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace IGS\Ecommerce\Frontend;
 
 use IGS\Ecommerce\Helper\CountryFlags;
+use IGS\Ecommerce\Helper\Locale;
+use IGS\Ecommerce\Helper\Theme;
 use WC_Product;
 
 class ProductLoop
@@ -14,6 +16,7 @@ class ProductLoop
         add_action('init', [$this, 'removeAddToCart']);
         add_filter('woocommerce_loop_add_to_cart_link', '__return_empty_string', 10);
         add_action('wp_enqueue_scripts', [$this, 'enqueueStyles']);
+        add_action('woocommerce_before_shop_loop_item_title', [$this, 'renderCardFlag'], 5);
         add_action('woocommerce_after_shop_loop_item_title', [$this, 'renderLoopMeta'], 15);
         add_action('woocommerce_after_shop_loop_item', [$this, 'renderFullCardLink'], 20);
     }
@@ -33,130 +36,108 @@ class ProductLoop
             }
         ' : '';
 
+        $accent = Theme::accent();
+        $accentRgb = Theme::accentRgb();
         $cssGlobal = '
-            .loop-tour-dates, .loop-tour-country {
-                font-size: 22px;
-                color: #555;
-                margin-top: 10px;
-                text-align: center;
-                font-weight: bold;
-                font-family: \'the-seasons-regular\';
-            }
-            .loop-tour-dates, .loop-tour-duration, .loop-tour-country {
-                font-size: 20px;
-                color: #555;
-                margin-top: 10px;
-                text-align: center;
-            }
-            .loop-tour-duration {
-                background: linear-gradient(135deg, #0b5764 0%, #0e6b7a 100%);
-                color: white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 40px;
-                padding-top: 4px;
-                padding-bottom: 4px;
-            }
-            .loop-tour-country {
-                font-size: 20px;
-                color: #ffffff;
-                margin-top: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 42px;
-                padding-top: 4px;
-                padding-bottom: 4px;
-                background: linear-gradient(135deg, #7a9e4a 0%, #8fb159 100%);
-            }
-            .loop-tour-country .igs-country { display:inline-flex; align-items:center; gap:.4em; line-height:1; }
-            .loop-tour-country .igs-flag { width:1.05em; height:auto; border-radius:2px; box-shadow:0 0 0 1px rgba(255,255,255,.5); }
-            .tour-date-loop {
-                font-family: \'the-seasons-regular\';
-                font-weight: bold !important;
-                text-align: center !important;
-                background: #e0e9eb !important;
-                padding-bottom: 0 !important;
-                margin-bottom: 0 !important;
-                margin-top: 20px !important;
-                border-radius: 15px !important;
-                font-size: 15px !important;
-            }
-            .tour-date-single {
-                font-family: \'the-seasons-regular\';
-                font-weight: bold !important;
-                text-align: center !important;
-                background: #e0e9eb !important;
-                padding: 5px !important;
-                margin-bottom: 0 !important;
-                margin-top: 20px !important;
-                border-radius: 15px !important;
-                font-size: 20px !important;
-            }
+            /* ===== Card tour (carosello home + shop) — restyling editoriale ===== */
+            .woocommerce ul.products { margin-bottom: 1.5em; align-items: start; }
             .woocommerce ul.products li.product {
-                border-radius: 12px;
-                overflow: hidden;
-                position: relative;
-                cursor: pointer;
+                position: relative; cursor: pointer; overflow: hidden;
+                background: #fff; border: 1px solid #e7e2d6; border-radius: 16px;
+                box-shadow: 0 8px 24px rgba(20,40,35,.07);
                 transition: box-shadow .3s ease, transform .3s ease;
             }
             .woocommerce ul.products li.product:hover {
-                box-shadow: 0 12px 32px rgba(11,87,100,.12);
-                transform: translateY(-4px);
+                box-shadow: 0 16px 40px rgba({{RGB}},.16);
+                transform: translateY(-5px);
             }
-            .woocommerce ul.products li.product a { display: block; border-radius: 10px; }
+            .woocommerce ul.products li.product a { display: block; }
+            /* immagine: bordo superiore, zoom morbido su hover */
+            .woocommerce ul.products li.product a img {
+                border-radius: 0 !important; margin: 0 !important; display: block; width: 100%;
+                transition: transform .55s cubic-bezier(.16,.84,.44,1);
+            }
+            .woocommerce ul.products li.product:hover a img { transform: scale(1.05); }
             .woocommerce ul.products li.product .full-card-link {
                 position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-                z-index: 10; text-indent: -9999px;
+                z-index: 12; text-indent: -9999px;
             }
-            .woocommerce ul.products { margin-bottom: 1.5em; align-items: start; }
+            /* Bandiera/paese sovrapposta in alto a sinistra sull immagine */
+            .loop-tour-flag {
+                position: absolute; top: 12px; left: 12px; z-index: 11;
+                display: inline-flex; align-items: center; gap: .4em;
+                background: rgba(255,253,248,.94); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+                padding: 6px 13px; border-radius: 999px;
+                font-size: 13px; font-weight: 700; letter-spacing: .01em; color: {{ACCENT}};
+                box-shadow: 0 4px 14px rgba(0,0,0,.16);
+            }
+            .loop-tour-flag .igs-country { display:inline-flex; align-items:center; gap:.45em; line-height:1; }
+            .loop-tour-flag .igs-flag { width:1.15em; height:auto; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.12); }
+            /* Titolo serif coerente con le pagine tour */
             .woocommerce ul.products li.product .woocommerce-loop-product__title {
-                text-align: center;
-                font-weight: bold;
-                font-size: 30px;
-                line-height: 30px;
-                padding-left: 10px;
-                padding-right: 10px;
+                text-align: center; font-family: \'the-seasons-regular\', Georgia, serif;
+                font-weight: 400; font-size: 22px; line-height: 1.22; color: #22302a;
+                padding: 16px 18px 4px; min-height: 0; overflow: visible;
             }
+            /* Prezzo elegante in accent */
+            .woocommerce ul.products li.product .price { text-align: center; margin: 2px 0 0; }
             .woocommerce ul.products li.product .price,
-            .woocommerce ul.products li.product .price ins,
+            .woocommerce ul.products li.product .price .amount,
+            .woocommerce ul.products li.product .price bdi,
             .woocommerce ul.products li.product .price ins .amount {
-                font-size: 28px;
-                line-height: 10px;
-                font-weight: 600;
-                text-align: center;
+                font-size: 19px; line-height: 1.3; font-weight: 700; color: {{ACCENT}};
             }
+            /* Date leggibili */
+            .loop-tour-dates {
+                text-align: center; font-size: 14px; font-weight: 600; color: #6f6a5d;
+                margin: 8px 0 0; letter-spacing: .01em;
+            }
+            /* Riga chip: durata (accent tenue) */
+            .loop-tour-meta { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 12px 14px 18px; }
+            .loop-chip {
+                display: inline-flex; align-items: center; gap: .45em;
+                font-size: 13px; font-weight: 600; padding: 6px 13px; border-radius: 999px;
+            }
+            .loop-chip svg { width: 14px; height: 14px; }
+            .loop-chip--days { background: rgba({{RGB}},.10); color: {{ACCENT}}; }
+            /* ===== Override strutturali tema Salient (mantenuti) ===== */
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic,
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.text_on_hover {
-                box-shadow: 0 3px 7px rgba(0,0,0,.07);
-                background: white;
+                box-shadow: 0 8px 24px rgba(20,40,35,.07); background: #fff;
             }
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic .price,
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic .woocommerce-loop-product__title {
-                padding: 4px 20px 3px;
-                text-align: center;
-                font-weight: bold;
-                font-size: 25px;
-                line-height: 26px;
-                font-family: \'the-seasons-regular\';
+                padding-left: 18px; padding-right: 18px; text-align: center;
+                font-family: \'the-seasons-regular\', Georgia, serif;
             }
             .woocommerce ul.products[data-product-style]:not([data-n-desktop-columns=default]) li.product,
             .woocommerce ul.products[data-product-style]:not([data-n-desktop-small-columns=default]) li.product,
             .woocommerce ul.products[data-product-style]:not([data-n-phone-columns=default]) li.product,
             .woocommerce ul.products[data-product-style]:not([data-n-tablet-columns=default]) li.product {
-                float: none !important;
-                clear: none !important;
-                box-shadow: rgba(0,0,0,.04) 0 1px 0, rgba(0,0,0,.05) 0 2px 7px, rgba(0,0,0,.06) 0 12px 22px;
+                float: none !important; clear: none !important;
             }
             .woocommerce .woocommerce-result-count { display: none !important; }
             .flickity-page-dots { display: none; }
         ';
 
-        $css = trim($cssShop . $cssGlobal);
+        $css = trim($cssShop . strtr($cssGlobal, ['{{ACCENT}}' => $accent, '{{RGB}}' => $accentRgb]));
         if ($css !== '') {
             wp_add_inline_style('woocommerce-general', $css);
         }
+    }
+
+    /** Bandiera + paese sovrapposti in alto a sinistra sull'immagine della card. */
+    public function renderCardFlag(): void
+    {
+        global $product;
+        if (!$product instanceof WC_Product) {
+            return;
+        }
+        $paese = get_post_meta($product->get_id(), '_paese_tour', true);
+        if (empty($paese)) {
+            return;
+        }
+        echo '<span class="loop-tour-flag">' . CountryFlags::withFlagHtml($paese) . '</span>';
     }
 
     public function renderLoopMeta(): void
@@ -166,9 +147,8 @@ class ProductLoop
             return;
         }
 
+        $isIt = Locale::isIt();
         $ranges = get_post_meta($product->get_id(), '_date_ranges', true);
-        $paese = get_post_meta($product->get_id(), '_paese_tour', true);
-        $valid = false;
 
         if (is_array($ranges) && !empty($ranges)) {
             $r = $ranges[0];
@@ -176,27 +156,43 @@ class ProductLoop
             $end = isset($r['end']) ? \DateTime::createFromFormat('d/m/Y', $r['end']) : null;
 
             if ($start && $end && $end >= $start) {
-                echo '<div class="loop-tour-dates">' . esc_html($r['start']) . ' → ' . esc_html($r['end']) . '</div>';
+                echo '<div class="loop-tour-dates">' . esc_html($this->formatRangeCompact($start, $end, $isIt)) . '</div>';
                 $days = $start->diff($end)->days + 1;
-                $label = sprintf(
-                    _n('%d giorno', '%d giorni', $days, 'igs-ecommerce'),
-                    $days
-                );
-                echo '<div class="loop-tour-duration">' . esc_html($label) . '</div>';
-                $valid = true;
+                $label = $isIt
+                    ? $days . ' ' . ($days === 1 ? 'giorno' : 'giorni')
+                    : $days . ' ' . ($days === 1 ? 'day' : 'days');
+                echo '<div class="loop-tour-meta"><span class="loop-chip loop-chip--days">' . $this->clockIcon() . esc_html($label) . '</span></div>';
+
+                return;
             }
         }
 
-        if (!$valid) {
-            echo '<div class="loop-tour-dates">' . esc_html__('Date non disponibili', 'igs-ecommerce') . '</div>';
-            echo '<div class="loop-tour-duration">' . esc_html__('Durata non disponibile', 'igs-ecommerce') . '</div>';
+        echo '<div class="loop-tour-dates">' . esc_html($isIt ? 'Date in via di definizione' : 'Dates to be confirmed') . '</div>';
+    }
+
+    /** Intervallo date compatto e bilingue: "9 – 15 set 2026" / "9 – 15 Sep 2026". */
+    private function formatRangeCompact(\DateTime $s, \DateTime $e, bool $isIt): string
+    {
+        $m = $isIt
+            ? [1 => 'gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic']
+            : [1 => 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $full = static fn (\DateTime $d): string => (int) $d->format('j') . ' ' . $m[(int) $d->format('n')] . ' ' . $d->format('Y');
+        if ($s->format('Y-m-d') === $e->format('Y-m-d')) {
+            return $full($s);
+        }
+        if ($s->format('n-Y') === $e->format('n-Y')) {
+            return (int) $s->format('j') . ' – ' . (int) $e->format('j') . ' ' . $m[(int) $e->format('n')] . ' ' . $e->format('Y');
+        }
+        if ($s->format('Y') === $e->format('Y')) {
+            return (int) $s->format('j') . ' ' . $m[(int) $s->format('n')] . ' – ' . $full($e);
         }
 
-        if (!empty($paese)) {
-            echo '<div class="loop-tour-country">' . CountryFlags::withFlagHtml($paese) . '</div>';
-        } else {
-            echo '<div class="loop-tour-country">' . esc_html__('Paese non specificato', 'igs-ecommerce') . '</div>';
-        }
+        return $full($s) . ' – ' . $full($e);
+    }
+
+    private function clockIcon(): string
+    {
+        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
     }
 
     public function renderFullCardLink(): void
