@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.13.1] - 2026-06-06
+
+### Changed — restyling CTA + modal di prenotazione
+
+Il modal di prenotazione e il CTA dei tour sono allineati allo stile editoriale: palette dall'**accent di Salient** (`Helper\Theme`) al posto del teal/verde fissi, bordo superiore **oro**, **titolo e totale in serif** `the-seasons`, schede (tab) e selezione varianti evidenziate in accent, pulsanti primari in accent pieno (niente gradient), focus campi e ombre in tinta. Card modal su crema, palette inchiostro/sabbia. CTA bar: prezzo serif coerente.
+
 ## [2.13.0] - 2026-06-06
 
 ### Changed — restyling card tour (carosello home + shop)

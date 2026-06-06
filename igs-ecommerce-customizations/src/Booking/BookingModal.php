@@ -34,6 +34,7 @@ class BookingModal
         $productTitle = $product->get_title();
         $accent = Theme::accent();
         $accentRgb = Theme::accentRgb();
+        $accentDark = Theme::darken();
 
         $L = [
             'cta' => __('Scopri e Prenota', 'igs-ecommerce'),
@@ -84,13 +85,13 @@ class BookingModal
         }
         ?>
         <style>
-        :root{--brand-color:#0e5763;--brand-color-hover:#0a434c;--brand-accent:#8fb159;--background-light:#f6f8f8;--text-color:#2d3748;--text-muted:#64748b;--border-color:#e2e8f0;--font-main:'foundersgrotesk',sans-serif}
+        :root{--brand-color:<?php echo esc_attr($accent); ?>;--brand-color-hover:<?php echo esc_attr($accentDark); ?>;--brand-accent:#c89b54;--gold:#c89b54;--background-light:#f7f3ea;--text-color:#26241f;--text-muted:#7a7466;--border-color:#e4ddcd;--serif:'the-seasons-regular',Georgia,serif;--font-main:'foundersgrotesk',sans-serif}
         /* ===== Banner ===== */
         #gs-fixed-cta{position:fixed;bottom:0;left:0;width:100%;z-index:99999;background:rgba(255,253,248,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 -8px 30px rgba(38,36,31,.12);border-top:1px solid #e4ddcd;animation:gs-cta-up .5s cubic-bezier(.16,1,.3,1)}
         @keyframes gs-cta-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
         .gs-cta-inner{max-width:1180px;margin:0 auto;padding:13px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px}
         .gs-cta-info{display:flex;flex-direction:column;justify-content:center;line-height:1.12;gap:3px}
-        .gs-cta-price{font-family:Georgia,"Times New Roman",serif;font-size:1.55rem;font-weight:700;color:#26241f}
+        .gs-cta-price{font-family:'the-seasons-regular',Georgia,serif;font-size:1.6rem;font-weight:700;color:#26241f}
         .gs-cta-price .amount,.gs-cta-price bdi{color:#26241f}
         .gs-cta-sub{font-size:.72rem;color:#7a7466;text-transform:uppercase;letter-spacing:.12em}
         #gs-open-modal{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 34px;font-family:var(--font-main);font-size:1.12rem;font-weight:700;color:#fff;background:<?php echo esc_attr($accent); ?>;border:none;border-radius:999px;cursor:pointer;box-shadow:0 8px 20px rgba(<?php echo esc_attr($accentRgb); ?>,.30);transition:transform .2s,box-shadow .25s,filter .2s;white-space:nowrap;text-shadow:none}
@@ -100,10 +101,10 @@ class BookingModal
         #gs-open-modal:hover svg{transform:translateX(4px)}
         /* ===== Modal ===== */
         #gs-tour-modal{display:none;position:fixed;inset:0;width:100%;height:100%;background:rgba(15,30,33,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:100000;justify-content:center;align-items:center;padding:16px;font-family:var(--font-main)}
-        .gs-modal-content{background:#fff;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,.28);position:relative;border-top:5px solid var(--brand-accent);transform:scale(.95) translateY(12px);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s}
+        .gs-modal-content{background:#fffdf8;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;border-radius:20px;box-shadow:0 30px 70px rgba(20,40,35,.32);position:relative;border-top:4px solid var(--gold);transform:scale(.95) translateY(12px);opacity:0;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s}
         #gs-tour-modal.is-visible .gs-modal-content{transform:scale(1) translateY(0);opacity:1}
         .gs-modal-header{padding:22px 24px 6px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-        .gs-modal-header h3{margin:0;font-size:1.35rem;color:var(--brand-color);font-weight:700;line-height:1.25}
+        .gs-modal-header h3{margin:0;font-family:var(--serif);font-size:1.5rem;color:var(--brand-color);font-weight:400;line-height:1.2;letter-spacing:-.01em}
         .gs-close-modal{flex:0 0 auto;font-size:1.5rem;line-height:1;border:none;background:var(--background-light);cursor:pointer;color:#64748b;width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .2s,color .2s,transform .25s}
         .gs-close-modal:hover{color:#fff;background:var(--brand-color);transform:rotate(90deg)}
         .gs-modal-body{padding:18px 24px}
@@ -113,21 +114,21 @@ class BookingModal
         .gs-form-group>label{margin-bottom:10px;font-size:.95rem;font-weight:600;color:var(--text-color);display:block}
         .variation-label{display:flex;align-items:center;gap:10px;font-size:1rem;margin-bottom:10px;cursor:pointer;padding:14px 16px;border:2px solid var(--border-color);border-radius:12px;transition:border-color .2s,background .2s,box-shadow .2s}
         .variation-label:hover{border-color:var(--brand-accent);background:var(--background-light)}
-        .variation-label:has(input:checked){border-color:var(--brand-color);background:rgba(14,87,99,.06);box-shadow:0 2px 10px rgba(14,87,99,.10)}
+        .variation-label:has(input:checked){border-color:var(--brand-color);background:rgba(<?php echo esc_attr($accentRgb); ?>,.07);box-shadow:0 2px 12px rgba(<?php echo esc_attr($accentRgb); ?>,.12)}
         .variation-label .variation-price{margin-left:auto;font-weight:700;color:var(--brand-color)}
         .qty-control{display:flex;align-items:center;gap:12px}
         .qty-control button{background:var(--brand-color);color:#fff;border:none;width:42px;height:42px;font-size:1.4rem;line-height:1;border-radius:50%;cursor:pointer;transition:background .2s,transform .15s}
         .qty-control button:hover{background:var(--brand-color-hover);transform:scale(1.08)}
         .qty-control input{width:60px;height:42px;text-align:center;border:2px solid var(--border-color);border-radius:10px;font-size:1.15rem;font-weight:600;color:var(--text-color)}
-        #tour-price-total{text-align:center;font-size:1.8rem;font-weight:700;color:var(--brand-color);margin:22px 0 4px;background:linear-gradient(135deg,var(--background-light) 0%,#eef3f3 100%);padding:16px;border-radius:14px;border:1px solid var(--border-color)}
+        #tour-price-total{text-align:center;font-family:var(--serif);font-size:2rem;font-weight:700;color:var(--brand-color);margin:22px 0 4px;background:var(--background-light);padding:16px;border-radius:14px;border:1px solid var(--border-color)}
         #info-form input[type="text"],#info-form input[type="email"],#info-form textarea{width:100%;padding:13px 14px;border:2px solid var(--border-color);border-radius:10px;font-size:1rem;font-family:var(--font-main);transition:border-color .2s,box-shadow .2s}
-        #info-form input:focus,#info-form textarea:focus{outline:none;border-color:var(--brand-color);box-shadow:0 0 0 3px rgba(14,87,99,.15)}
+        #info-form input:focus,#info-form textarea:focus{outline:none;border-color:var(--brand-color);box-shadow:0 0 0 3px rgba(<?php echo esc_attr($accentRgb); ?>,.16)}
         #info-form textarea{min-height:110px;resize:vertical}
         #info-success-message{display:none;padding:28px 24px;background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 100%);color:#1e6a3c;border-radius:14px;text-align:center;border:1px solid rgba(30,106,60,.2);font-size:1.05rem}
         .gs-modal-footer{padding:16px 24px 24px;display:flex;flex-direction:column;gap:12px}
         .gs-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 20px;border:none;border-radius:12px;cursor:pointer;font-size:1.05rem;font-weight:600;font-family:var(--font-main);transition:all .25s ease}
-        .gs-btn-primary{background:linear-gradient(135deg,var(--brand-color) 0%,#13707f 100%);color:#fff;box-shadow:0 6px 16px rgba(14,87,99,.28)}
-        .gs-btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(14,87,99,.40);filter:brightness(1.05)}
+        .gs-btn-primary{background:var(--brand-color);color:#fff;box-shadow:0 8px 20px rgba(<?php echo esc_attr($accentRgb); ?>,.30)}
+        .gs-btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(<?php echo esc_attr($accentRgb); ?>,.42);filter:brightness(1.06)}
         .gs-btn-secondary{background:none;border:2px solid var(--border-color);color:var(--text-color)}
         .gs-btn-secondary:hover{background:var(--background-light);border-color:var(--brand-accent);color:var(--brand-color)}
         .gs-modal-tabs{display:flex;gap:6px;padding:8px 24px 0}
