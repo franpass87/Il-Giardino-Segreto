@@ -84,14 +84,31 @@ class TourEditorial
 
         $coverId = $product->get_image_id();
         $coverUrl = $coverId ? wp_get_attachment_image_url($coverId, 'full') : wc_placeholder_img_src();
-        // Miniatura del rail: prima foto della galleria DIVERSA dalla copertina (che è
-        // già grande accanto); fallback alla copertina se non ce ne sono altre.
+        // Miniatura del rail: la foto di galleria più "panoramica" (orientamento
+        // orizzontale), diversa dalla copertina — così si evitano ritratti e foto di
+        // gruppo. Fallback alla prima diversa dalla copertina, poi alla copertina.
         $railThumbId = (int) $coverId;
+        $firstNonCover = 0;
+        $bestAspect = 0.0;
         foreach ($product->get_gallery_image_ids() as $gid) {
-            if ((int) $gid !== (int) $coverId) {
-                $railThumbId = (int) $gid;
-                break;
+            $gid = (int) $gid;
+            if ($gid <= 0 || $gid === (int) $coverId) {
+                continue;
             }
+            if ($firstNonCover === 0) {
+                $firstNonCover = $gid;
+            }
+            $meta = wp_get_attachment_metadata($gid);
+            $w = is_array($meta) && !empty($meta['width']) ? (int) $meta['width'] : 0;
+            $h = is_array($meta) && !empty($meta['height']) ? (int) $meta['height'] : 0;
+            $aspect = ($w > 0 && $h > 0) ? $w / $h : 0.0;
+            if ($aspect > $bestAspect) {
+                $bestAspect = $aspect;
+                $railThumbId = $gid;
+            }
+        }
+        if ($railThumbId === (int) $coverId && $firstNonCover > 0) {
+            $railThumbId = $firstNonCover;
         }
         $thumbUrl = $railThumbId ? wp_get_attachment_image_url($railThumbId, 'large') : $coverUrl;
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.12.1] - 2026-06-06
+
+### Changed
+
+- **Miniatura del rail**: ora sceglie la foto di galleria più orizzontale (panoramica) invece della semplice prima foto, così si evitano ritratti e foto di gruppo (es. su Ireland appariva una foto di gruppo). Fallback alla prima diversa dalla copertina, poi alla copertina.
+
 ## [2.12.0] - 2026-06-05
 
 ### Added — interfaccia editoriale bilingue (IT/EN)
