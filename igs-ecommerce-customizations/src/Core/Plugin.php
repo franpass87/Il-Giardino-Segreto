@@ -13,6 +13,7 @@ use IGS\Ecommerce\Admin\ProductColumns;
 use IGS\Ecommerce\Admin\TourProductMetabox;
 use IGS\Ecommerce\Booking\BookingModal;
 use IGS\Ecommerce\Cart\ReturnToShop;
+use IGS\Ecommerce\Frontend\CacheHeaders;
 use IGS\Ecommerce\Frontend\DateLocalizer;
 use IGS\Ecommerce\Frontend\TourEditorial;
 use IGS\Ecommerce\Frontend\PriceDisplay;
@@ -72,6 +73,7 @@ final class Plugin
         (new PortfolioTitleFilter())->register();
         (new ReturnToShop())->register();
 
+        (new CacheHeaders())->register();
         (new RemoteBridge())->register();
     }
 }

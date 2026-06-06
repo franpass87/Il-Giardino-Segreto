@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.14.0] - 2026-06-06
+
+### Added — header Cache-Control sull'HTML (stop edge cache Aruba stantia)
+
+Nuovo `Frontend\CacheHeaders`: invia `Cache-Control: no-cache, private, must-revalidate` sulle pagine HTML del front-end (richieste GET/HEAD non admin, non loggate, escluse cart/checkout/account, AJAX, REST, cron). Così l'edge cache CONDIVISA di Aruba non memorizza più l'HTML e non serve versioni vecchie dopo i deploy (basta `Cache-Control` private per le cache condivise). Gli asset statici (CSS/JS/img) non passano da PHP → mantengono la cache lunga; la page cache di FP Performance continua a servire l'HTML dall'origin.
+
 ## [2.13.2] - 2026-06-06
 
 ### Fixed
