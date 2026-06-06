@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.13.2] - 2026-06-06
+
+### Fixed
+
+- **Shop in mobile**: le card tour erano affollate nel 2-col stretto del telefono (titoli serif su 4 righe, chip grandi). Su schermi ≤600px ora vanno a **una sola colonna a piena larghezza** (scoped alle pagine shop/archivio: il carosello in home non è toccato).
+
 ## [2.13.1] - 2026-06-06
 
 ### Changed — restyling CTA + modal di prenotazione

@@ -34,6 +34,18 @@ class ProductLoop
             .woocommerce ul.products li.product .woocommerce-loop-product__title {
                 line-height: 1.4em; min-height: calc(1.4em * 3); margin-bottom: 0.5em; overflow: visible;
             }
+            /* Mobile: una sola colonna a piena larghezza per le card tour, così non
+               si accavallano nel 2-col stretto e confuso del telefono. */
+            @media (max-width: 600px) {
+                .woocommerce ul.products { display: block !important; }
+                .woocommerce ul.products li.product {
+                    width: 100% !important; max-width: 480px; float: none !important;
+                    clear: both !important; margin: 0 auto 22px !important; display: block !important;
+                }
+                .woocommerce ul.products li.product .woocommerce-loop-product__title {
+                    font-size: 22px; min-height: 0;
+                }
+            }
         ' : '';
 
         $accent = Theme::accent();
