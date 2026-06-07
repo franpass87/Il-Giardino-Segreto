@@ -52,9 +52,10 @@ class ProductLoop
         $accentRgb = Theme::accentRgb();
         $cssGlobal = '
             /* ===== Card tour (carosello home + shop) — restyling editoriale ===== */
-            .woocommerce ul.products { margin-bottom: 1.5em; align-items: start; }
+            .woocommerce ul.products { margin-bottom: 1.5em; align-items: stretch; }
             .woocommerce ul.products li.product {
                 position: relative; cursor: pointer; overflow: hidden;
+                display: flex; flex-direction: column;
                 background: #fff; border: 1px solid #e7e2d6; border-radius: 16px;
                 box-shadow: 0 8px 24px rgba(20,40,35,.07);
                 transition: box-shadow .3s ease, transform .3s ease;
@@ -89,7 +90,10 @@ class ProductLoop
             .woocommerce ul.products li.product .woocommerce-loop-product__title {
                 text-align: center; font-family: \'the-seasons-regular\', Georgia, serif;
                 font-weight: 400; font-size: 22px; line-height: 1.22; color: #22302a;
-                padding: 16px 18px 4px; min-height: 0; overflow: visible;
+                padding: 16px 18px 4px; overflow: visible;
+                /* Riserva 3 righe: così titoli da 1 a 3 righe restano alti uguale e
+                   prezzo/date/durata si allineano su tutte le card (home + shop). */
+                min-height: calc(1.22em * 3 + 16px);
             }
             /* Prezzo elegante in accent */
             .woocommerce ul.products li.product .price { text-align: center; margin: 2px 0 0; }
@@ -104,8 +108,9 @@ class ProductLoop
                 text-align: center; font-size: 14px; font-weight: 600; color: #6f6a5d;
                 margin: 8px 0 0; letter-spacing: .01em;
             }
-            /* Riga chip: durata (accent tenue) */
-            .loop-tour-meta { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 12px 14px 18px; }
+            /* Riga chip: durata (accent tenue). margin-top:auto la tiene in fondo alla
+               card, allineata su tutte (le card hanno la stessa altezza con align-items:stretch). */
+            .loop-tour-meta { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 12px 14px 18px; margin-top: auto; }
             .loop-chip {
                 display: inline-flex; align-items: center; gap: .45em;
                 font-size: 13px; font-weight: 600; padding: 6px 13px; border-radius: 999px;
@@ -130,6 +135,10 @@ class ProductLoop
             }
             .woocommerce .woocommerce-result-count { display: none !important; }
             .flickity-page-dots { display: none; }
+            /* Mobile: card a colonna singola → niente riserva 3 righe (allineamento non serve). */
+            @media (max-width: 600px) {
+                .woocommerce ul.products li.product .woocommerce-loop-product__title { min-height: 0; }
+            }
         ';
 
         $css = trim($cssShop . strtr($cssGlobal, ['{{ACCENT}}' => $accent, '{{RGB}}' => $accentRgb]));

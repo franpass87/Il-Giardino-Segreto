@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.15.1] - 2026-06-07
+
+### Fixed
+
+- **Card tour ad altezze diverse** (home e shop): i titoli da 1 a 3 righe rendevano le card di altezze diverse e disallineavano prezzo/date/durata. Ora il titolo riserva 3 righe fisse, le card sono ad altezza uguale (`align-items: stretch` + card flex-column) e la chip durata è spinta in fondo (`margin-top:auto`) → tutto allineato. Su mobile (colonna singola) la riserva è disattivata. (Annullava il fix un `min-height:0` rimasto nel CSS globale.)
+
 ## [2.15.0] - 2026-06-07
 
 ### Added — dati strutturati Product/Offer sui tour
