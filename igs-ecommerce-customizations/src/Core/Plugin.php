@@ -16,6 +16,7 @@ use IGS\Ecommerce\Cart\ReturnToShop;
 use IGS\Ecommerce\Frontend\CacheHeaders;
 use IGS\Ecommerce\Frontend\DateLocalizer;
 use IGS\Ecommerce\Frontend\TourEditorial;
+use IGS\Ecommerce\Frontend\TourSchema;
 use IGS\Ecommerce\Frontend\PriceDisplay;
 use IGS\Ecommerce\Frontend\WooStrings;
 use IGS\Ecommerce\Frontend\ProductLoop;
@@ -63,6 +64,7 @@ final class Plugin
         (new TourProductTabs())->register();
         (new TourTemplate())->register();
         (new TourEditorial())->register();
+        (new TourSchema())->register();
         (new ProductLoop())->register();
         (new ShopCustomizations())->register();
 

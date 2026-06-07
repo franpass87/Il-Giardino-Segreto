@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.15.0] - 2026-06-07
+
+### Added — dati strutturati Product/Offer sui tour
+
+Nuovo `Frontend\TourSchema`: emette JSON-LD schema.org **Product + Offer** sulle schede tour (nome, descrizione, immagine, brand, prezzo minimo, valuta, disponibilità, url) per abilitare i **rich result Google con prezzo**. FP SEO già emette lo schema di sito (Organization/TravelAgency/Breadcrumb); questo aggiunge il livello prodotto che mancava.
+
 ## [2.14.0] - 2026-06-06
 
 ### Added — header Cache-Control sull'HTML (stop edge cache Aruba stantia)
