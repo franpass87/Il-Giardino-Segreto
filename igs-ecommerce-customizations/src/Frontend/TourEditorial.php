@@ -505,10 +505,10 @@ class TourEditorial
         .igs-ed-day-text{color:#4a463d;line-height:1.72;font-size:16.5px;}
         .igs-ed-day-text p{margin:0 0 .7em;}
         /* Galleria mosaico */
-        .igs-ed-gallery{columns:3;column-gap:14px;}
-        .igs-ed-gallery .igs-gallery-item{display:block;break-inside:avoid;margin-bottom:14px;border-radius:10px;overflow:hidden;box-shadow:0 8px 20px rgba(38,36,31,.10);transition:transform .3s ease,box-shadow .3s ease;}
+        .igs-ed-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+        .igs-ed-gallery .igs-gallery-item{display:block;aspect-ratio:4/3;border-radius:10px;overflow:hidden;box-shadow:0 8px 20px rgba(38,36,31,.10);transition:transform .3s ease,box-shadow .3s ease;}
         .igs-ed-gallery .igs-gallery-item:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(38,36,31,.18);}
-        .igs-ed-gallery .igs-gallery-item img{width:100%!important;height:auto!important;max-width:none!important;display:block;margin:0;}
+        .igs-ed-gallery .igs-gallery-item img{width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;display:block;margin:0;}
         /* Info */
         .igs-ed-quota{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-bottom:8px;}
         .igs-ed-quota h4,.igs-ed-block h4{font-size:14.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ed-accent);margin:0 0 12px;}
@@ -528,7 +528,15 @@ class TourEditorial
         .igs-editorial .igs-reveal.igs-in{opacity:1;transform:none;}
         @media (prefers-reduced-motion: reduce){.igs-editorial .igs-reveal{opacity:1!important;transform:none!important;}}
         /* Su desktop il rail mostra già prezzo + CTA: nascondi la barra sticky in basso. */
-        @media (min-width:1025px){body.igs-has-rail #gs-fixed-cta{display:none !important;}}
+        @media (min-width:1025px){
+            body.igs-has-rail #gs-fixed-cta{display:none !important;}
+            /* Abilita lo sticky del rail: gli antenati Salient con overflow:hidden
+               romperebbero position:sticky. overflow:clip clippa (come hidden) ma NON
+               crea uno scroll-container, così il rail resta sticky e il full-bleed (-50vw)
+               non viene tagliato. */
+            body.single-product #ajax-content-wrap,
+            body.single-product .container-wrap{overflow:clip;}
+        }
         /* Responsive: rail in cima, niente sticky */
         @media (max-width: 1024px){
             .igs-editorial{flex-direction:column;}
@@ -538,13 +546,13 @@ class TourEditorial
             .igs-ed-nav a{border-left:none;border-bottom:2px solid var(--ed-line);padding:6px 2px;}
             .igs-ed-nav a.is-active{border-color:var(--ed-accent);}
             .igs-ed-cover{height:320px;}
-            .igs-ed-gallery{columns:2;}
+            .igs-ed-gallery{grid-template-columns:repeat(2,1fr);}
         }
         @media (max-width: 560px){
             .igs-ed-pad{padding:34px 20px 44px;}
             .igs-ed-levels{gap:16px 28px;padding:18px 20px;}
             .igs-ed-quota{grid-template-columns:1fr;gap:22px;}
-            .igs-ed-gallery{columns:1;}
+            .igs-ed-gallery{grid-template-columns:repeat(2,1fr);}
             .igs-ed-day{grid-template-columns:50px 1fr;gap:14px;}
             .igs-ed-day-n{font-size:40px;}
             .igs-ed-title{font-size:34px;}

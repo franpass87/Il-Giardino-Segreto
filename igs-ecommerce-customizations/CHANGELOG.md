@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.15.2] - 2026-06-07
+
+### Fixed
+
+- **Galleria tour**: da masonry ad altezze variabili (con bordi/spazi vuoti) a **griglia uniforme** (celle 4:3, object-fit cover) — tutte le foto della stessa dimensione.
+- **Rail sticky su desktop**: gli antenati Salient (#ajax-content-wrap/.container-wrap) con overflow:hidden rompevano position:sticky; ora overflow:clip li abilita senza tagliare il full-bleed.
+
 ## [2.15.1] - 2026-06-07
 
 ### Fixed
