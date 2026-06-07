@@ -175,10 +175,12 @@ class TourEditorial
         echo '<button type="button" class="igs-ed-book" data-igs-open-modal>' . esc_html($this->t($isIt, 'Scopri e Prenota', 'Discover & Book')) . ' →</button>';
 
         if (count($sections) > 1) {
+            $navIco = ['ed-viaggio' => 'compass', 'ed-programma' => 'route', 'ed-galleria' => 'image', 'ed-info' => 'info'];
             echo '<nav class="igs-ed-nav" data-igs-spy aria-label="' . esc_attr($this->t($isIt, 'Sezioni del tour', 'Tour sections')) . '">';
             foreach ($sections as $i => $s) {
                 $on = $i === 0 ? ' class="is-active"' : '';
-                echo '<a href="#' . esc_attr($s['id']) . '"' . $on . '>' . esc_html($s['label']) . '</a>';
+                $ico = $this->edIcon($navIco[$s['id']] ?? '');
+                echo '<a href="#' . esc_attr($s['id']) . '"' . $on . '>' . $ico . '<span>' . esc_html($s['label']) . '</span></a>';
             }
             echo '</nav>';
         }
@@ -284,19 +286,40 @@ class TourEditorial
         return false;
     }
 
+    /**
+     * Icona inline (stile Lucide, 24x24, currentColor). Stringa vuota se sconosciuta.
+     */
+    private function edIcon(string $name): string
+    {
+        $paths = [
+            'culture' => '<polygon points="12 2 20 7 4 7"/><line x1="6" y1="11" x2="6" y2="18"/><line x1="10" y1="11" x2="10" y2="18"/><line x1="14" y1="11" x2="14" y2="18"/><line x1="18" y1="11" x2="18" y2="18"/><line x1="3" y1="22" x2="21" y2="22"/>',
+            'walk' => '<path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z"/><path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z"/><path d="M16 17h4"/><path d="M4 13h4"/>',
+            'feather' => '<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/>',
+            'gem' => '<path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>',
+            'compass' => '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+            'route' => '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+            'image' => '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+            'info' => '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+        ];
+        if (!isset($paths[$name])) {
+            return '';
+        }
+        return '<svg class="igs-ed-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' . $paths[$name] . '</svg>';
+    }
+
     private function renderLevels(int $id, bool $isIt): void
     {
         $levels = [
-            ['k' => '_livello_culturale', 'it' => 'Cultura', 'en' => 'Culture'],
-            ['k' => '_livello_passeggiata', 'it' => 'Passeggiata', 'en' => 'Walking'],
-            ['k' => '_livello_piuma', 'it' => 'Comfort', 'en' => 'Comfort'],
-            ['k' => '_livello_esclusivita', 'it' => 'Esclusività', 'en' => 'Exclusivity'],
+            ['k' => '_livello_culturale', 'it' => 'Cultura', 'en' => 'Culture', 'ico' => 'culture'],
+            ['k' => '_livello_passeggiata', 'it' => 'Passeggiata', 'en' => 'Walking', 'ico' => 'walk'],
+            ['k' => '_livello_piuma', 'it' => 'Comfort', 'en' => 'Comfort', 'ico' => 'feather'],
+            ['k' => '_livello_esclusivita', 'it' => 'Esclusività', 'en' => 'Exclusivity', 'ico' => 'gem'],
         ];
         $rows = [];
         foreach ($levels as $l) {
             $v = (int) get_post_meta($id, $l['k'], true);
             if ($v >= 1 && $v <= 5) {
-                $rows[] = ['label' => $isIt ? $l['it'] : $l['en'], 'v' => $v];
+                $rows[] = ['label' => $isIt ? $l['it'] : $l['en'], 'v' => $v, 'ico' => $l['ico']];
             }
         }
         if (empty($rows)) {
@@ -304,7 +327,7 @@ class TourEditorial
         }
         echo '<div class="igs-ed-levels igs-reveal">';
         foreach ($rows as $r) {
-            echo '<div class="igs-ed-level"><span class="igs-ed-level-l">' . esc_html($r['label']) . '</span><span class="igs-ed-dots">' . $this->dots($r['v']) . '</span></div>';
+            echo '<div class="igs-ed-level"><span class="igs-ed-level-l">' . $this->edIcon($r['ico']) . '<span>' . esc_html($r['label']) . '</span></span><span class="igs-ed-dots">' . $this->dots($r['v']) . '</span></div>';
         }
         echo '</div>';
     }
@@ -477,7 +500,8 @@ class TourEditorial
         .igs-ed-book:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba({{ACCENT_RGB}},.42);filter:brightness(1.06);}
         .igs-ed-book:focus-visible,.igs-ed-nav a:focus-visible,.igs-ed-gallery .igs-gallery-item:focus-visible{outline:2px solid var(--ed-accent);outline-offset:3px;border-radius:6px;}
         .igs-ed-nav{margin-top:28px;padding-top:24px;border-top:1px solid var(--ed-line);display:flex;flex-direction:column;gap:3px;}
-        .igs-ed-nav a{color:var(--ed-muted);text-decoration:none;font-size:15.5px;border-left:2px solid var(--ed-line);padding:7px 0 7px 14px;transition:color .2s,border-color .2s;}
+        .igs-ed-nav a{display:flex;align-items:center;gap:9px;color:var(--ed-muted);text-decoration:none;font-size:15.5px;border-left:2px solid var(--ed-line);padding:7px 0 7px 14px;transition:color .2s,border-color .2s;}
+        .igs-ed-nav a .igs-ed-ico{opacity:.85;}
         .igs-ed-nav a:hover{color:var(--ed-ink);}
         .igs-ed-nav a.is-active{color:var(--ed-ink);border-color:var(--ed-accent);font-weight:600;}
         /* CONTENT */
@@ -492,7 +516,9 @@ class TourEditorial
         /* Punteggi (tutti insieme in alto, una sola volta) */
         .igs-ed-levels{display:flex;flex-wrap:wrap;gap:20px 44px;margin:0 0 38px;padding:22px 26px;background:var(--ed-panel);border:1px solid var(--ed-line);border-radius:14px;box-shadow:0 8px 22px rgba(38,36,31,.05);}
         .igs-ed-level{display:flex;flex-direction:column;gap:9px;}
-        .igs-ed-level-l{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ed-muted);font-weight:600;}
+        .igs-ed-level-l{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ed-muted);font-weight:600;}
+        .igs-ed-ico{width:15px;height:15px;flex:0 0 auto;}
+        .igs-ed-level-l .igs-ed-ico{width:16px;height:16px;color:var(--ed-accent);}
         .igs-ed-dots{display:inline-flex;gap:5px;}
         .igs-ed-dot{width:9px;height:9px;border-radius:50%;background:var(--ed-line);}
         .igs-ed-dot.on{background:var(--ed-accent);}

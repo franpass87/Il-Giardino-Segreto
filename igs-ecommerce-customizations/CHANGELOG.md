@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.0] - 2026-06-07
+
+### Changed
+
+- **Icone nei punteggi e nella nav del rail**: aggiunte icone (stile Lucide, in accent) accanto ai 4 punteggi — Cultura (tempio), Passeggiata (orme), Comfort (piuma), Esclusività (gemma) — e accanto alle voci di navigazione del rail — Il viaggio (bussola), Programma (percorso), Galleria (immagine), Informazioni (info). Le icone della nav seguono il colore della voce (muted→ink su hover/attivo).
+
 ## [2.15.4] - 2026-06-07
 
 ### Fixed
