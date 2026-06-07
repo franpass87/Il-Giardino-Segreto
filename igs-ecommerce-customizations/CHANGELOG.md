@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.4] - 2026-06-07
+
+### Fixed
+
+- **Fondo della sidebar non visibile**: sui rail più alti del viewport (es. Azzorre, 1075px) l'aggancio in alto tagliava CTA e nav. Aggiunto in JS lo "scroll-then-stick": se il rail eccede l'altezza disponibile si aggancia in BASSO (top calcolato), così in cima si vede il titolo e scorrendo si raggiungono CTA e nav. Ricalcolo su resize/load/fonts. Solo desktop.
+
 ## [2.16.3] - 2026-06-07
 
 ### Fixed

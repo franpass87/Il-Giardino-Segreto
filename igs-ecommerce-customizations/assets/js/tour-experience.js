@@ -44,6 +44,30 @@
             }
         }
 
+        /* 1b) Rail sticky "scroll-then-stick" ------------------------------- */
+        /* Se il rail è più alto del viewport (es. Azzorre: titolo lungo + foto +
+           fatti + prezzo + CTA + nav), agganciarlo con top fisso taglierebbe il
+           fondo (CTA/nav). Calcoliamo un top che, quando il rail eccede l'altezza
+           disponibile, lo aggancia in BASSO: così in cima alla pagina si vede il
+           titolo e scorrendo si raggiunge il fondo (CTA/nav). Se ci sta, top sotto
+           l'header fisso. Solo desktop (su ≤1024 il rail è statico via CSS). */
+        var railInner = document.querySelector('.igs-ed-rail-inner');
+        if (railInner) {
+            var RAIL_HEADER = 96, RAIL_GAP = 24;
+            var adjustRail = function () {
+                if (window.innerWidth <= 1024) { railInner.style.top = ''; return; }
+                var railH = railInner.offsetHeight;
+                var vh = window.innerHeight;
+                railInner.style.top = (railH > vh - RAIL_HEADER)
+                    ? (vh - railH - RAIL_GAP) + 'px'
+                    : RAIL_HEADER + 'px';
+            };
+            adjustRail();
+            window.addEventListener('resize', throttle(adjustRail, 150));
+            window.addEventListener('load', adjustRail);
+            if (document.fonts && document.fonts.ready) { document.fonts.ready.then(adjustRail); }
+        }
+
         /* 2) Nav interna: smooth scroll + scroll-spy ------------------------ */
         var nav = document.querySelector('[data-igs-spy]') || document.querySelector('.igs-tour-nav');
         if (nav) {
