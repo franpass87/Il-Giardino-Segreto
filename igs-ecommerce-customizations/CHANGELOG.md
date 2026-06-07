@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.2] - 2026-06-07
+
+### Fixed
+
+- **Titolo del rail tagliato**: il `max-height:100vh + overflow:auto` (aggiunto in 2.15.4 per nascondere la scrollbar) tagliava la cima del titolo sui rail alti (es. Azzorre, titolo su 5 righe) quando il contenuto superava il viewport. Rimosso: il rail ora ha altezza naturale e resta sticky con top:0 (titolo sempre visibile, nessuna scrollbar).
+
 ## [2.16.1] - 2026-06-07
 
 ### Changed
