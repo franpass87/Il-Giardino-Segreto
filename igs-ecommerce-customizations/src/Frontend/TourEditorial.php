@@ -480,9 +480,10 @@ class TourEditorial
         /* RAIL */
         .igs-ed-rail{width:404px;flex:0 0 404px;align-self:stretch;background:var(--ed-panel);border-right:1px solid var(--ed-line);}
         /* Altezza naturale (niente max-height:100vh+overflow: tagliava il titolo sui rail
-           alti, es. Azzorre, su viewport bassi). Sticky con top:0: il titolo resta sempre
-           visibile in cima; su schermi bassi il fondo del rail si raggiunge scrollando. */
-        .igs-ed-rail-inner{position:sticky;top:0;padding:48px 42px;display:flex;flex-direction:column;}
+           alti, es. Azzorre). Sticky con top a 96px cosi, quando si aggancia, resta SOTTO
+           header fisso di Salient (#header-outer, 86px, z-index 9999) e non ci finisce
+           dietro tagliando il titolo. Il titolo resta sempre visibile in cima. */
+        .igs-ed-rail-inner{position:sticky;top:96px;padding:36px 42px 44px;display:flex;flex-direction:column;}
         .igs-ed-kicker{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ed-accent);font-weight:700;}
         .igs-ed-title{font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:42px;line-height:1.07;margin:14px 0 8px;color:var(--ed-ink);}
         .igs-ed-where{color:var(--ed-muted);font-size:16px;margin-bottom:24px;display:flex;align-items:center;flex-wrap:wrap;}

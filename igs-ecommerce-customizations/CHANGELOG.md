@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.3] - 2026-06-07
+
+### Fixed
+
+- **Rail sticky sotto header**: oltre a togliere il max-height (2.16.2), ora il rail si aggancia a top:96px invece di top:0, cosi quando e sticky resta SOTTO header fisso di Salient (86px, z-index 9999) e non gli finisce dietro tagliando la cima del titolo. Padding-top ridotto a 36px.
+
 ## [2.16.2] - 2026-06-07
 
 ### Fixed
