@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.15.3] - 2026-06-07
+
+### Fixed
+
+- **Rail sticky desktop**: il vero colpevole era il `<body>` con overflow:hidden (tema/fpml-enhanced), non i wrapper. Ora `body.single-product.igs-has-rail{overflow:clip}` sblocca lo sticky senza tagliare il full-bleed. Verificato live (rail fermo allo scroll).
+
 ## [2.15.2] - 2026-06-07
 
 ### Fixed

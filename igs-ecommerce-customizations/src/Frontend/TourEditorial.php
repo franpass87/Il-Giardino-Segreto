@@ -530,12 +530,11 @@ class TourEditorial
         /* Su desktop il rail mostra già prezzo + CTA: nascondi la barra sticky in basso. */
         @media (min-width:1025px){
             body.igs-has-rail #gs-fixed-cta{display:none !important;}
-            /* Abilita lo sticky del rail: gli antenati Salient con overflow:hidden
-               romperebbero position:sticky. overflow:clip clippa (come hidden) ma NON
-               crea uno scroll-container, così il rail resta sticky e il full-bleed (-50vw)
-               non viene tagliato. */
-            body.single-product #ajax-content-wrap,
-            body.single-product .container-wrap{overflow:clip;}
+            /* Il <body> ha overflow:hidden (tema Salient / fpml-salient-enhanced) → rompe
+               position:sticky del rail (lo rende uno scroll-container che non scrolla).
+               overflow:clip clippa come hidden (niente scroll orizzontale dal full-bleed
+               -50vw) ma NON crea uno scroll-container → il rail resta sticky. Verificato live. */
+            body.single-product.igs-has-rail{overflow:clip;}
         }
         /* Responsive: rail in cima, niente sticky */
         @media (max-width: 1024px){
