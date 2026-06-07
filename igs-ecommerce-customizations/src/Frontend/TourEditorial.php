@@ -150,12 +150,12 @@ class TourEditorial
         echo '<ul class="igs-ed-facts">';
         $duration = $this->durationLabel($first, $isIt);
         if ($duration !== '') {
-            echo '<li><span>' . esc_html($this->t($isIt, 'Durata', 'Duration')) . '</span><span>' . esc_html($duration) . '</span></li>';
+            echo '<li><span>' . $this->edIcon('clock') . esc_html($this->t($isIt, 'Durata', 'Duration')) . '</span><span>' . esc_html($duration) . '</span></li>';
         }
         // "Partenza" non qui: la data è già nel sottotitolo (no doppione).
         $protagonista = trim((string) get_post_meta($id, '_protagonista_tour', true));
         if ($protagonista !== '') {
-            echo '<li><span>' . esc_html($this->t($isIt, 'Protagonista', 'Highlight')) . '</span><span>' . esc_html($protagonista) . '</span></li>';
+            echo '<li><span>' . $this->edIcon('flower') . esc_html($this->t($isIt, 'Protagonista', 'Highlight')) . '</span><span>' . esc_html($protagonista) . '</span></li>';
         }
         // Esclusività NON qui: i punteggi (Cultura/Passeggiata/Comfort/Esclusività)
         // sono raggruppati una sola volta in alto nel contenuto (no doppione).
@@ -300,6 +300,8 @@ class TourEditorial
             'route' => '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
             'image' => '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
             'info' => '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+            'clock' => '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+            'flower' => '<circle cx="12" cy="12" r="3"/><path d="M12 16.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 1 1 12 7.5a4.5 4.5 0 1 1 4.5 4.5 4.5 4.5 0 1 1-4.5 4.5"/><path d="M12 7.5V9m-4.5 3H9m6 0h1.5M12 15v1.5"/><path d="m8 8 1.88 1.88M14.12 9.88 16 8m-8 8 1.88-1.88M14.12 14.12 16 16"/>',
         ];
         if (!isset($paths[$name])) {
             return '';
@@ -487,7 +489,8 @@ class TourEditorial
         .igs-ed-thumb{height:178px;border-radius:14px;background-size:cover;background-position:center;margin-bottom:24px;box-shadow:0 12px 26px rgba(38,36,31,.12);}
         .igs-ed-facts{list-style:none;margin:0 0 24px;padding:16px 0 0;border-top:1px solid var(--ed-line);}
         .igs-ed-facts li{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--ed-line);font-size:16px;}
-        .igs-ed-facts li span:first-child{color:var(--ed-muted);}
+        .igs-ed-facts li span:first-child{display:inline-flex;align-items:center;gap:9px;color:var(--ed-muted);}
+        .igs-ed-facts li span:first-child .igs-ed-ico{width:16px;height:16px;color:var(--ed-accent);}
         .igs-ed-facts li span:last-child{font-weight:600;text-align:right;}
         .igs-ed-stars{color:var(--ed-accent);letter-spacing:1px;}
         .igs-ed-price{margin-bottom:8px;}

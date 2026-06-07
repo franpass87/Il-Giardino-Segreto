@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.1] - 2026-06-07
+
+### Changed
+
+- **Icone anche nei fatti del rail**: Durata (orologio) e Protagonista (fiore, botanico) ora hanno un'icona in accent accanto all'etichetta, coerente con punteggi e nav.
+
 ## [2.16.0] - 2026-06-07
 
 ### Changed
