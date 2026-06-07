@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.15.4] - 2026-06-07
+
+### Fixed
+
+- **Rail sticky**: nascosta la **barra di scorrimento verticale** che compariva quando il contenuto del rail superava l'altezza del viewport (scrollbar-width:none + ::-webkit-scrollbar nascosta). Resta responsive (max-height:100vh, scroll interno se serve) ma senza barra visibile.
+
 ## [2.15.3] - 2026-06-07
 
 ### Fixed

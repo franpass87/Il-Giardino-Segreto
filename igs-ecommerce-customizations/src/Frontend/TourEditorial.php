@@ -454,7 +454,8 @@ class TourEditorial
         .igs-ed-serif{font-family:\'the-seasons-regular\',Georgia,serif;}
         /* RAIL */
         .igs-ed-rail{width:404px;flex:0 0 404px;align-self:stretch;background:var(--ed-panel);border-right:1px solid var(--ed-line);}
-        .igs-ed-rail-inner{position:sticky;top:0;padding:48px 42px;display:flex;flex-direction:column;max-height:100vh;overflow:auto;}
+        .igs-ed-rail-inner{position:sticky;top:0;padding:48px 42px;display:flex;flex-direction:column;max-height:100vh;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-ms-overflow-style:none;}
+        .igs-ed-rail-inner::-webkit-scrollbar{width:0;height:0;display:none;}
         .igs-ed-kicker{font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ed-accent);font-weight:700;}
         .igs-ed-title{font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:42px;line-height:1.07;margin:14px 0 8px;color:var(--ed-ink);}
         .igs-ed-where{color:var(--ed-muted);font-size:16px;margin-bottom:24px;display:flex;align-items:center;flex-wrap:wrap;}
