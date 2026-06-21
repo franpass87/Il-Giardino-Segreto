@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.5] - 2026-06-21
+
+### Changed
+
+- **Galleria tour mostrata solo con almeno 2 immagini**: la sezione "Galleria" (e la relativa voce di navigazione del rail) appare ora solo se il tour ha 2+ immagini (`count($galleryIds) >= 2`), evitando il riquadro singolo ridondante quando il prodotto ha solo l'immagine di copertina e nessuna galleria. I tour con galleria reale non sono toccati. `TourEditorial::render`.
+
 ## [2.16.4] - 2026-06-07
 
 ### Fixed

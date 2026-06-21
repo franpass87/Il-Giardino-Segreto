@@ -122,7 +122,7 @@ class TourEditorial
         if (!empty($programma)) {
             $sections[] = ['id' => 'ed-programma', 'label' => $this->t($isIt, 'Programma', 'Itinerary')];
         }
-        if (!empty($galleryIds)) {
+        if (count($galleryIds) >= 2) {
             $sections[] = ['id' => 'ed-galleria', 'label' => $this->t($isIt, 'Galleria', 'Gallery')];
         }
         if ($hasInfo) {
@@ -231,7 +231,7 @@ class TourEditorial
         }
 
         // Galleria (mosaico, con lightbox via tour-experience.js).
-        if (!empty($galleryIds)) {
+        if (count($galleryIds) >= 2) {
             echo '<section id="ed-galleria" class="igs-ed-sec">';
             echo '<h2 class="igs-ed-h2">' . esc_html($this->t($isIt, 'Galleria', 'Gallery')) . '</h2>';
             echo '<div class="igs-ed-gallery igs-reveal">';
