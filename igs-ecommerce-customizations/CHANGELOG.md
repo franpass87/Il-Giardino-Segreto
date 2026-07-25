@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.7] - 2026-07-25
+
+### Fixed
+
+- **Galleria mobile ancora sconfinante dopo il fix 2.16.6**: la vera causa non era la larghezza di `.igs-ed-content` ma il classico problema di CSS Grid `min-width:auto` sugli item (`.igs-gallery-item`) combinato con `max-width:none!important` sull'`<img>` — le celle non si restringevano sotto la dimensione naturale dell'immagine e sconfinavano oltre il contenitore/schermo. Aggiunto `min-width:0` a `.igs-ed-gallery .igs-gallery-item`. `TourEditorial::css`.
+
 ## [2.16.6] - 2026-07-25
 
 ### Fixed
