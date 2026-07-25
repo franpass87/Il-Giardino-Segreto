@@ -539,7 +539,7 @@ class TourEditorial
         .igs-ed-day-text p{margin:0 0 .7em;}
         /* Galleria mosaico */
         .igs-ed-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-        .igs-ed-gallery .igs-gallery-item{display:block;min-width:0;aspect-ratio:4/3;border-radius:10px;overflow:hidden;box-shadow:0 8px 20px rgba(38,36,31,.10);transition:transform .3s ease,box-shadow .3s ease;}
+        .igs-ed-gallery .igs-gallery-item{display:block;width:100%;height:auto;min-width:0;aspect-ratio:4/3;border-radius:10px;overflow:hidden;box-shadow:0 8px 20px rgba(38,36,31,.10);transition:transform .3s ease,box-shadow .3s ease;}
         .igs-ed-gallery .igs-gallery-item:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(38,36,31,.18);}
         .igs-ed-gallery .igs-gallery-item img{width:100%!important;height:100%!important;max-width:none!important;object-fit:cover!important;display:block;margin:0;}
         /* Info */

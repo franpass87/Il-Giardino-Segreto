@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.8] - 2026-07-25
+
+### Fixed
+
+- **Causa reale trovata (2.16.6/2.16.7 non bastavano)**: un foglio di stile esterno, ancora enqueued dal vecchio renderer `TourLayout.php` (nomi variabili `--igs-radius-sm`/`--igs-shadow`, superato da `TourEditorial` ma i suoi asset restano caricati), definisce genericamente `.igs-gallery-item{height:200px}`. Su `TourEditorial` l'item non aveva mai una `height` propria, quindi quella regola legacy "vinceva" per assenza di conflitto: `height:200px` + `aspect-ratio:4/3` derivava una LARGHEZZA fissa (~266px desktop, ~213px mobile) indipendente dalla colonna di griglia, sconfinando oltre schermo/contenitore su mobile. Aggiunto `width:100%;height:auto;` a `.igs-ed-gallery .igs-gallery-item` (2 classi, più specifico della regola legacy da 1 classe) così la dimensione torna a derivare correttamente dalla colonna di griglia. Verificato con misura diretta (`getBoundingClientRect`) prima/dopo su desktop e mobile. `TourEditorial::css`.
+
 ## [2.16.7] - 2026-07-25
 
 ### Fixed
