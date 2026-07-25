@@ -144,7 +144,7 @@ class TourEditorial
         echo '<div class="igs-ed-where">' . $where . ' &nbsp;·&nbsp; ' . $dateLabel . '</div>';
 
         if ($thumbUrl) {
-            echo '<div class="igs-ed-thumb" style="background-image:url(\'' . esc_url($thumbUrl) . '\')"></div>';
+            echo '<div class="igs-ed-thumb" style="background-image:url(' . esc_url($thumbUrl) . ')"></div>';
         }
 
         echo '<ul class="igs-ed-facts">';
@@ -190,7 +190,7 @@ class TourEditorial
         echo '<main class="igs-ed-content">';
 
         if ($coverUrl) {
-            echo '<div class="igs-ed-cover igs-reveal" style="background-image:url(\'' . esc_url($coverUrl) . '\')"></div>';
+            echo '<div class="igs-ed-cover igs-reveal" style="background-image:url(' . esc_url($coverUrl) . ')"></div>';
         }
 
         echo '<div class="igs-ed-pad">';

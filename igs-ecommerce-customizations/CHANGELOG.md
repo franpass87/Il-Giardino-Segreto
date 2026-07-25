@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.9] - 2026-07-25
+
+### Fixed
+
+- **Vera causa dell'immagine di copertina/miniatura invisibile**: non era la cache (i flush precedenti erano innocui ma non risolutivi). Il markup PHP racchiudeva l'URL dentro `url('...')` con apici singoli, dentro un attributo `style="..."` a doppi apici — sintatticamente valido, ma qualche livello di ottimizzazione HTML a valle normalizza gli apici singoli in doppi SENZA ri-bilanciare l'attributo, producendo `style="background-image: url("https://…")"`: il parser HTML del browser chiude l'attributo al primo doppio apice interno, troncando l'URL. Risultato: `getAttribute('style')` risultava letteralmente `background-image: url(` — troncato — anche se l'HTML sorgente conteneva l'URL completo. Rimossi gli apici attorno a `url(...)` in `renderCover()`/rail thumb (CSS valido anche senza, gli URL WordPress non contengono spazi): elimina l'ambiguità a monte invece di dipendere da come un ottimizzatore a valle gestisce gli apici. `TourEditorial::renderCover`, rail thumb.
+
 ## [2.16.8] - 2026-07-25
 
 ### Fixed
