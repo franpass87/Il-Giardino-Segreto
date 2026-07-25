@@ -573,6 +573,7 @@ class TourEditorial
         @media (max-width: 1024px){
             .igs-editorial{flex-direction:column;}
             .igs-ed-rail{width:100%;flex:none;border-right:none;border-bottom:1px solid var(--ed-line);}
+            .igs-ed-content{width:100%;}
             .igs-ed-rail-inner{position:static;max-height:none;overflow:visible;padding:34px 24px;}
             .igs-ed-nav{flex-direction:row;flex-wrap:wrap;gap:6px 16px;}
             .igs-ed-nav a{border-left:none;border-bottom:2px solid var(--ed-line);padding:6px 2px;}

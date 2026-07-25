@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.16.6] - 2026-07-25
+
+### Fixed
+
+- **Contenuto tour senza margini su mobile (≤1024px)**: `.igs-editorial` ha `align-items:flex-start`, che in colonna (mobile) controlla l'asse orizzontale e faceva restringere `.igs-ed-content` al contenuto invece che riempire la larghezza, causando overflow orizzontale e immagini della galleria a filo schermo senza margine. Aggiunto `.igs-ed-content{width:100%}` nel breakpoint `max-width:1024px`. `TourEditorial::css`.
+
 ## [2.16.5] - 2026-06-21
 
 ### Changed
