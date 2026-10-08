@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.17.2] - 2026-10-08
+
+### Fixed
+
+- Reply-To: l'allineamento del mittente introdotto nella 2.17.0 spostava in Reply-To anche `wordpress@<dominio>`, il mittente sintetico di `wp_mail()` — una casella che non esiste, quindi le risposte dei clienti sarebbero rimbalzate. Ora quel mittente viene riconosciuto e scartato; gli indirizzi reali continuano a finire in Reply-To.
+
 ## [2.17.1] - 2026-10-08
 
 ### Fixed

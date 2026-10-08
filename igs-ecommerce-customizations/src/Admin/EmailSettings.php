@@ -155,13 +155,33 @@ class EmailSettings
         }
 
         try {
-            if (is_email($originalFrom) && $phpmailer->getReplyToAddresses() === []) {
+            $replyToUtile = is_email($originalFrom)
+                && !$this->isDefaultWordPressFrom($originalFrom)
+                && $phpmailer->getReplyToAddresses() === [];
+
+            if ($replyToUtile) {
                 $phpmailer->addReplyTo($originalFrom, $fromName);
             }
             $phpmailer->setFrom($user, $fromName, false);
         } catch (\Throwable $e) {
             // PHPMailer può sollevare su indirizzi non validi: meglio l'invio con il mittente di partenza.
         }
+    }
+
+    /**
+     * Riconosce il mittente sintetico che wp_mail() usa quando nessuno ne imposta uno.
+     *
+     * È `wordpress@<dominio del sito>`, una casella che non esiste: metterla in
+     * Reply-To farebbe rimbalzare le risposte dei clienti.
+     */
+    private function isDefaultWordPressFrom(string $from): bool
+    {
+        $host = strtolower((string) wp_parse_url(network_home_url(), PHP_URL_HOST));
+        if (str_starts_with($host, 'www.')) {
+            $host = substr($host, 4);
+        }
+
+        return $host !== '' && strcasecmp($from, 'wordpress@' . $host) === 0;
     }
 
     /**
