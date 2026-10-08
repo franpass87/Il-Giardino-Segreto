@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.17.0] - 2026-10-08
+
+### Fixed
+- SMTP: mittente e busta allineati alla casella autenticata. Il sito inviava da `wordpress@dominio` e Aruba rifiutava con «525 MAIL FROM command failed»; ora `From` e `Sender` usano l'utente SMTP configurato e il mittente di partenza resta come `Reply-To`. Serviva dopo lo spostamento di italiangardentour.com sul VPS, dove la posta esce via SMTP autenticato e non più in locale.
+
 ## [2.16.9] - 2026-07-25
 
 ### Fixed

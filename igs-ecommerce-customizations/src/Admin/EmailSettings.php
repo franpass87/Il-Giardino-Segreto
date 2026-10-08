@@ -127,6 +127,38 @@ class EmailSettings
         $phpmailer->Password = get_option(self::OPTION_SMTP_PASS, '');
         $enc = get_option(self::OPTION_SMTP_ENCRYPTION, 'tls');
         $phpmailer->SMTPSecure = $enc === 'none' ? '' : $enc;
+
+        $this->alignSenderToSmtpUser($phpmailer, $user);
+    }
+
+    /**
+     * Allinea mittente e busta SMTP alla casella autenticata.
+     *
+     * Aruba (e molti provider) rifiutano con 525 un MAIL FROM diverso dall'utente
+     * autenticato: senza questo, le email partono da wordpress@dominio e vengono bloccate.
+     * Il mittente originale, se valido, resta raggiungibile come Reply-To.
+     */
+    private function alignSenderToSmtpUser(PHPMailer $phpmailer, string $user): void
+    {
+        if ($user === '' || !is_email($user)) {
+            return;
+        }
+
+        $originalFrom = (string) $phpmailer->From;
+        $phpmailer->Sender = $user;
+
+        if (strcasecmp($originalFrom, $user) === 0) {
+            return;
+        }
+
+        try {
+            if (is_email($originalFrom) && $phpmailer->getReplyToAddresses() === []) {
+                $phpmailer->addReplyTo($originalFrom, (string) $phpmailer->FromName);
+            }
+            $phpmailer->setFrom($user, (string) $phpmailer->FromName, false);
+        } catch (\Throwable $e) {
+            // PHPMailer può sollevare su indirizzi non validi: meglio l'invio con il mittente di partenza.
+        }
     }
 
     public function ajaxSendTestEmail(): void
