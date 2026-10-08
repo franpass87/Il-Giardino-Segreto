@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.17.6] - 2026-10-08
+
+### Changed
+
+- Card tour: il prezzo mostra "da" ("from" in inglese) su tutti i tour, non solo su quelli con varianti. WooCommerce lo aggiunge da se soltanto ai prodotti variabili, e la card a prezzo unico stonava accanto alle altre. Il filtro e attivo solo sulla riga prezzo della card, non sulla scheda prodotto.
+
 ## [2.17.5] - 2026-10-08
 
 ### Fixed
