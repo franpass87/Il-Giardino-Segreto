@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.17.8] - 2026-10-08
+
+### Fixed
+
+- Il "da" del prezzo era piu grande della cifra: essendo testo nudo ereditava i 25px di `.price`, mentre l importo ne ha 19. Ora e in uno span suo, a 0.62em e peso normale, cosi resta un prefisso discreto.
+
 ## [2.17.7] - 2026-10-08
 
 ### Fixed

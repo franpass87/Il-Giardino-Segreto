@@ -92,6 +92,14 @@ class ShopCustomizations
             @media (max-width: 690px) {
                 .clients.no-carousel > div img { max-height: 60px; }
             }
+            /* Prefisso "da" / "from" del prezzo: deve stare sotto la cifra, non sopra.
+               Senza regola ereditava i 25px di .price mentre l importo ne ha 19. */
+            .price .igs-price-from {
+                font-size: .62em;
+                font-weight: 400;
+                letter-spacing: .02em;
+                opacity: .78;
+            }
             .nectar-slider-wrap[data-full-width="false"]:not([data-parallax="true"]) .swiper-slide .content {
                 padding: 0 100px;
                 text-shadow: 2px 2px 5px black;

@@ -23,7 +23,9 @@ class PriceDisplay
         // "da" anche sui prodotti a prezzo unico: nelle griglie una card senza prefisso
         // accanto a due che ce l'hanno sembra un errore. Il prezzo e comunque di partenza,
         // le quote variano per camera singola, supplementi e periodo.
-        $prefix = $isIt ? 'da ' : 'from ';
+        // Span dedicato: senza, il prefisso ereditava i 25px di .price contro i 19px
+        // dell importo e risultava piu grande del prezzo stesso.
+        $prefix = '<span class="igs-price-from">' . ($isIt ? 'da' : 'from') . '</span> ';
 
         if ($product->is_type('variable')) {
             $minPrice = $product->get_variation_price('min', true);
