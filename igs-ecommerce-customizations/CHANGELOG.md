@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.17.10] - 2026-10-08
+
+### Fixed
+
+- L'importatore `dev-tools/import-from-wpbakery.php` assegnava la stessa icona a tutte le card "Caratteristiche del Tour". Le due regex partivano da `[image_with_animation ...]` e arrivavano fino allo shortcode: il quantificatore lazy accorciava il match ma non spostava il punto di partenza, che restava la prima immagine del documento. Misurato sul contenuto reale del prodotto 422 (Madeira): le cinque card uscivano tutte con `icon_image` 226 invece di 226, 225, 224, 222, 223. Ora le posizioni delle immagini si raccolgono una volta sola con `PREG_OFFSET_CAPTURE` e per ogni shortcode si prende l'ultima immagine che lo precede, con ripiego su qualsiasi `image_url` precedente per le pagine che non usano `image_with_animation`.
+
 ## [2.17.9] - 2026-10-08
 
 ### Fixed

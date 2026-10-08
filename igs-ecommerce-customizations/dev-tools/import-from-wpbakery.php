@@ -47,6 +47,47 @@ if (empty($products)) {
     wp_die('Nessun prodotto da importare. Usa ?product_id=123 o ?all=1');
 }
 
+/**
+ * Posizione e id di ogni immagine trovata nel contenuto, in ordine di apparizione.
+ *
+ * @param string $pattern Regex con l'id immagine nel gruppo 1.
+ * @param string $content Contenuto WPBakery del prodotto.
+ *
+ * @return array<int, array{offset: int, id: int}>
+ */
+function igs_raccogli_offset_immagini(string $pattern, string $content): array
+{
+    $out = [];
+    if (preg_match_all($pattern, $content, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
+        foreach ($matches as $m) {
+            $id = absint($m[1][0]);
+            if ($id > 0) {
+                $out[] = ['offset' => (int) $m[0][1], 'id' => $id];
+            }
+        }
+    }
+
+    return $out;
+}
+
+/**
+ * Id dell'ultima immagine che precede l'offset dato (0 se nessuna lo precede).
+ *
+ * @param array<int, array{offset: int, id: int}> $immagini In ordine di offset crescente.
+ */
+function igs_immagine_prima_di(array $immagini, int $offset): int
+{
+    $id = 0;
+    foreach ($immagini as $img) {
+        if ($img['offset'] >= $offset) {
+            break;
+        }
+        $id = $img['id'];
+    }
+
+    return $id;
+}
+
 header('Content-Type: text/html; charset=utf-8');
 echo '<pre style="font-family:monospace;white-space:pre-wrap;">';
 echo "=== Import WPBakery → IGS ===\n";
@@ -142,17 +183,25 @@ foreach ($products as $post) {
         'livello_esclusivita' => ['it' => 'Esclusività', 'en' => 'Exclusivity', 'meta' => '_livello_esclusivita', 'rating' => true],
     ];
 
+    // Per ogni shortcode serve l'icona del SUO blocco, cioè l'ultima immagine che lo
+    // precede. Un pattern unico "immagine ... [shortcode]" non lo fa: il quantificatore
+    // lazy accorcia il match ma il punto di partenza resta la prima immagine del
+    // documento, quindi tutte le card finivano con la stessa icona. Qui le posizioni si
+    // raccolgono una volta sola e poi si cerca per offset.
+    $immaginiPos = igs_raccogli_offset_immagini('/\[image_with_animation[^\]]*image_url="(\d+)"/', $content);
+    // Ripiego: alcune pagine mettono l'icona in uno shortcode diverso da
+    // image_with_animation, quindi vale qualsiasi image_url="..." precedente.
+    $immaginiFallback = igs_raccogli_offset_immagini('/image_url="(\d+)"/', $content);
+
     $caratteristiche = [];
     foreach ($shortcodeToCar as $shortcode => $cfg) {
-        // Pattern 1: image_with_animation ... [shortcode] nello stesso blocco
-        $p1 = '/\[image_with_animation[^\]]*image_url="(\d+)"[^\]]*\][\s\S]*?\[' . preg_quote($shortcode) . '\]/';
-        // Pattern 2: [shortcode] seguito da blocco con image (ordine inverso)
-        $p2 = '/image_url="(\d+)"[^\]]*\][\s\S]{0,800}?\[' . preg_quote($shortcode) . '\]/';
         $imgId = 0;
-        if (preg_match($p1, $content, $m)) {
-            $imgId = absint($m[1]);
-        } elseif (preg_match($p2, $content, $m)) {
-            $imgId = absint($m[1]);
+        if (preg_match('/\[' . preg_quote($shortcode, '/') . '\]/', $content, $m, PREG_OFFSET_CAPTURE)) {
+            $offsetShortcode = (int) $m[0][1];
+            $imgId = igs_immagine_prima_di($immaginiPos, $offsetShortcode);
+            if ($imgId === 0) {
+                $imgId = igs_immagine_prima_di($immaginiFallback, $offsetShortcode);
+            }
         }
         if ($imgId > 0) {
             $car = [
