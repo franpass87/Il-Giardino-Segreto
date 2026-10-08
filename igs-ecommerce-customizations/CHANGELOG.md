@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.17.1] - 2026-10-08
+
+### Fixed
+
+- Nome mittente: le email generiche di WordPress partivano come «WordPress», il nome di default di `wp_mail()`. Ora, quando nessuno ne imposta uno, viene usato il nome del sito. I nomi scelti da WooCommerce o da un filtro restano intatti.
+
 ## [2.17.0] - 2026-10-08
 
 ### Fixed

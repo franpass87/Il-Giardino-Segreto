@@ -145,20 +145,41 @@ class EmailSettings
         }
 
         $originalFrom = (string) $phpmailer->From;
+        $fromName     = $this->resolveFromName((string) $phpmailer->FromName);
         $phpmailer->Sender = $user;
 
         if (strcasecmp($originalFrom, $user) === 0) {
+            $phpmailer->FromName = $fromName;
+
             return;
         }
 
         try {
             if (is_email($originalFrom) && $phpmailer->getReplyToAddresses() === []) {
-                $phpmailer->addReplyTo($originalFrom, (string) $phpmailer->FromName);
+                $phpmailer->addReplyTo($originalFrom, $fromName);
             }
-            $phpmailer->setFrom($user, (string) $phpmailer->FromName, false);
+            $phpmailer->setFrom($user, $fromName, false);
         } catch (\Throwable $e) {
             // PHPMailer può sollevare su indirizzi non validi: meglio l'invio con il mittente di partenza.
         }
+    }
+
+    /**
+     * Sostituisce il nome mittente di default di WordPress con quello del sito.
+     *
+     * wp_mail() usa la stringa letterale «WordPress» quando nessuno imposta un nome:
+     * il cliente se la vedrebbe arrivare al posto del nome del negozio. I nomi già
+     * scelti da WooCommerce o da un filtro restano intatti.
+     */
+    private function resolveFromName(string $current): string
+    {
+        if ($current !== '' && strcasecmp($current, 'WordPress') !== 0) {
+            return $current;
+        }
+
+        $blogname = trim(wp_specialchars_decode((string) get_option('blogname'), ENT_QUOTES));
+
+        return $blogname !== '' ? $blogname : $current;
     }
 
     public function ajaxSendTestEmail(): void
