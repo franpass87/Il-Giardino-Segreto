@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.17.7] - 2026-10-08
+
+### Fixed
+
+- Il prefisso "da" introdotto in 2.17.6 non compariva: `PriceDisplay::filterPriceHtml` gira a priorita 100 e ricostruisce da zero l'HTML del prezzo, scartando il prefisso aggiunto a priorita 20. Ora sta dentro `PriceDisplay`, dove il prezzo viene effettivamente costruito, e il filtro temporaneo su `ProductLoop` e stato rimosso.
+
 ## [2.17.6] - 2026-10-08
 
 ### Changed

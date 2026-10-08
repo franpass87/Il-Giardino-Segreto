@@ -17,11 +17,6 @@ class ProductLoop
         add_filter('woocommerce_loop_add_to_cart_link', '__return_empty_string', 10);
         add_action('wp_enqueue_scripts', [$this, 'enqueueStyles']);
         add_action('woocommerce_before_shop_loop_item_title', [$this, 'renderCardFlag'], 5);
-        // Il prefisso "da" sul prezzo: WooCommerce lo mette solo sui prodotti con varianti.
-        // Nelle card lo vogliamo su tutti, altrimenti la card a prezzo unico stona.
-        // Il filtro resta attivo solo per la riga del prezzo della card (priorita 10).
-        add_action('woocommerce_before_shop_loop_item_title', [$this, 'attivaPrefissoPrezzo'], 1);
-        add_action('woocommerce_after_shop_loop_item_title', [$this, 'disattivaPrefissoPrezzo'], 11);
         add_action('woocommerce_after_shop_loop_item_title', [$this, 'renderLoopMeta'], 15);
         add_action('woocommerce_after_shop_loop_item', [$this, 'renderFullCardLink'], 20);
     }
@@ -153,41 +148,6 @@ class ProductLoop
         if ($css !== '') {
             wp_add_inline_style('woocommerce-general', $css);
         }
-    }
-
-    public function attivaPrefissoPrezzo(): void
-    {
-        add_filter('woocommerce_get_price_html', [$this, 'prefissaPrezzo'], 20, 2);
-    }
-
-    public function disattivaPrefissoPrezzo(): void
-    {
-        remove_filter('woocommerce_get_price_html', [$this, 'prefissaPrezzo'], 20);
-    }
-
-    /**
-     * Antepone "da" / "from" al prezzo della card quando WooCommerce non lo ha gia messo.
-     * Testo nudo, senza wrapper: cosi eredita esattamente lo stile del "da" nativo.
-     */
-    public function prefissaPrezzo($html, $product)
-    {
-        if (!is_string($html) || $html === '' || !$product instanceof WC_Product) {
-            return $html;
-        }
-
-        // Prezzo assente, "Gratuito", intervallo "1.190 - 1.810": niente prefisso.
-        if (strpos($html, 'woocommerce-Price-amount') === false || strpos($html, '&ndash;') !== false) {
-            return $html;
-        }
-
-        $prefisso = Locale::isIt() ? 'da' : 'from';
-        $testo = trim(wp_strip_all_tags($html));
-
-        if (stripos($testo, $prefisso . ' ') === 0) {
-            return $html;
-        }
-
-        return $prefisso . ' ' . $html;
     }
 
     /** Bandiera + paese sovrapposti in alto a sinistra sull'immagine della card. */

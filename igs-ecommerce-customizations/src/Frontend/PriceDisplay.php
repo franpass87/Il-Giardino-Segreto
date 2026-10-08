@@ -20,10 +20,14 @@ class PriceDisplay
         // non via gettext: il .mo non viene caricato per la lingua corrente su questo sito.
         $isIt = Locale::isIt();
 
+        // "da" anche sui prodotti a prezzo unico: nelle griglie una card senza prefisso
+        // accanto a due che ce l'hanno sembra un errore. Il prezzo e comunque di partenza,
+        // le quote variano per camera singola, supplementi e periodo.
+        $prefix = $isIt ? 'da ' : 'from ';
+
         if ($product->is_type('variable')) {
             $minPrice = $product->get_variation_price('min', true);
             if (is_numeric($minPrice) && $minPrice > 0) {
-                $prefix = $isIt ? 'da ' : 'from ';
                 return $prefix . wc_price($minPrice, ['decimals' => 0]);
             }
             return '<span class="no-price"></span>';
@@ -31,7 +35,7 @@ class PriceDisplay
 
         $val = $product->get_price();
         if (is_numeric($val) && (float) $val > 0) {
-            return wc_price((float) $val, ['decimals' => 0]);
+            return $prefix . wc_price((float) $val, ['decimals' => 0]);
         }
 
         $soon = $isIt ? 'info in arrivo' : 'coming soon';
