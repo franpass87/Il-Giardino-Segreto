@@ -82,10 +82,12 @@ class ProductLoop
                 background: rgba(255,253,248,.94); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
                 padding: 7px 15px; border-radius: 999px;
                 font-size: 15px; font-weight: 700; letter-spacing: .01em; color: {{ACCENT}};
+                /* line-height esplicito: dal tema arriva 39px, che gonfiava la pastiglia a 45px. */
+                line-height: 1;
                 box-shadow: 0 4px 14px rgba(0,0,0,.16);
             }
             .loop-tour-flag .igs-country { display:inline-flex; align-items:center; gap:.45em; line-height:1; }
-            .loop-tour-flag .igs-flag { width:1.5em; height:1.05em; object-fit:cover; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.12); }
+            .loop-tour-flag .igs-flag { width:1.5em; height:1.05em; margin:0; align-self:center; object-fit:cover; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.12); }
             /* Titolo serif coerente con le pagine tour */
             .woocommerce ul.products li.product .woocommerce-loop-product__title {
                 text-align: center; font-family: \'the-seasons-regular\', Georgia, serif;
@@ -114,8 +116,9 @@ class ProductLoop
             .loop-chip {
                 display: inline-flex; align-items: center; gap: .45em;
                 font-size: 15px; font-weight: 600; padding: 7px 16px; border-radius: 999px;
+                line-height: 1;
             }
-            .loop-chip svg { width: 16px; height: 16px; flex: 0 0 auto; }
+            .loop-chip svg { width: 16px; height: 16px; flex: 0 0 auto; align-self: center; margin: 0; }
             .loop-chip--days { background: rgba({{RGB}},.10); color: {{ACCENT}}; }
             /* ===== Override strutturali tema Salient (mantenuti) ===== */
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic,

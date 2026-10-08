@@ -205,8 +205,11 @@ final class CountryFlags
         // — Italia 3:2, Belgio 15:13, Svizzera 1:1 — e con l'altezza libera ognuna
         // risultava alta diversamente, sfalsando la pastiglia da una card all'altra.
         // object-fit:cover riempie il riquadro senza deformare il disegno.
+        // margin:0 e align-self:center sono obbligatori: Salient applica
+        // `.row .col img { margin-bottom: 15px }` a QUALUNQUE immagine, e quei 15px
+        // spingevano la bandiera in alto rispetto al nome del paese, gonfiando la pastiglia.
         $style = 'width:1.5em;height:1.05em;max-width:none;display:inline-block;vertical-align:middle;'
-            . 'object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.18)';
+            . 'margin:0;align-self:center;object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.18)';
         return '<img class="igs-flag" src="' . esc_url($url) . '" alt="" width="22" height="16" style="' . esc_attr($style) . '" loading="lazy" decoding="async">';
     }
 

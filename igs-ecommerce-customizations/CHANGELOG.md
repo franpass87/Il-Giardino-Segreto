@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.17.5] - 2026-10-08
+
+### Fixed
+
+- Bandiera disallineata nella pastiglia paese: Salient applica `margin-bottom: 15px` a ogni immagine dentro `.row .col`, e quei 15 px tenevano la bandiera 7,5 px più in alto del nome del paese. Ora lo stile inline della bandiera azzera il margine e la centra (misurato: scarto da 7,5 px a 0).
+- Pastiglia paese e chip durata: `line-height` esplicito a 1. Dal tema ne arrivava uno da 39 px che le gonfiava (pastiglia da 45 a 30 px, chip da 52 a 30 px), facendo sembrare l'icona spostata in basso.
+
 ## [2.17.4] - 2026-10-08
 
 ### Fixed
