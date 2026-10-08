@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.17.3] - 2026-10-08
+
+### Fixed
+
+- Bandierine delle card tour: avevano altezze diverse da una card all'altra perché ogni bandiera ha proporzioni sue (Italia 3:2, Belgio 15:13). Ora stanno in un riquadro fisso con `object-fit: cover`, quindi le pastiglie paese sono identiche e allineate.
+- Pastiglia paese e chip della durata ingrandite da 13 a 15 px (icona da 14 a 16 px): erano minuscole accanto a titolo e prezzo.
+- Righe loghi «Segnalato da» e «I Nostri Clienti»: i loghi venivano tagliati a metà. Il carosello Salient fissava l'altezza della striscia prima che le immagini lazy fossero caricate; ora le righe sono statiche e il logo viene solo contenuto in altezza.
+
 ## [2.17.2] - 2026-10-08
 
 ### Fixed

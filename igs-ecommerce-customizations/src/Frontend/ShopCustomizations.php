@@ -83,6 +83,15 @@ class ShopCustomizations
                     font-size: 35px !important;
                 }
             }
+            /* Righe loghi "Segnalato da" e "I Nostri Clienti": il carosello Salient
+               calcolava l'altezza prima che le immagini lazy fossero caricate e le
+               tagliava a metà. Ora le righe sono statiche: qui il logo viene solo
+               contenuto in altezza, così resta intero e la riga non diventa enorme. */
+            .clients.no-carousel > div { display: flex; align-items: center; justify-content: center; }
+            .clients.no-carousel > div img { max-height: 90px; width: auto; height: auto; margin: 0 auto; }
+            @media (max-width: 690px) {
+                .clients.no-carousel > div img { max-height: 60px; }
+            }
             .nectar-slider-wrap[data-full-width="false"]:not([data-parallax="true"]) .swiper-slide .content {
                 padding: 0 100px;
                 text-shadow: 2px 2px 5px black;

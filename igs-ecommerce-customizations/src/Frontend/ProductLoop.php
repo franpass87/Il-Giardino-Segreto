@@ -80,12 +80,12 @@ class ProductLoop
                 position: absolute; top: 12px; left: 12px; z-index: 11;
                 display: inline-flex; align-items: center; gap: .4em;
                 background: rgba(255,253,248,.94); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
-                padding: 6px 13px; border-radius: 999px;
-                font-size: 13px; font-weight: 700; letter-spacing: .01em; color: {{ACCENT}};
+                padding: 7px 15px; border-radius: 999px;
+                font-size: 15px; font-weight: 700; letter-spacing: .01em; color: {{ACCENT}};
                 box-shadow: 0 4px 14px rgba(0,0,0,.16);
             }
             .loop-tour-flag .igs-country { display:inline-flex; align-items:center; gap:.45em; line-height:1; }
-            .loop-tour-flag .igs-flag { width:1.15em; height:auto; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.12); }
+            .loop-tour-flag .igs-flag { width:1.5em; height:1.05em; object-fit:cover; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.12); }
             /* Titolo serif coerente con le pagine tour */
             .woocommerce ul.products li.product .woocommerce-loop-product__title {
                 text-align: center; font-family: \'the-seasons-regular\', Georgia, serif;
@@ -113,9 +113,9 @@ class ProductLoop
             .loop-tour-meta { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 12px 14px 18px; margin-top: auto; }
             .loop-chip {
                 display: inline-flex; align-items: center; gap: .45em;
-                font-size: 13px; font-weight: 600; padding: 6px 13px; border-radius: 999px;
+                font-size: 15px; font-weight: 600; padding: 7px 16px; border-radius: 999px;
             }
-            .loop-chip svg { width: 14px; height: 14px; }
+            .loop-chip svg { width: 16px; height: 16px; flex: 0 0 auto; }
             .loop-chip--days { background: rgba({{RGB}},.10); color: {{ACCENT}}; }
             /* ===== Override strutturali tema Salient (mantenuti) ===== */
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic,
