@@ -29,8 +29,17 @@ class PriceDisplay
 
         if ($product->is_type('variable')) {
             $minPrice = $product->get_variation_price('min', true);
-            if (is_numeric($minPrice) && $minPrice > 0) {
-                return $prefix . wc_price($minPrice, ['decimals' => 0]);
+
+            // Sul percorso /en/ le varianti vengono filtrate per lingua e il minimo torna
+            // vuoto: finche la cache dei prezzi reggeva non si vedeva, ma al primo
+            // svuotamento i tour restavano senza prezzo. Il prezzo del prodotto padre,
+            // che WooCommerce tiene allineato al minimo delle varianti, e la rete.
+            if (!is_numeric($minPrice) || (float) $minPrice <= 0) {
+                $minPrice = $product->get_price();
+            }
+
+            if (is_numeric($minPrice) && (float) $minPrice > 0) {
+                return $prefix . wc_price((float) $minPrice, ['decimals' => 0]);
             }
             return '<span class="no-price"></span>';
         }

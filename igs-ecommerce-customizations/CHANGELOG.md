@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.17.9] - 2026-10-08
+
+### Fixed
+
+- Tour con varianti senza prezzo sulle pagine in inglese. Sul percorso /en/ le varianti vengono filtrate per lingua, quindi `get_variation_price('min')` torna vuoto; finche la cache dei prezzi reggeva il difetto restava nascosto, ma dopo uno svuotamento le card mostravano uno spazio bianco al posto della cifra. Ora si ricade sul prezzo del prodotto padre, che WooCommerce tiene allineato al minimo delle varianti.
+
 ## [2.17.8] - 2026-10-08
 
 ### Fixed
