@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.17.4] - 2026-10-08
+
+### Fixed
+
+- Errore di sintassi nella 2.17.3: un apostrofo in un commento CSS dentro la stringa PHP di `ShopCustomizations` chiudeva la stringa e mandava il sito in fatal. La 2.17.3 non va usata.
+
 ## [2.17.3] - 2026-10-08
 
 ### Fixed
