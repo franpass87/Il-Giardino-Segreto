@@ -88,7 +88,8 @@ class MapShortcode
             var map = L.map('mappa-viaggio-<?php echo (int) $postId; ?>', { scrollWheelZoom: false, tap: true });
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 19
+                maxZoom: 19,
+                referrerPolicy: 'strict-origin-when-cross-origin'
             }).addTo(map);
 
             var tappe = <?php echo wp_json_encode($tappeForJs); ?>;

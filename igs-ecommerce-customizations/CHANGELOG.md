@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.19.0] - 2026-10-21
+
+### Changed
+
+- Nuova card tour: date in alto, titolo a sinistra, piede con prezzo e durata, bandiera tonda con nome paese allineato.
+
+### Fixed
+
+- Tile della mappa bloccate da OpenStreetMap con 403 per Referer assente.
+
 ## [2.18.3] - 2026-10-21
 
 ### Fixed

@@ -31,16 +31,13 @@ class ProductLoop
         $shopPages = is_shop() || is_product_taxonomy() || is_product_category() || is_product_tag() || is_product();
 
         $cssShop = $shopPages ? '
-            .woocommerce ul.products li.product .woocommerce-loop-product__title {
-                line-height: 1.4em; min-height: calc(1.4em * 3); margin-bottom: 0.5em; overflow: visible;
-            }
             /* Mobile: una sola colonna a piena larghezza per le card tour, così non
                si accavallano nel 2-col stretto e confuso del telefono. */
             @media (max-width: 600px) {
                 .woocommerce ul.products { display: block !important; }
                 .woocommerce ul.products li.product {
                     width: 100% !important; max-width: 480px; float: none !important;
-                    clear: both !important; margin: 0 auto 22px !important; display: block !important;
+                    clear: both !important; margin: 0 auto 22px !important;
                 }
                 .woocommerce ul.products li.product .woocommerce-loop-product__title {
                     font-size: 22px; min-height: 0;
@@ -53,17 +50,9 @@ class ProductLoop
         $cssGlobal = '
             /* ===== Card tour (carosello home + shop) — restyling editoriale ===== */
             .woocommerce ul.products { margin-bottom: 1.5em; align-items: stretch; }
-            .woocommerce ul.products li.product {
-                position: relative; cursor: pointer; overflow: hidden;
-                display: flex; flex-direction: column;
-                background: #fff; border: 1px solid #e7e2d6; border-radius: 16px;
-                box-shadow: 0 8px 24px rgba(20,40,35,.07);
-                transition: box-shadow .3s ease, transform .3s ease;
-            }
-            .woocommerce ul.products li.product:hover {
-                box-shadow: 0 16px 40px rgba({{RGB}},.16);
-                transform: translateY(-5px);
-            }
+            .woocommerce ul.products li.product{position:relative;cursor:pointer;overflow:hidden;display:grid !important;grid-template-columns:1fr auto;grid-template-rows:auto auto 1fr auto;column-gap:0;background:#fff;border:1px solid #e4ebe9;border-radius:18px;box-shadow:0 1px 2px rgba(20,40,35,.04),0 12px 30px -14px rgba(20,40,35,.22);transition:box-shadow .3s ease,transform .3s ease}
+            .woocommerce ul.products li.product:hover{box-shadow:0 2px 4px rgba(20,40,35,.05),0 22px 44px -16px rgba({{RGB}},.35);transform:translateY(-4px)}
+            .woocommerce ul.products li.product .product-wrap{grid-column:1/-1;grid-row:1;overflow:hidden;margin:0}
             .woocommerce ul.products li.product a { display: block; }
             /* immagine: bordo superiore, zoom morbido su hover */
             .woocommerce ul.products li.product a img {
@@ -75,59 +64,33 @@ class ProductLoop
                 position: absolute; top: 0; left: 0; width: 100%; height: 100%;
                 z-index: 12; text-indent: -9999px;
             }
-            /* Bandiera/paese sovrapposta in alto a sinistra sull immagine */
-            .loop-tour-flag {
-                position: absolute; top: 12px; left: 12px; z-index: 11;
-                display: inline-flex; align-items: center; gap: .4em;
-                background: rgba(255,253,248,.94); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
-                padding: 7px 15px; border-radius: 999px;
-                font-size: 15px; font-weight: 700; letter-spacing: .01em; color: {{ACCENT}};
-                /* line-height esplicito: dal tema arriva 39px, che gonfiava la pastiglia a 45px. */
-                line-height: 1;
-                box-shadow: 0 4px 14px rgba(0,0,0,.16);
-            }
-            .loop-tour-flag .igs-country { display:inline-flex; align-items:center; gap:.45em; line-height:1; }
-            .loop-tour-flag .igs-flag { width:1.5em; height:1.05em; margin:0; align-self:center; object-fit:cover; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.12); }
-            /* Titolo serif coerente con le pagine tour */
-            .woocommerce ul.products li.product .woocommerce-loop-product__title {
-                text-align: center; font-family: \'the-seasons-regular\', Georgia, serif;
-                font-weight: 400; font-size: 22px; line-height: 1.22; color: #22302a;
-                padding: 16px 18px 4px; overflow: visible;
-                /* Riserva 3 righe: così titoli da 1 a 3 righe restano alti uguale e
-                   prezzo/date/durata si allineano su tutte le card (home + shop). */
-                min-height: calc(1.22em * 3 + 16px);
-            }
-            /* Prezzo elegante in accent */
-            .woocommerce ul.products li.product .price { text-align: center; margin: 2px 0 0; }
+            .woocommerce ul.products li.product .loop-tour-dates{grid-column:1/-1;grid-row:2;text-align:left;margin:0;padding:18px 22px 0;font-size:12.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:{{ACCENT}};line-height:1.3}
+            .woocommerce ul.products li.product .woocommerce-loop-product__title{grid-column:1/-1;grid-row:3;align-self:start;text-align:left;font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:23px;line-height:1.2;color:#22302a;padding:6px 22px 18px;margin:0;min-height:0;overflow:visible}
+            .woocommerce ul.products li.product .price{grid-column:1;grid-row:4;align-self:stretch;display:flex;align-items:baseline;gap:.3em;text-align:left;margin:0;padding:14px 0 16px 22px;border-top:1px solid #edf1f0}
             .woocommerce ul.products li.product .price,
             .woocommerce ul.products li.product .price .amount,
             .woocommerce ul.products li.product .price bdi,
             .woocommerce ul.products li.product .price ins .amount {
                 font-size: 19px; line-height: 1.3; font-weight: 700; color: {{ACCENT}};
             }
-            /* Date leggibili */
-            .loop-tour-dates {
-                text-align: center; font-size: 14px; font-weight: 600; color: #6f6a5d;
-                margin: 8px 0 0; letter-spacing: .01em;
-            }
-            /* Riga chip: durata (accent tenue). margin-top:auto la tiene in fondo alla
-               card, allineata su tutte (le card hanno la stessa altezza con align-items:stretch). */
-            .loop-tour-meta { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 12px 14px 18px; margin-top: auto; }
-            .loop-chip {
-                display: inline-flex; align-items: center; gap: .45em;
-                font-size: 15px; font-weight: 600; padding: 7px 16px; border-radius: 999px;
-                line-height: 1;
-            }
-            .loop-chip svg { width: 16px; height: 16px; flex: 0 0 auto; align-self: center; margin: 0; }
-            .loop-chip--days { background: rgba({{RGB}},.10); color: {{ACCENT}}; }
+            .woocommerce ul.products li.product .price .igs-price-from{font-size:13px;font-weight:500;color:#7a8682;letter-spacing:.02em}
+            .woocommerce ul.products li.product .loop-tour-meta{grid-column:2;grid-row:4;display:flex;align-items:center;justify-content:flex-end;margin:0;padding:14px 22px 16px 12px;border-top:1px solid #edf1f0}
+            .loop-chip{display:inline-flex;align-items:center;gap:.4em;font-size:13.5px;font-weight:600;padding:6px 12px;border-radius:999px;line-height:1}
+            .loop-chip svg{width:15px;height:15px;flex:0 0 auto;margin:0}
+            .loop-chip--days{background:rgba({{RGB}},.09);color:{{ACCENT}}}
+            .loop-tour-flag{position:absolute;top:14px;left:14px;z-index:11;display:inline-flex;align-items:center;gap:7px;padding:6px 11px 6px 6px;border-radius:999px;background:rgba(255,255,255,.95);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#22302a;line-height:1;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+            .loop-tour-flag .igs-country{display:inline-flex;align-items:center;gap:7px;line-height:1}
+            .loop-tour-flag .igs-flag{width:18px !important;height:18px !important;border-radius:50% !important;object-fit:cover;margin:0 !important;align-self:center;box-shadow:0 0 0 1px rgba(0,0,0,.1)}
+            .loop-tour-flag .igs-country-name{display:block;line-height:1;text-box:trim-both cap alphabetic}
+            @supports not (text-box:trim-both cap alphabetic){.loop-tour-flag .igs-country-name{position:relative;top:.19em}}
             /* ===== Override strutturali tema Salient (mantenuti) ===== */
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic,
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.text_on_hover {
-                box-shadow: 0 8px 24px rgba(20,40,35,.07); background: #fff;
+                box-shadow: 0 1px 2px rgba(20,40,35,.04), 0 12px 30px -14px rgba(20,40,35,.22); background: #fff;
             }
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic .price,
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic .woocommerce-loop-product__title {
-                padding-left: 18px; padding-right: 18px; text-align: center;
+                text-align: left;
                 font-family: \'the-seasons-regular\', Georgia, serif;
             }
             .woocommerce ul.products[data-product-style]:not([data-n-desktop-columns=default]) li.product,
@@ -138,10 +101,6 @@ class ProductLoop
             }
             .woocommerce .woocommerce-result-count { display: none !important; }
             .flickity-page-dots { display: none; }
-            /* Mobile: card a colonna singola → niente riserva 3 righe (allineamento non serve). */
-            @media (max-width: 600px) {
-                .woocommerce ul.products li.product .woocommerce-loop-product__title { min-height: 0; }
-            }
         ';
 
         $css = trim($cssShop . strtr($cssGlobal, ['{{ACCENT}}' => $accent, '{{RGB}}' => $accentRgb]));
@@ -192,6 +151,7 @@ class ProductLoop
         }
 
         echo '<div class="loop-tour-dates">' . esc_html($isIt ? 'Date in via di definizione' : 'Dates to be confirmed') . '</div>';
+        echo '<div class="loop-tour-meta"></div>';
     }
 
     /** Intervallo date compatto e bilingue: "9 – 15 set 2026" / "9 – 15 Sep 2026". */
