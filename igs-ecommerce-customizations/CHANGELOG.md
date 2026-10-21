@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.18.0] - 2026-10-21
+
+### Added
+
+- Shortcode `[igs_repertorio lang="it|en"]`: mappa interattiva del repertorio viaggi per la homepage con Leaflet 1.9.4 e Leaflet.markercluster 1.5.3 (unpkg). Layout responsivo con mappa e catalogo affiancati su desktop e impilati su mobile. Filtri per area geografica con conteggio e fitBounds con padding, pin differenziati tra tour a catalogo (brand teal #0e5763) e tour in calendario (oro #b08d3c con badge), cluster nel colore di brand senza stili default, sincronizzazione bidirezionale elenco-mappa, popup informativi con CTA verso la scheda o contatti, progressive enhancement completo (elenco renderizzato in PHP, fallback sobrio in assenza di JS/Leaflet) e accessibilità nativa (bottoni reali, aria-pressed, contrasto AA, supporto a `prefers-reduced-motion`).
+
 ## [2.17.10] - 2026-10-08
 
 ### Fixed

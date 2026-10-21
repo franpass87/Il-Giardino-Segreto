@@ -17,6 +17,7 @@ return array(
     'IGS\\Ecommerce\\Booking\\BookingModal' => $baseDir . '/src/Booking/BookingModal.php',
     'IGS\\Ecommerce\\Cart\\ReturnToShop' => $baseDir . '/src/Cart/ReturnToShop.php',
     'IGS\\Ecommerce\\Core\\Plugin' => $baseDir . '/src/Core/Plugin.php',
+    'IGS\\Ecommerce\\Data\\Repertorio' => $baseDir . '/src/Data/Repertorio.php',
     'IGS\\Ecommerce\\Frontend\\DateLocalizer' => $baseDir . '/src/Frontend/DateLocalizer.php',
     'IGS\\Ecommerce\\Frontend\\PriceDisplay' => $baseDir . '/src/Frontend/PriceDisplay.php',
     'IGS\\Ecommerce\\Frontend\\ProductLoop' => $baseDir . '/src/Frontend/ProductLoop.php',
@@ -32,4 +33,5 @@ return array(
     'IGS\\Ecommerce\\Portfolio\\PortfolioTitleFilter' => $baseDir . '/src/Portfolio/PortfolioTitleFilter.php',
     'IGS\\Ecommerce\\Shortcodes\\GardenShortcodes' => $baseDir . '/src/Shortcodes/GardenShortcodes.php',
     'IGS\\Ecommerce\\Shortcodes\\MapShortcode' => $baseDir . '/src/Shortcodes/MapShortcode.php',
+    'IGS\\Ecommerce\\Shortcodes\\RepertorioShortcode' => $baseDir . '/src/Shortcodes/RepertorioShortcode.php',
 );

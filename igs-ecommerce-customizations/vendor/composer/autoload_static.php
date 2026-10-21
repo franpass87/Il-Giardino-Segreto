@@ -32,6 +32,7 @@ class ComposerStaticInitfc2af15cf8ee2d5b0b232291aefc9691
         'IGS\\Ecommerce\\Booking\\BookingModal' => __DIR__ . '/../..' . '/src/Booking/BookingModal.php',
         'IGS\\Ecommerce\\Cart\\ReturnToShop' => __DIR__ . '/../..' . '/src/Cart/ReturnToShop.php',
         'IGS\\Ecommerce\\Core\\Plugin' => __DIR__ . '/../..' . '/src/Core/Plugin.php',
+        'IGS\\Ecommerce\\Data\\Repertorio' => __DIR__ . '/../..' . '/src/Data/Repertorio.php',
         'IGS\\Ecommerce\\Frontend\\DateLocalizer' => __DIR__ . '/../..' . '/src/Frontend/DateLocalizer.php',
         'IGS\\Ecommerce\\Frontend\\PriceDisplay' => __DIR__ . '/../..' . '/src/Frontend/PriceDisplay.php',
         'IGS\\Ecommerce\\Frontend\\ProductLoop' => __DIR__ . '/../..' . '/src/Frontend/ProductLoop.php',
@@ -47,6 +48,7 @@ class ComposerStaticInitfc2af15cf8ee2d5b0b232291aefc9691
         'IGS\\Ecommerce\\Portfolio\\PortfolioTitleFilter' => __DIR__ . '/../..' . '/src/Portfolio/PortfolioTitleFilter.php',
         'IGS\\Ecommerce\\Shortcodes\\GardenShortcodes' => __DIR__ . '/../..' . '/src/Shortcodes/GardenShortcodes.php',
         'IGS\\Ecommerce\\Shortcodes\\MapShortcode' => __DIR__ . '/../..' . '/src/Shortcodes/MapShortcode.php',
+        'IGS\\Ecommerce\\Shortcodes\\RepertorioShortcode' => __DIR__ . '/../..' . '/src/Shortcodes/RepertorioShortcode.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
