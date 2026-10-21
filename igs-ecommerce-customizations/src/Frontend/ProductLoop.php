@@ -35,11 +35,11 @@ class ProductLoop
                si accavallano nel 2-col stretto e confuso del telefono. */
             @media (max-width: 600px) {
                 .woocommerce ul.products { display: block !important; }
-                .woocommerce ul.products li.product {
+                .woocommerce ul.products li.product:not(#igs-card) {
                     width: 100% !important; max-width: 480px; float: none !important;
                     clear: both !important; margin: 0 auto 22px !important;
                 }
-                .woocommerce ul.products li.product .woocommerce-loop-product__title {
+                .woocommerce ul.products li.product:not(#igs-card) .woocommerce-loop-product__title {
                     font-size: 22px; min-height: 0;
                 }
             }
@@ -50,39 +50,39 @@ class ProductLoop
         $cssGlobal = '
             /* ===== Card tour (carosello home + shop) — restyling editoriale ===== */
             .woocommerce ul.products { margin-bottom: 1.5em; align-items: stretch; }
-            .woocommerce ul.products li.product{position:relative;cursor:pointer;overflow:hidden;display:grid !important;grid-template-columns:1fr auto;grid-template-rows:auto auto 1fr auto;column-gap:0;background:#fff;border:1px solid #e4ebe9;border-radius:18px;box-shadow:0 1px 2px rgba(20,40,35,.04),0 12px 30px -14px rgba(20,40,35,.22);transition:box-shadow .3s ease,transform .3s ease}
-            .woocommerce ul.products li.product:hover{box-shadow:0 2px 4px rgba(20,40,35,.05),0 22px 44px -16px rgba({{RGB}},.35);transform:translateY(-4px)}
-            .woocommerce ul.products li.product .product-wrap{grid-column:1/-1;grid-row:1;overflow:hidden;margin:0}
-            .woocommerce ul.products li.product a { display: block; }
+            .woocommerce ul.products li.product:not(#igs-card){position:relative;cursor:pointer;overflow:hidden;display:grid !important;grid-template-columns:1fr auto;grid-template-rows:auto auto 1fr auto;column-gap:0;background:#fff;border:1px solid #e4ebe9;border-radius:18px;box-shadow:0 1px 2px rgba(20,40,35,.04),0 12px 30px -14px rgba(20,40,35,.22);transition:box-shadow .3s ease,transform .3s ease}
+            .woocommerce ul.products li.product:not(#igs-card):hover{box-shadow:0 2px 4px rgba(20,40,35,.05),0 22px 44px -16px rgba({{RGB}},.35);transform:translateY(-4px)}
+            .woocommerce ul.products li.product:not(#igs-card) .product-wrap{grid-column:1/-1;grid-row:1;overflow:hidden;margin:0}
+            .woocommerce ul.products li.product:not(#igs-card) a { display: block; }
             /* immagine: bordo superiore, zoom morbido su hover */
-            .woocommerce ul.products li.product a img {
+            .woocommerce ul.products li.product:not(#igs-card) a img {
                 border-radius: 0 !important; margin: 0 !important; display: block; width: 100%;
                 transition: transform .55s cubic-bezier(.16,.84,.44,1);
             }
-            .woocommerce ul.products li.product:hover a img { transform: scale(1.05); }
-            .woocommerce ul.products li.product .full-card-link {
+            .woocommerce ul.products li.product:not(#igs-card):hover a img { transform: scale(1.05); }
+            .woocommerce ul.products li.product:not(#igs-card) .full-card-link {
                 position: absolute; top: 0; left: 0; width: 100%; height: 100%;
                 z-index: 12; text-indent: -9999px;
             }
-            .woocommerce ul.products li.product .loop-tour-dates{grid-column:1/-1;grid-row:2;text-align:left;margin:0;padding:18px 22px 0;font-size:12.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:{{ACCENT}};line-height:1.3}
-            .woocommerce ul.products li.product .woocommerce-loop-product__title{grid-column:1/-1;grid-row:3;align-self:start;text-align:left;font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:23px;line-height:1.2;color:#22302a;padding:6px 22px 18px;margin:0;min-height:0;overflow:visible}
-            .woocommerce ul.products li.product .price{grid-column:1;grid-row:4;align-self:stretch;display:flex;align-items:baseline;gap:.3em;text-align:left;margin:0;padding:14px 0 16px 22px;border-top:1px solid #edf1f0}
-            .woocommerce ul.products li.product .price,
-            .woocommerce ul.products li.product .price .amount,
-            .woocommerce ul.products li.product .price bdi,
-            .woocommerce ul.products li.product .price ins .amount {
+            .woocommerce ul.products li.product:not(#igs-card) .loop-tour-dates{grid-column:1/-1;grid-row:2;text-align:left;margin:0;padding:18px 22px 0;font-size:12.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:{{ACCENT}};line-height:1.3}
+            .woocommerce ul.products li.product:not(#igs-card) .woocommerce-loop-product__title{grid-column:1/-1;grid-row:3;align-self:start;text-align:left;font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:23px;line-height:1.2;color:#22302a;padding:6px 22px 18px;margin:0;min-height:calc(1.2em * 3);overflow:visible}
+            .woocommerce ul.products li.product:not(#igs-card) .price{grid-column:1;grid-row:4;align-self:stretch;display:flex;align-items:baseline;gap:.3em;text-align:left;margin:0;padding:14px 0 16px 22px;border-top:1px solid #edf1f0}
+            .woocommerce ul.products li.product:not(#igs-card) .price,
+            .woocommerce ul.products li.product:not(#igs-card) .price .amount,
+            .woocommerce ul.products li.product:not(#igs-card) .price bdi,
+            .woocommerce ul.products li.product:not(#igs-card) .price ins .amount {
                 font-size: 19px; line-height: 1.3; font-weight: 700; color: {{ACCENT}};
             }
-            .woocommerce ul.products li.product .price .igs-price-from{font-size:13px;font-weight:500;color:#7a8682;letter-spacing:.02em}
-            .woocommerce ul.products li.product .loop-tour-meta{grid-column:2;grid-row:4;display:flex;align-items:center;justify-content:flex-end;margin:0;padding:14px 22px 16px 12px;border-top:1px solid #edf1f0}
-            .loop-chip{display:inline-flex;align-items:center;gap:.4em;font-size:13.5px;font-weight:600;padding:6px 12px;border-radius:999px;line-height:1}
-            .loop-chip svg{width:15px;height:15px;flex:0 0 auto;margin:0}
-            .loop-chip--days{background:rgba({{RGB}},.09);color:{{ACCENT}}}
-            .loop-tour-flag{position:absolute;top:14px;left:14px;z-index:11;display:inline-flex;align-items:center;gap:7px;padding:6px 11px 6px 6px;border-radius:999px;background:rgba(255,255,255,.95);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#22302a;line-height:1;box-shadow:0 2px 10px rgba(0,0,0,.18)}
-            .loop-tour-flag .igs-country{display:inline-flex;align-items:center;gap:7px;line-height:1}
-            .loop-tour-flag .igs-flag{width:18px !important;height:18px !important;border-radius:50% !important;object-fit:cover;margin:0 !important;align-self:center;box-shadow:0 0 0 1px rgba(0,0,0,.1)}
-            .loop-tour-flag .igs-country-name{display:block;line-height:1;text-box:trim-both cap alphabetic}
-            @supports not (text-box:trim-both cap alphabetic){.loop-tour-flag .igs-country-name{position:relative;top:.19em}}
+            .woocommerce ul.products li.product:not(#igs-card) .price .igs-price-from{font-size:13px;font-weight:500;color:#7a8682;letter-spacing:.02em}
+            .woocommerce ul.products li.product:not(#igs-card) .loop-tour-meta{grid-column:2;grid-row:4;display:flex;align-items:center;justify-content:flex-end;margin:0;padding:14px 22px 16px 12px;border-top:1px solid #edf1f0}
+            li.product:not(#igs-card) .loop-chip{display:inline-flex;align-items:center;gap:.4em;font-size:13.5px;font-weight:600;padding:6px 12px;border-radius:999px;line-height:1}
+            li.product:not(#igs-card) .loop-chip svg{width:15px;height:15px;flex:0 0 auto;margin:0}
+            li.product:not(#igs-card) .loop-chip--days{background:rgba({{RGB}},.09);color:{{ACCENT}}}
+            li.product:not(#igs-card) .loop-tour-flag{position:absolute;top:14px;left:14px;z-index:11;display:inline-flex;align-items:center;gap:7px;padding:6px 11px 6px 6px;border-radius:999px;background:rgba(255,255,255,.95);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#22302a;line-height:1;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+            li.product:not(#igs-card) .loop-tour-flag .igs-country{display:inline-flex;align-items:center;gap:7px;line-height:1}
+            li.product:not(#igs-card) .loop-tour-flag .igs-flag{width:18px !important;height:18px !important;border-radius:50% !important;object-fit:cover;margin:0 !important;align-self:center;box-shadow:0 0 0 1px rgba(0,0,0,.1)}
+            li.product:not(#igs-card) .loop-tour-flag .igs-country-name{display:block;line-height:1;text-box:trim-both cap alphabetic}
+            @supports not (text-box:trim-both cap alphabetic){li.product:not(#igs-card) .loop-tour-flag .igs-country-name{position:relative;top:.19em}}
             /* ===== Override strutturali tema Salient (mantenuti) ===== */
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.classic,
             body .woocommerce .nectar-woo-flickity[data-item-shadow="1"] li.product.text_on_hover {
@@ -101,6 +101,7 @@ class ProductLoop
             }
             .woocommerce .woocommerce-result-count { display: none !important; }
             .flickity-page-dots { display: none; }
+            @media (max-width:600px){.woocommerce ul.products li.product:not(#igs-card) .woocommerce-loop-product__title{min-height:0}}
         ';
 
         $css = trim($cssShop . strtr($cssGlobal, ['{{ACCENT}}' => $accent, '{{RGB}}' => $accentRgb]));

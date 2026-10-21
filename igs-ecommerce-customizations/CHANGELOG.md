@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.19.1] - 2026-10-21
+
+### Fixed
+
+- Le regole della nuova card tour vincono sul CSS personalizzato del tema Salient (layout a griglia, titolo a sinistra, card di pari altezza nel carosello).
+
 ## [2.19.0] - 2026-10-21
 
 ### Changed
