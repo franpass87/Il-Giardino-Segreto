@@ -65,7 +65,7 @@ class ProductLoop
                 z-index: 12; text-indent: -9999px;
             }
             .woocommerce ul.products li.product:not(#igs-card) .loop-tour-dates{grid-column:1/-1;grid-row:2;text-align:left;margin:0;padding:18px 22px 0;font-size:12.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:{{ACCENT}};line-height:1.3}
-            .woocommerce ul.products li.product:not(#igs-card) .woocommerce-loop-product__title{grid-column:1/-1;grid-row:3;align-self:start;text-align:left;font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:23px;line-height:1.2;color:#22302a;padding:6px 22px 18px;margin:0;min-height:calc(1.2em * 3);overflow:visible}
+            .woocommerce ul.products li.product:not(#igs-card) .woocommerce-loop-product__title{grid-column:1/-1;grid-row:3;align-self:start;text-align:left;font-family:\'the-seasons-regular\',Georgia,serif;font-weight:400;font-size:23px;line-height:1.2;color:#22302a;padding:6px 22px 18px;margin:0;min-height:calc(1.2em * 3 + 24px);overflow:visible}
             .woocommerce ul.products li.product:not(#igs-card) .price{grid-column:1;grid-row:4;align-self:stretch;display:flex;align-items:baseline;gap:.3em;text-align:left;margin:0;padding:14px 0 16px 22px;border-top:1px solid #edf1f0}
             .woocommerce ul.products li.product:not(#igs-card) .price,
             .woocommerce ul.products li.product:not(#igs-card) .price .amount,

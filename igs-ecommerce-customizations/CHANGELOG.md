@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.19.2] - 2026-10-21
+
+### Fixed
+
+- Card tour di pari altezza nel carosello anche con titoli su tre righe.
+
 ## [2.19.1] - 2026-10-21
 
 ### Fixed
