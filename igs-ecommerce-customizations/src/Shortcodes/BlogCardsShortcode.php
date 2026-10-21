@@ -128,6 +128,9 @@ class BlogCardsShortcode
             $excerpt = wp_trim_words($cleanExcerpt, 20, '…');
 
             $date = get_the_date($dateFormat, $postId);
+            if ($dateFormat === 'j F Y') {
+                $date = mb_strtolower((string) $date, 'UTF-8');
+            }
 
             $cards .= '<a class="igs-pcard igs-bcard" href="' . esc_url($permalink) . '">'
                 . '<span class="igs-pcard__img">' . $thumbnail . '</span>'

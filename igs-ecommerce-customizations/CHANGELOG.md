@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.20.3] - 2026-10-21
+
+### Fixed
+
+- Schede blog: il mese della data in italiano ora è minuscolo («1 ottobre 2026»).
+
 ## [2.20.2] - 2026-10-21
 
 ### Fixed
