@@ -752,6 +752,9 @@ class RepertorioShortcode
                         spiderfyDistanceMultiplier: 1.3
                     });
 
+                    // I pallini gialli restano fuori dai cluster e sempre sopra.
+                    var upcomingLayer = L.layerGroup();
+
                     function escapeHtml(str) {
                         if (!str) return '';
                         return String(str)
@@ -815,7 +818,7 @@ class RepertorioShortcode
                         var marker = L.marker([item.lat, item.lon], {
                             icon: icon,
                             title: item.title,
-                            zIndexOffset: item.hasProduct ? 500 : 0
+                            zIndexOffset: item.hasProduct ? 1000 : 0
                         });
 
                         marker.bindPopup(buildPopupHtml(item), {
@@ -839,8 +842,23 @@ class RepertorioShortcode
                         map.fitBounds(initialBounds, { padding: [40, 40], animate: false });
                     }
 
+                    function addMarkers(list) {
+                        var std = [], up = [];
+                        list.forEach(function (m) {
+                            (m.options.icon === upcomingIcon ? up : std).push(m);
+                        });
+                        clusterGroup.addLayers(std);
+                        up.forEach(function (m) { upcomingLayer.addLayer(m); });
+                    }
+
+                    function clearMarkers() {
+                        clusterGroup.clearLayers();
+                        upcomingLayer.clearLayers();
+                    }
+
                     map.addLayer(clusterGroup);
-                    clusterGroup.addLayers(allMarkers);
+                    map.addLayer(upcomingLayer);
+                    addMarkers(allMarkers);
 
                     map.whenReady(function() {
                         if (loader) {
@@ -909,7 +927,7 @@ class RepertorioShortcode
 
                         setActiveListItem(id, false);
 
-                        clusterGroup.zoomToShowLayer(marker, function() {
+                        function show() {
                             var targetZoom = Math.max(map.getZoom(), 8);
                             if (prefersReducedMotion) {
                                 map.setView([item.lat, item.lon], targetZoom, { animate: false });
@@ -927,7 +945,13 @@ class RepertorioShortcode
                                     marker.openPopup();
                                 }
                             }
-                        });
+                        }
+
+                        if (upcomingLayer.hasLayer(marker)) {
+                            show();
+                        } else {
+                            clusterGroup.zoomToShowLayer(marker, show);
+                        }
                     }
 
                     itemButtons.forEach(function(btn) {
@@ -973,7 +997,7 @@ class RepertorioShortcode
                         });
 
                         map.stop();
-                        clusterGroup.clearLayers();
+                        clearMarkers();
                         var filteredMarkers = [];
                         var filteredLatLngs = [];
 
@@ -1001,8 +1025,8 @@ class RepertorioShortcode
                             if (bounds) {
                                 map.fitBounds(bounds, L.extend({}, fitOptions, { animate: false }));
                             }
-                            clusterGroup.clearLayers();
-                            clusterGroup.addLayers(filteredMarkers);
+                            clearMarkers();
+                            addMarkers(filteredMarkers);
                             if (bounds) {
                                 var settleUntil = Date.now() + 1200;
                                 var realigning = false;

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.21.0] - 2026-10-21
+
+### Changed
+
+- Mappa del repertorio: i pallini gialli dei viaggi in calendario non finiscono più dentro i gruppi blu e restano sempre visibili sopra gli altri.
+
 ## [2.20.3] - 2026-10-21
 
 ### Fixed
