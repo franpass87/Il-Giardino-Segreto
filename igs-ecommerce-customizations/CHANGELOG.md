@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.19.4] - 2026-10-21
+
+### Fixed
+
+- Mappa del repertorio: a fine animazione la vista si riallinea sempre all'area scelta, anche se uno zoom intermedio è stato scartato.
+
 ## [2.19.3] - 2026-10-21
 
 ### Fixed

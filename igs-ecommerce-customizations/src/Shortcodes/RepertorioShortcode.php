@@ -978,24 +978,27 @@ class RepertorioShortcode
                             }
                         });
 
+                        var bounds = filteredLatLngs.length > 0 ? L.latLngBounds(filteredLatLngs) : null;
+                        var fitOptions = {
+                            padding: [40, 40],
+                            maxZoom: selectedArea === 'all' ? 19 : 11
+                        };
                         var applied = false;
                         function applyMarkers() {
                             if (applied || token !== filterToken) {
                                 return;
                             }
                             applied = true;
+                            if (bounds) {
+                                map.fitBounds(bounds, L.extend({}, fitOptions, { animate: false }));
+                            }
                             clusterGroup.clearLayers();
                             clusterGroup.addLayers(filteredMarkers);
                         }
 
-                        if (filteredLatLngs.length > 0) {
-                            var bounds = L.latLngBounds(filteredLatLngs);
+                        if (bounds) {
                             map.once('moveend', applyMarkers);
-                            map.fitBounds(bounds, {
-                                padding: [40, 40],
-                                maxZoom: selectedArea === 'all' ? 19 : 11,
-                                animate: !prefersReducedMotion
-                            });
+                            map.fitBounds(bounds, L.extend({}, fitOptions, { animate: !prefersReducedMotion }));
                             setTimeout(applyMarkers, prefersReducedMotion ? 0 : 700);
                         } else {
                             applyMarkers();
