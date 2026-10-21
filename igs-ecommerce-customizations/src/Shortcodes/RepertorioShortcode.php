@@ -233,6 +233,9 @@ class RepertorioShortcode
             height: 100%;
             background-color: #f8fafc;
         }
+        .igs-rep-container .leaflet-tile-pane {
+            filter: grayscale(0.85) brightness(1.04) contrast(0.92);
+        }
 
         /* Loader & Fallback */
         .igs-rep-loading {
@@ -660,286 +663,372 @@ class RepertorioShortcode
                 if (fallback) fallback.classList.add('is-visible');
             }
 
-            if (typeof L === 'undefined' || typeof L.markerClusterGroup === 'undefined') {
-                showFallback();
-                return;
-            }
+            // Il tema mostra la riga della mappa dopo il DOMContentLoaded: se la mappa nasce
+            // con il contenitore a 0x0, fitBounds porta lo zoom al massimo e la marker-pane
+            // resta vuota anche dopo invalidateSize. L'init parte quindi solo quando il
+            // contenitore è visibile e ha una dimensione reale; anche il download delle
+            // tile resta rimandato fino a quel momento.
+            var mapInitialized = false;
+            var waitingForLeaflet = false;
 
-            try {
-                var items = <?php echo wp_json_encode($processedItems); ?>;
-                var upcomingBadgeLabel = <?php echo wp_json_encode($upcomingBadgeText); ?>;
-                var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            function initMap() {
+                if (mapInitialized) return;
 
-                var map = L.map('igs-rep-map', {
-                    scrollWheelZoom: false,
-                    tap: true,
-                    zoomControl: true
-                });
-
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',
-                    subdomains: 'abcd',
-                    maxZoom: 19
-                }).addTo(map);
-
-                var clusterGroup = L.markerClusterGroup({
-                    spiderfyOnMaxZoom: true,
-                    showCoverageOnHover: false,
-                    zoomToBoundsOnClick: true,
-                    maxClusterRadius: 40,
-                    spiderfyDistanceMultiplier: 1.3
-                });
-                map.addLayer(clusterGroup);
-
-                function escapeHtml(str) {
-                    if (!str) return '';
-                    return String(str)
-                        .replace(/&/g, '&amp;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;')
-                        .replace(/"/g, '&quot;')
-                        .replace(/'/g, '&#39;');
-                }
-
-                function escapeUrl(str) {
-                    if (!str) return '#';
-                    var s = String(str);
-                    if (/^(https?:|\/)/i.test(s)) {
-                        return s.replace(/"/g, '&quot;');
-                    }
-                    return '#';
-                }
-
-                var standardIcon = L.divIcon({
-                    className: 'igs-rep-div-icon',
-                    html: '<span class="igs-rep-pin igs-rep-pin--standard"></span>',
-                    iconSize: [20, 20],
-                    iconAnchor: [10, 10],
-                    popupAnchor: [0, -12]
-                });
-
-                var upcomingIcon = L.divIcon({
-                    className: 'igs-rep-div-icon',
-                    html: '<span class="igs-rep-pin igs-rep-pin--upcoming"></span>',
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14],
-                    popupAnchor: [0, -16]
-                });
-
-                function buildPopupHtml(item) {
-                    var badgeHtml = item.hasProduct
-                        ? '<span class="igs-rep-popup-badge">' + escapeHtml(upcomingBadgeLabel) + '</span>'
-                        : '';
-                    var linkClass = item.hasProduct
-                        ? 'igs-rep-popup-link igs-rep-popup-link--product'
-                        : 'igs-rep-popup-link';
-                    return '<div class="igs-rep-popup">' +
-                        '<div class="igs-rep-popup-header">' +
-                            '<span class="igs-rep-popup-area">' + escapeHtml(item.areaLabel) + '</span>' +
-                            badgeHtml +
-                        '</div>' +
-                        '<h4 class="igs-rep-popup-title">' + escapeHtml(item.title) + '</h4>' +
-                        '<a href="' + escapeUrl(item.url) + '" class="' + linkClass + '">' +
-                            escapeHtml(item.linkText) +
-                        '</a>' +
-                    '</div>';
-                }
-
-                var markersById = {};
-                var allMarkers = [];
-                var allLatLngs = [];
-
-                items.forEach(function(item) {
-                    var icon = item.hasProduct ? upcomingIcon : standardIcon;
-                    var marker = L.marker([item.lat, item.lon], {
-                        icon: icon,
-                        title: item.title,
-                        zIndexOffset: item.hasProduct ? 500 : 0
-                    });
-
-                    marker.bindPopup(buildPopupHtml(item), {
-                        maxWidth: 280,
-                        className: 'igs-rep-leaflet-popup'
-                    });
-
-                    marker.on('click', function() {
-                        setActiveListItem(item.id, true);
-                    });
-
-                    markersById[item.id] = marker;
-                    allMarkers.push(marker);
-                    allLatLngs.push([item.lat, item.lon]);
-                });
-
-                clusterGroup.addLayers(allMarkers);
-
-                if (allLatLngs.length > 0) {
-                    var initialBounds = L.latLngBounds(allLatLngs);
-                    map.fitBounds(initialBounds, { padding: [40, 40], animate: false });
-                }
-
-                map.whenReady(function() {
-                    if (loader) {
-                        loader.classList.add('is-hidden');
-                        setTimeout(function() { loader.style.display = 'none'; }, 300);
-                    }
-                });
-
-                // scrollWheelZoom: attivo solo dopo click su mappa, disattivato al mouseleave
-                map.on('click', function() {
-                    map.scrollWheelZoom.enable();
-                });
-                mapEl.addEventListener('mouseleave', function() {
-                    map.scrollWheelZoom.disable();
-                });
-
-                // Fix preventDefault su chiusura popup
-                map.on('popupopen', function(e) {
-                    var closeBtn = e.popup._closeButton;
-                    if (closeBtn) {
-                        closeBtn.addEventListener('click', function(evt) {
-                            evt.preventDefault();
-                            evt.stopPropagation();
-                        });
-                    }
-                });
-
-                var itemButtons = listEl.querySelectorAll('.igs-rep-item');
-                var chipButtons = document.querySelectorAll('.igs-rep-chip');
-                var areaGroups = listEl.querySelectorAll('.igs-rep-area-group');
-
-                function highlightMarker(id, enable) {
-                    var marker = markersById[id];
-                    if (!marker) return;
-                    var markerEl = marker.getElement();
-                    if (markerEl) {
-                        var pin = markerEl.querySelector('.igs-rep-pin');
-                        if (pin) pin.classList.toggle('is-highlighted', enable);
-                    }
-                    if (typeof clusterGroup.getVisibleParent === 'function') {
-                        var parent = clusterGroup.getVisibleParent(marker);
-                        if (parent && parent !== marker) {
-                            var parentEl = parent.getElement();
-                            if (parentEl) parentEl.classList.toggle('is-highlighted', enable);
+                if (typeof L === 'undefined' || typeof L.markerClusterGroup === 'undefined') {
+                    // Gli script esterni possono arrivare tardi: attesa fino a 10 s, poi fallback.
+                    if (waitingForLeaflet) return;
+                    waitingForLeaflet = true;
+                    var elapsed = 0;
+                    var pollId = setInterval(function() {
+                        elapsed += 200;
+                        if (typeof L !== 'undefined' && typeof L.markerClusterGroup !== 'undefined') {
+                            clearInterval(pollId);
+                            waitingForLeaflet = false;
+                            initMap();
+                        } else if (elapsed >= 10000) {
+                            clearInterval(pollId);
+                            showFallback();
                         }
-                    }
+                    }, 200);
+                    return;
                 }
 
-                function setActiveListItem(id, shouldScroll) {
-                    itemButtons.forEach(function(btn) {
-                        var isCurrent = (btn.getAttribute('data-id') === String(id));
-                        btn.classList.toggle('is-active', isCurrent);
-                        if (isCurrent && shouldScroll) {
-                            btn.scrollIntoView({
-                                behavior: prefersReducedMotion ? 'auto' : 'smooth',
-                                block: 'nearest'
+                mapInitialized = true;
+
+                try {
+                    var items = <?php echo wp_json_encode($processedItems); ?>;
+                    var upcomingBadgeLabel = <?php echo wp_json_encode($upcomingBadgeText); ?>;
+                    var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                    var map = L.map('igs-rep-map', {
+                        scrollWheelZoom: false,
+                        tap: true,
+                        zoomControl: true
+                    });
+
+                    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
+                        maxZoom: 19
+                    }).addTo(map);
+
+                    var clusterGroup = L.markerClusterGroup({
+                        spiderfyOnMaxZoom: true,
+                        showCoverageOnHover: false,
+                        zoomToBoundsOnClick: true,
+                        maxClusterRadius: 40,
+                        spiderfyDistanceMultiplier: 1.3
+                    });
+
+                    function escapeHtml(str) {
+                        if (!str) return '';
+                        return String(str)
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#39;');
+                    }
+
+                    function escapeUrl(str) {
+                        if (!str) return '#';
+                        var s = String(str);
+                        if (/^(https?:|\/)/i.test(s)) {
+                            return s.replace(/"/g, '&quot;');
+                        }
+                        return '#';
+                    }
+
+                    var standardIcon = L.divIcon({
+                        className: 'igs-rep-div-icon',
+                        html: '<span class="igs-rep-pin igs-rep-pin--standard"></span>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10],
+                        popupAnchor: [0, -12]
+                    });
+
+                    var upcomingIcon = L.divIcon({
+                        className: 'igs-rep-div-icon',
+                        html: '<span class="igs-rep-pin igs-rep-pin--upcoming"></span>',
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14],
+                        popupAnchor: [0, -16]
+                    });
+
+                    function buildPopupHtml(item) {
+                        var badgeHtml = item.hasProduct
+                            ? '<span class="igs-rep-popup-badge">' + escapeHtml(upcomingBadgeLabel) + '</span>'
+                            : '';
+                        var linkClass = item.hasProduct
+                            ? 'igs-rep-popup-link igs-rep-popup-link--product'
+                            : 'igs-rep-popup-link';
+                        return '<div class="igs-rep-popup">' +
+                            '<div class="igs-rep-popup-header">' +
+                                '<span class="igs-rep-popup-area">' + escapeHtml(item.areaLabel) + '</span>' +
+                                badgeHtml +
+                            '</div>' +
+                            '<h4 class="igs-rep-popup-title">' + escapeHtml(item.title) + '</h4>' +
+                            '<a href="' + escapeUrl(item.url) + '" class="' + linkClass + '">' +
+                                escapeHtml(item.linkText) +
+                            '</a>' +
+                        '</div>';
+                    }
+
+                    var markersById = {};
+                    var allMarkers = [];
+                    var allLatLngs = [];
+
+                    items.forEach(function(item) {
+                        var icon = item.hasProduct ? upcomingIcon : standardIcon;
+                        var marker = L.marker([item.lat, item.lon], {
+                            icon: icon,
+                            title: item.title,
+                            zIndexOffset: item.hasProduct ? 500 : 0
+                        });
+
+                        marker.bindPopup(buildPopupHtml(item), {
+                            maxWidth: 280,
+                            className: 'igs-rep-leaflet-popup'
+                        });
+
+                        marker.on('click', function() {
+                            setActiveListItem(item.id, true);
+                        });
+
+                        markersById[item.id] = marker;
+                        allMarkers.push(marker);
+                        allLatLngs.push([item.lat, item.lon]);
+                    });
+
+                    // Il fit va fatto a contenitore dimensionato e PRIMA di aggiungere il
+                    // cluster: lo zoom iniziale è quello giusto e i marker vengono piazzati subito.
+                    if (allLatLngs.length > 0) {
+                        var initialBounds = L.latLngBounds(allLatLngs);
+                        map.fitBounds(initialBounds, { padding: [40, 40], animate: false });
+                    }
+
+                    map.addLayer(clusterGroup);
+                    clusterGroup.addLayers(allMarkers);
+
+                    map.whenReady(function() {
+                        if (loader) {
+                            loader.classList.add('is-hidden');
+                            setTimeout(function() { loader.style.display = 'none'; }, 300);
+                        }
+                    });
+
+                    // scrollWheelZoom: attivo solo dopo click su mappa, disattivato al mouseleave
+                    map.on('click', function() {
+                        map.scrollWheelZoom.enable();
+                    });
+                    mapEl.addEventListener('mouseleave', function() {
+                        map.scrollWheelZoom.disable();
+                    });
+
+                    // Fix preventDefault su chiusura popup
+                    map.on('popupopen', function(e) {
+                        var closeBtn = e.popup._closeButton;
+                        if (closeBtn) {
+                            closeBtn.addEventListener('click', function(evt) {
+                                evt.preventDefault();
+                                evt.stopPropagation();
                             });
                         }
                     });
-                }
 
-                function zoomToMarker(id) {
-                    var marker = markersById[id];
-                    var item = items.find(function(it) { return it.id === id; });
-                    if (!marker || !item) return;
+                    var itemButtons = listEl.querySelectorAll('.igs-rep-item');
+                    var chipButtons = document.querySelectorAll('.igs-rep-chip');
+                    var areaGroups = listEl.querySelectorAll('.igs-rep-area-group');
 
-                    setActiveListItem(id, false);
-
-                    clusterGroup.zoomToShowLayer(marker, function() {
-                        var targetZoom = Math.max(map.getZoom(), 8);
-                        if (prefersReducedMotion) {
-                            map.setView([item.lat, item.lon], targetZoom, { animate: false });
-                            marker.openPopup();
-                        } else {
-                            if (map.getZoom() < 8) {
-                                map.flyTo([item.lat, item.lon], 8, { duration: 0.9 });
-                                map.once('moveend', function() { marker.openPopup(); });
-                            } else {
-                                map.flyTo([item.lat, item.lon], targetZoom, { duration: 0.7 });
-                                map.once('moveend', function() { marker.openPopup(); });
-                            }
-                            // Fallback per apertura immediata se già centrato
-                            if (map.getCenter().distanceTo(L.latLng(item.lat, item.lon)) < 20) {
-                                marker.openPopup();
+                    function highlightMarker(id, enable) {
+                        var marker = markersById[id];
+                        if (!marker) return;
+                        var markerEl = marker.getElement();
+                        if (markerEl) {
+                            var pin = markerEl.querySelector('.igs-rep-pin');
+                            if (pin) pin.classList.toggle('is-highlighted', enable);
+                        }
+                        if (typeof clusterGroup.getVisibleParent === 'function') {
+                            var parent = clusterGroup.getVisibleParent(marker);
+                            if (parent && parent !== marker) {
+                                var parentEl = parent.getElement();
+                                if (parentEl) parentEl.classList.toggle('is-highlighted', enable);
                             }
                         }
-                    });
-                }
+                    }
 
-                itemButtons.forEach(function(btn) {
-                    var id = parseInt(btn.getAttribute('data-id'), 10);
-
-                    btn.addEventListener('mouseenter', function() {
-                        highlightMarker(id, true);
-                    });
-                    btn.addEventListener('mouseleave', function() {
-                        highlightMarker(id, false);
-                    });
-                    btn.addEventListener('focus', function() {
-                        highlightMarker(id, true);
-                    });
-                    btn.addEventListener('blur', function() {
-                        highlightMarker(id, false);
-                    });
-                    btn.addEventListener('click', function() {
-                        zoomToMarker(id);
-                    });
-                });
-
-                function filterByArea(selectedArea) {
-                    chipButtons.forEach(function(chip) {
-                        var isCurrent = (chip.getAttribute('data-area') === selectedArea);
-                        chip.setAttribute('aria-pressed', isCurrent ? 'true' : 'false');
-                        chip.classList.toggle('is-active', isCurrent);
-                    });
-
-                    areaGroups.forEach(function(group) {
-                        var groupArea = group.getAttribute('data-area');
-                        if (selectedArea === 'all' || groupArea === selectedArea) {
-                            group.style.display = '';
-                        } else {
-                            group.style.display = 'none';
-                        }
-                    });
-
-                    clusterGroup.clearLayers();
-                    var filteredMarkers = [];
-                    var filteredLatLngs = [];
-
-                    items.forEach(function(item) {
-                        if (selectedArea === 'all' || item.area === selectedArea) {
-                            var m = markersById[item.id];
-                            if (m) {
-                                filteredMarkers.push(m);
-                                filteredLatLngs.push([item.lat, item.lon]);
+                    function setActiveListItem(id, shouldScroll) {
+                        itemButtons.forEach(function(btn) {
+                            var isCurrent = (btn.getAttribute('data-id') === String(id));
+                            btn.classList.toggle('is-active', isCurrent);
+                            if (isCurrent && shouldScroll) {
+                                btn.scrollIntoView({
+                                    behavior: prefersReducedMotion ? 'auto' : 'smooth',
+                                    block: 'nearest'
+                                });
                             }
-                        }
-                    });
-
-                    clusterGroup.addLayers(filteredMarkers);
-
-                    if (filteredLatLngs.length > 0) {
-                        var bounds = L.latLngBounds(filteredLatLngs);
-                        map.fitBounds(bounds, {
-                            padding: [40, 40],
-                            maxZoom: selectedArea === 'all' ? 19 : 11,
-                            animate: !prefersReducedMotion
                         });
                     }
-                }
 
-                chipButtons.forEach(function(chip) {
-                    chip.addEventListener('click', function() {
-                        var area = this.getAttribute('data-area');
-                        filterByArea(area);
+                    function zoomToMarker(id) {
+                        var marker = markersById[id];
+                        var item = items.find(function(it) { return it.id === id; });
+                        if (!marker || !item) return;
+
+                        setActiveListItem(id, false);
+
+                        clusterGroup.zoomToShowLayer(marker, function() {
+                            var targetZoom = Math.max(map.getZoom(), 8);
+                            if (prefersReducedMotion) {
+                                map.setView([item.lat, item.lon], targetZoom, { animate: false });
+                                marker.openPopup();
+                            } else {
+                                if (map.getZoom() < 8) {
+                                    map.flyTo([item.lat, item.lon], 8, { duration: 0.9 });
+                                    map.once('moveend', function() { marker.openPopup(); });
+                                } else {
+                                    map.flyTo([item.lat, item.lon], targetZoom, { duration: 0.7 });
+                                    map.once('moveend', function() { marker.openPopup(); });
+                                }
+                                // Fallback per apertura immediata se già centrato
+                                if (map.getCenter().distanceTo(L.latLng(item.lat, item.lon)) < 20) {
+                                    marker.openPopup();
+                                }
+                            }
+                        });
+                    }
+
+                    itemButtons.forEach(function(btn) {
+                        var id = parseInt(btn.getAttribute('data-id'), 10);
+
+                        btn.addEventListener('mouseenter', function() {
+                            highlightMarker(id, true);
+                        });
+                        btn.addEventListener('mouseleave', function() {
+                            highlightMarker(id, false);
+                        });
+                        btn.addEventListener('focus', function() {
+                            highlightMarker(id, true);
+                        });
+                        btn.addEventListener('blur', function() {
+                            highlightMarker(id, false);
+                        });
+                        btn.addEventListener('click', function() {
+                            zoomToMarker(id);
+                        });
                     });
-                });
 
-            } catch (err) {
-                if (window.console && console.error) {
-                    console.error('IGS Repertorio error:', err);
+                    var currentArea = 'all';
+
+                    function filterByArea(selectedArea) {
+                        currentArea = selectedArea;
+
+                        chipButtons.forEach(function(chip) {
+                            var isCurrent = (chip.getAttribute('data-area') === selectedArea);
+                            chip.setAttribute('aria-pressed', isCurrent ? 'true' : 'false');
+                            chip.classList.toggle('is-active', isCurrent);
+                        });
+
+                        areaGroups.forEach(function(group) {
+                            var groupArea = group.getAttribute('data-area');
+                            if (selectedArea === 'all' || groupArea === selectedArea) {
+                                group.style.display = '';
+                            } else {
+                                group.style.display = 'none';
+                            }
+                        });
+
+                        clusterGroup.clearLayers();
+                        var filteredMarkers = [];
+                        var filteredLatLngs = [];
+
+                        items.forEach(function(item) {
+                            if (selectedArea === 'all' || item.area === selectedArea) {
+                                var m = markersById[item.id];
+                                if (m) {
+                                    filteredMarkers.push(m);
+                                    filteredLatLngs.push([item.lat, item.lon]);
+                                }
+                            }
+                        });
+
+                        clusterGroup.addLayers(filteredMarkers);
+
+                        if (filteredLatLngs.length > 0) {
+                            var bounds = L.latLngBounds(filteredLatLngs);
+                            map.fitBounds(bounds, {
+                                padding: [40, 40],
+                                maxZoom: selectedArea === 'all' ? 19 : 11,
+                                animate: !prefersReducedMotion
+                            });
+                        }
+                    }
+
+                    chipButtons.forEach(function(chip) {
+                        chip.addEventListener('click', function() {
+                            var area = this.getAttribute('data-area');
+                            filterByArea(area);
+                        });
+                    });
+
+                    // Se il contenitore cambia dimensione dopo l'init (riga rivelata dal tema,
+                    // cambio di layout) la mappa si riallinea; se la larghezza passa da 0 a una
+                    // reale si ripete il fit sui marker dell'area selezionata.
+                    if ('ResizeObserver' in window) {
+                        var lastMapWidth = mapEl.offsetWidth;
+                        var mapResizeObserver = new ResizeObserver(function() {
+                            map.invalidateSize();
+                            var width = mapEl.offsetWidth;
+                            if (lastMapWidth === 0 && width > 0) {
+                                filterByArea(currentArea);
+                            }
+                            lastMapWidth = width;
+                        });
+                        mapResizeObserver.observe(mapEl);
+                    }
+
+                } catch (err) {
+                    if (window.console && console.error) {
+                        console.error('IGS Repertorio error:', err);
+                    }
+                    showFallback();
                 }
-                showFallback();
+            }
+
+            function hasRealSize() {
+                return mapEl.offsetWidth > 0 && mapEl.offsetHeight > 0;
+            }
+
+            // All'intersezione il contenitore può essere ancora a 0x0 (la riga non è ancora
+            // dimensionata dal tema): pochi tentativi ravvicinati, poi si inizializza comunque.
+            var sizeRetries = 0;
+            function tryInitMap() {
+                if (mapInitialized || waitingForLeaflet) return;
+                if (hasRealSize() || sizeRetries >= 40) {
+                    initMap();
+                    return;
+                }
+                sizeRetries++;
+                if (window.requestAnimationFrame) {
+                    window.requestAnimationFrame(tryInitMap);
+                } else {
+                    setTimeout(tryInitMap, 50);
+                }
+            }
+
+            if ('IntersectionObserver' in window) {
+                // rootMargin ampio: l'init parte quando la sezione sta per entrare nello
+                // schermo, così anche il download delle tile arriva solo a quel punto.
+                var mapObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            mapObserver.disconnect();
+                            tryInitMap();
+                        }
+                    });
+                }, { rootMargin: '200px' });
+                mapObserver.observe(mapEl);
+            } else if (window.addEventListener) {
+                window.addEventListener('load', tryInitMap);
             }
         });
         </script>

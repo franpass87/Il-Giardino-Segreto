@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.18.1] - 2026-10-21
+
+### Fixed
+
+- La mappa del repertorio restava senza segnaposto quando il contenitore era nascosto al caricamento della pagina: al DOMContentLoaded la riga aveva dimensione 0x0 (il tema la mostra dopo), fitBounds portava lo zoom al massimo e la marker-pane restava vuota anche dopo invalidateSize; bastava un click su un filtro per far comparire i marker. Ora la mappa si inizializza quando il contenitore diventa visibile e ha una dimensione reale (IntersectionObserver con rootMargin 200px, attesa di Leaflet fino a 10 s con poll ogni 200 ms, ResizeObserver che ripete il fit sui marker visibili se la larghezza passa da 0 a una reale), e anche il download delle tile parte solo quando la sezione si avvicina allo schermo.
+- Le mappe (repertorio in home e mappa del viaggio nelle schede tour) mostravano solo la scritta «API KEY REQUIRED» perché CARTO ora richiede una chiave; passate alle tile di OpenStreetMap con attribuzione, in tono desaturato.
+
 ## [2.18.0] - 2026-10-21
 
 ### Added

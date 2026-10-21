@@ -50,6 +50,7 @@ class MapShortcode
         ?>
         <style>
         .mappa-viaggio-wrapper { margin: 1.5em 0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,.08); position: relative; }
+        .mappa-viaggio-wrapper .leaflet-tile-pane { filter: grayscale(0.85) brightness(1.04) contrast(0.92); }
         #mappa-viaggio-<?php echo (int) $postId; ?> { width: 100%; height: 500px; max-width: 100%; background: #f5f5f5; }
         @media (max-width: 768px) { #mappa-viaggio-<?php echo (int) $postId; ?> { height: 350px; } }
         .custom-pin { display:flex; justify-content:center; align-items:center; font-weight:bold; background-color:#0e5763; color:#fff;
@@ -85,9 +86,8 @@ class MapShortcode
                 if(typeof L === 'undefined'){ showError(); return null; }
                 try {
             var map = L.map('mappa-viaggio-<?php echo (int) $postId; ?>', { scrollWheelZoom: false, tap: true });
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 19
             }).addTo(map);
 
