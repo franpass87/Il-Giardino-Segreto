@@ -84,6 +84,7 @@ class BlogCardsShortcode
         }
 
         $defaultCatId = (int) get_option('default_category');
+        $dateFormat = str_starts_with(determine_locale(), 'it') ? 'j F Y' : 'F j, Y';
         $cards = '';
 
         while ($query->have_posts()) {
@@ -126,7 +127,7 @@ class BlogCardsShortcode
             $cleanExcerpt = wp_strip_all_tags(strip_shortcodes($rawExcerpt));
             $excerpt = wp_trim_words($cleanExcerpt, 20, '…');
 
-            $date = get_the_date('', $postId);
+            $date = get_the_date($dateFormat, $postId);
 
             $cards .= '<a class="igs-pcard igs-bcard" href="' . esc_url($permalink) . '">'
                 . '<span class="igs-pcard__img">' . $thumbnail . '</span>'

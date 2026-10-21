@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.20.2] - 2026-10-21
+
+### Fixed
+
+- Schede blog: la data in italiano ora è nel formato «1 ottobre 2026» invece di «Ottobre 1, 2026».
+
 ## [2.20.1] - 2026-10-21
 
 ### Added
