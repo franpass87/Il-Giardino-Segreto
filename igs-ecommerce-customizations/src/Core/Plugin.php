@@ -29,6 +29,7 @@ use IGS\Ecommerce\Integration\RemoteBridge;
 use IGS\Ecommerce\Portfolio\PortfolioTitleFilter;
 use IGS\Ecommerce\Shortcodes\GardenShortcodes;
 use IGS\Ecommerce\Shortcodes\MapShortcode;
+use IGS\Ecommerce\Shortcodes\BlogCardsShortcode;
 use IGS\Ecommerce\Shortcodes\RepertorioShortcode;
 
 final class Plugin
@@ -72,6 +73,7 @@ final class Plugin
         (new GardenShortcodes())->register();
         (new MapShortcode())->register();
         (new RepertorioShortcode())->register();
+        (new BlogCardsShortcode())->register();
 
         (new BookingModal())->register();
         (new PortfolioTitleFilter())->register();

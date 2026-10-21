@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.20.0] - 2026-10-21
+
+### Added
+
+- Shortcode `[igs_blog_cards]` per mostrare gli ultimi articoli del blog come schede in stile card partner.
+- Attributo `more` per il testo del link (es. `[igs_blog_cards more="Read the article"]` nella home inglese).
+
+### Fixed
+
+- Il fumetto della mappa del repertorio ora compare sopra i pallini anche quando il CSS di Leaflet viene minificato.
+
 ## [2.19.5] - 2026-10-21
 
 ### Fixed

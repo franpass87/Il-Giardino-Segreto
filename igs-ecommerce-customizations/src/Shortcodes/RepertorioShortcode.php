@@ -238,6 +238,15 @@ class RepertorioShortcode
             filter: grayscale(0.85) brightness(1.04) contrast(0.92);
         }
 
+        /* Stacking pannelli Leaflet: evita che la minificazione CSS elimini gli z-index portando il popup sotto i marker */
+        .igs-rep-container .leaflet-pane { z-index: 400; }
+        .igs-rep-container .leaflet-tile-pane { z-index: 200; }
+        .igs-rep-container .leaflet-overlay-pane { z-index: 400; }
+        .igs-rep-container .leaflet-shadow-pane { z-index: 500; }
+        .igs-rep-container .leaflet-marker-pane { z-index: 600; }
+        .igs-rep-container .leaflet-tooltip-pane { z-index: 650; }
+        .igs-rep-container .leaflet-popup-pane { z-index: 700; }
+
         /* Loader & Fallback */
         .igs-rep-loading {
             position: absolute;
