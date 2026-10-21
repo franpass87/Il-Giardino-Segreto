@@ -19,8 +19,9 @@ class BlogCardsShortcode
     public function render(array|string $atts = []): string
     {
         $atts = shortcode_atts([
-            'count' => 4,
-            'more'  => '',
+            'count'    => 4,
+            'more'     => '',
+            'category' => '',
         ], is_array($atts) ? $atts : [], 'igs_blog_cards');
 
         $count = absint($atts['count']);
@@ -35,14 +36,22 @@ class BlogCardsShortcode
             ? sanitize_text_field($atts['more'])
             : __('Leggi l\'articolo', 'igs-ecommerce');
 
-        $query = new WP_Query([
+        $category = trim((string) ($atts['category'] ?? ''));
+        $categorySlug = $category !== '' ? sanitize_title($category) : '';
+
+        $queryArgs = [
             'post_type'           => 'post',
             'post_status'         => 'publish',
             'posts_per_page'      => $count,
             'ignore_sticky_posts' => true,
             'suppress_filters'    => false,
             'no_found_rows'       => true,
-        ]);
+        ];
+        if ($categorySlug !== '') {
+            $queryArgs['category_name'] = $categorySlug;
+        }
+
+        $query = new WP_Query($queryArgs);
 
         if (!$query->have_posts()) {
             return '';
@@ -106,7 +115,9 @@ class BlogCardsShortcode
                     || in_array($catLower, ['uncategorized', 'senza categoria', 'senza-categoria', 'non categorizzato'], true)
                     || in_array($catSlug, ['uncategorized', 'senza-categoria', 'non-categorizzato'], true);
 
-                if ($catName !== '' && !$isDefault) {
+                $isFilteredCategory = $categorySlug !== '' && $catSlug === $categorySlug;
+
+                if ($catName !== '' && !$isDefault && !$isFilteredCategory) {
                     $tagHtml = '<span class="igs-pcard__tag">' . esc_html($catName) . '</span>';
                 }
             }

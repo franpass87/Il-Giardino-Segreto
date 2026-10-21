@@ -3,7 +3,7 @@
  * Plugin Name:       IGS Ecommerce Customizations
  * Plugin URI:        https://github.com/franpass87/Il-Giardino-Segreto
  * Description:       Personalizzazioni WooCommerce per Il Giardino Segreto: tour, date, prenotazioni, mappa.
- * Version:           2.20.0
+ * Version:           2.20.1
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Francesco Passeri
@@ -16,7 +16,7 @@
 
 defined('ABSPATH') || exit;
 
-define('IGS_VERSION', '2.20.0');
+define('IGS_VERSION', '2.20.1');
 define('IGS_FILE', __FILE__);
 define('IGS_DIR', plugin_dir_path(__FILE__));
 define('IGS_URL', plugin_dir_url(__FILE__));
@@ -50,7 +50,7 @@ igs_preload_woocommerce_textdomain_early();
 
 /**
  * WooCommerce chiama __() sui widget durante includes() nel costruttore, prima di after_setup_theme: con WP 6.7+
- * _load_textdomain_just_in_time emette _doing_it_wrong anche se non c’è un .mo (es. locale en_US).
+ * _load_textdomain_just_in_time emette _doing_it_wrong anche se c’è un .mo (es. locale en_US).
  * Sopprime solo questo caso per il dominio woocommerce; il resto degli avvisi resta attivo.
  */
 add_filter(

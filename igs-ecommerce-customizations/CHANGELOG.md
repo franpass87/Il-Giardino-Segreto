@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.20.1] - 2026-10-21
+
+### Added
+
+- Attributo `category` per `[igs_blog_cards]`: mostra solo gli articoli di quella categoria e nasconde l'etichetta, che sarebbe uguale su tutte le schede.
+
 ## [2.20.0] - 2026-10-21
 
 ### Added
