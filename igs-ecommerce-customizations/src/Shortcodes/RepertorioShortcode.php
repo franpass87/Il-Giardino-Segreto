@@ -122,6 +122,7 @@ class RepertorioShortcode
             box-sizing: border-box;
             color: #1e293b;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            scroll-margin-top: 110px;
         }
         .igs-rep-container *, .igs-rep-container *::before, .igs-rep-container *::after {
             box-sizing: border-box;
@@ -566,7 +567,7 @@ class RepertorioShortcode
             </style>
         </noscript>
 
-        <div class="igs-rep-container">
+        <div class="igs-rep-container" id="igs-repertorio">
             <!-- Barra filtri per area -->
             <div class="igs-rep-filters" role="toolbar" aria-label="<?php echo esc_attr($filtersAriaLabel); ?>">
                 <div class="igs-rep-filter-scroll">
@@ -657,6 +658,28 @@ class RepertorioShortcode
             var fallback = document.getElementById('igs-rep-fallback');
             var listEl = document.getElementById('igs-rep-list');
             if (!mapEl || !listEl) return;
+
+            // Preselezione area da URL: appena il DOM è pronto, scroll al contenitore
+            // per renderlo visibile e innescare l'inizializzazione lazy della mappa.
+            if (window.URLSearchParams) {
+                var urlArea = new URLSearchParams(window.location.search).get('area');
+                if (urlArea && urlArea !== 'all') {
+                    var domChips = document.querySelectorAll('.igs-rep-chip');
+                    var isAreaValid = false;
+                    for (var i = 0; i < domChips.length; i++) {
+                        if (domChips[i].getAttribute('data-area') === urlArea) {
+                            isAreaValid = true;
+                            break;
+                        }
+                    }
+                    if (isAreaValid) {
+                        var repEl = document.getElementById('igs-repertorio');
+                        if (repEl) {
+                            repEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                }
+            }
 
             function showFallback() {
                 if (loader) loader.style.display = 'none';
@@ -969,6 +992,22 @@ class RepertorioShortcode
                             filterByArea(area);
                         });
                     });
+
+                    // Preselezione dell'area da URL (?area=...)
+                    if (window.URLSearchParams) {
+                        var initialArea = new URLSearchParams(window.location.search).get('area');
+                        if (initialArea && initialArea !== 'all') {
+                            var isValidChip = false;
+                            chipButtons.forEach(function(chip) {
+                                if (chip.getAttribute('data-area') === initialArea) {
+                                    isValidChip = true;
+                                }
+                            });
+                            if (isValidChip) {
+                                filterByArea(initialArea);
+                            }
+                        }
+                    }
 
                     // Se il contenitore cambia dimensione dopo l'init (riga rivelata dal tema,
                     // cambio di layout) la mappa si riallinea; se la larghezza passa da 0 a una

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.18.2] - 2026-10-21
+
+### Added
+
+- Preselezione dell'area della mappa del repertorio tramite parametro `?area=` nell'URL.
+
 ## [2.18.1] - 2026-10-21
 
 ### Fixed
