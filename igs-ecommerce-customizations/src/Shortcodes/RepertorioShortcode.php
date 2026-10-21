@@ -942,8 +942,10 @@ class RepertorioShortcode
                     });
 
                     var currentArea = 'all';
+                    var filterToken = 0;
 
                     function filterByArea(selectedArea) {
+                        var token = ++filterToken;
                         currentArea = selectedArea;
 
                         chipButtons.forEach(function(chip) {
@@ -961,6 +963,7 @@ class RepertorioShortcode
                             }
                         });
 
+                        map.stop();
                         clusterGroup.clearLayers();
                         var filteredMarkers = [];
                         var filteredLatLngs = [];
@@ -975,15 +978,27 @@ class RepertorioShortcode
                             }
                         });
 
-                        clusterGroup.addLayers(filteredMarkers);
+                        var applied = false;
+                        function applyMarkers() {
+                            if (applied || token !== filterToken) {
+                                return;
+                            }
+                            applied = true;
+                            clusterGroup.clearLayers();
+                            clusterGroup.addLayers(filteredMarkers);
+                        }
 
                         if (filteredLatLngs.length > 0) {
                             var bounds = L.latLngBounds(filteredLatLngs);
+                            map.once('moveend', applyMarkers);
                             map.fitBounds(bounds, {
                                 padding: [40, 40],
                                 maxZoom: selectedArea === 'all' ? 19 : 11,
                                 animate: !prefersReducedMotion
                             });
+                            setTimeout(applyMarkers, prefersReducedMotion ? 0 : 700);
+                        } else {
+                            applyMarkers();
                         }
                     }
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.19.3] - 2026-10-21
+
+### Fixed
+
+- Mappa del repertorio: cambiando area in fretta alcuni pallini non comparivano; ora i marker si aggiungono a fine animazione e solo per l'ultima area scelta.
+
 ## [2.19.2] - 2026-10-21
 
 ### Fixed
