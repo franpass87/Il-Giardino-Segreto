@@ -994,6 +994,24 @@ class RepertorioShortcode
                             }
                             clusterGroup.clearLayers();
                             clusterGroup.addLayers(filteredMarkers);
+                            if (bounds) {
+                                var settleUntil = Date.now() + 1200;
+                                var realigning = false;
+                                var realignCount = 0;
+                                var keepAligned = function () {
+                                    if (token !== filterToken || Date.now() > settleUntil || realignCount >= 3) {
+                                        map.off('zoomend moveend', keepAligned);
+                                        return;
+                                    }
+                                    if (realigning || map.getBounds().contains(bounds.getCenter())) { return; }
+                                    realigning = true;
+                                    realignCount++;
+                                    map.fitBounds(bounds, L.extend({}, fitOptions, { animate: false }));
+                                    realigning = false;
+                                };
+                                map.on('zoomend moveend', keepAligned);
+                                setTimeout(function () { map.off('zoomend moveend', keepAligned); }, 1300);
+                            }
                         }
 
                         if (bounds) {

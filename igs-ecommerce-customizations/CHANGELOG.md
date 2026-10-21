@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.19.5] - 2026-10-21
+
+### Fixed
+
+- Mappa del repertorio: dopo clic molto ravvicinati sui filtri la vista non resta più inquadrata sull'area precedente.
+
 ## [2.19.4] - 2026-10-21
 
 ### Fixed
