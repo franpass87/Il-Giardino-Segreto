@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.18.3] - 2026-10-21
+
+### Fixed
+
+- Leaflet e MarkerCluster serviti dal plugin invece che da unpkg.com, così le mappe funzionano anche se il CDN è bloccato.
+
 ## [2.18.2] - 2026-10-21
 
 ### Added

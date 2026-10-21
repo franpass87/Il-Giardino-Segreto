@@ -43,8 +43,8 @@ class MapShortcode
             ];
         }
 
-        wp_enqueue_script('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', [], null, true);
-        wp_enqueue_style('leaflet-css', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+        wp_enqueue_script('leaflet', IGS_URL . 'assets/vendor/leaflet/leaflet.js', [], '1.9.4', true);
+        wp_enqueue_style('leaflet-css', IGS_URL . 'assets/vendor/leaflet/leaflet.css', [], '1.9.4');
 
         ob_start();
         ?>

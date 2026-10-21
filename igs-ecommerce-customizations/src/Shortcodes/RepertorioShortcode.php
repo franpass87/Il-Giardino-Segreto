@@ -34,12 +34,12 @@ class RepertorioShortcode
         }
         $rendered = true;
 
-        wp_enqueue_script('leaflet', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', [], null, true);
-        wp_enqueue_style('leaflet-css', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+        wp_enqueue_script('leaflet', IGS_URL . 'assets/vendor/leaflet/leaflet.js', [], '1.9.4', true);
+        wp_enqueue_style('leaflet-css', IGS_URL . 'assets/vendor/leaflet/leaflet.css', [], '1.9.4');
 
-        wp_enqueue_script('leaflet-markercluster', 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js', ['leaflet'], null, true);
-        wp_enqueue_style('leaflet-markercluster-css', 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css');
-        wp_enqueue_style('leaflet-markercluster-default-css', 'https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css');
+        wp_enqueue_script('leaflet-markercluster', IGS_URL . 'assets/vendor/leaflet-markercluster/leaflet.markercluster.js', ['leaflet'], '1.5.3', true);
+        wp_enqueue_style('leaflet-markercluster-css', IGS_URL . 'assets/vendor/leaflet-markercluster/MarkerCluster.css', [], '1.5.3');
+        wp_enqueue_style('leaflet-markercluster-default-css', IGS_URL . 'assets/vendor/leaflet-markercluster/MarkerCluster.Default.css', [], '1.5.3');
 
         $areas = Repertorio::getAreas();
         $rawItems = Repertorio::getItems();
